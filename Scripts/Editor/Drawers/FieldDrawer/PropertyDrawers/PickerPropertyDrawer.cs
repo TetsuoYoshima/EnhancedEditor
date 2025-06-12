@@ -15,7 +15,7 @@ namespace EnhancedEditor.Editor {
     public sealed class PickerPropertyDrawer : EnhancedPropertyDrawer {
         #region Drawer Content
         public override bool OnGUI(Rect _position, SerializedProperty _property, GUIContent _label, out float _height) {
-            var _attribute = Attribute as PickerAttribute;
+            var _attribute   = Attribute as PickerAttribute;
             _position.height = _height
                              = EditorGUIUtility.singleLineHeight;
 
@@ -27,6 +27,7 @@ namespace EnhancedEditor.Editor {
             // Reset object value if it does not match.
             if ((_property.propertyType == SerializedPropertyType.ObjectReference)
              && EnhancedEditorGUI.ResetPickerObjectIfDontMatch(_property.objectReferenceValue, (Attribute as PickerAttribute).RequiredTypes)) {
+
                 _property.objectReferenceValue = null;
             }
         }

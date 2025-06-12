@@ -32,7 +32,9 @@ namespace EnhancedEditor.Editor
 
         int IOrderedCallback.callbackOrder => 999;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static MultiTagsWindow() {
             TagDatabase.EditorTagDatabaseGetter = () => Database;
@@ -42,7 +44,9 @@ namespace EnhancedEditor.Editor
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Internal
+        // -------------------------------------------
 
         void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport _report) {
             // Called just before a build is started.
@@ -73,8 +77,7 @@ namespace EnhancedEditor.Editor
         /// </summary>
         /// <returns><see cref="MultiTagsWindow"/> instance on screen.</returns>
         [MenuItem(InternalUtility.MenuItemPath + "Multi-Tags", false, 130)]
-        public static MultiTagsWindow GetWindow()
-        {
+        public static MultiTagsWindow GetWindow() {
             MultiTagsWindow _window = GetWindow<MultiTagsWindow>("Multi-Tags");
             _window.Show();
 
@@ -100,8 +103,7 @@ namespace EnhancedEditor.Editor
 
         // -----------------------
 
-        private void OnEnable()
-        {
+        private void OnEnable() {
             // Repaint on undo / redo.
             Undo.undoRedoPerformed -= Repaint;
             Undo.undoRedoPerformed += Repaint;
@@ -112,53 +114,43 @@ namespace EnhancedEditor.Editor
             RefreshTags();
         }
 
-        private void OnGUI()
-        {
+        private void OnGUI() {
             Undo.RecordObject(this, UndoRecordTitle);
 
             // Toolbar.
-            using (var _scope = new GUILayout.HorizontalScope(EditorStyles.toolbar))
-            {
+            using (var _scope = new GUILayout.HorizontalScope(EditorStyles.toolbar)) {
                 // Create tag.
-                if (GUILayout.Button(createTagGUI, EditorStyles.toolbarButton, GUILayout.Width(95f)))
-                {
+                if (GUILayout.Button(createTagGUI, EditorStyles.toolbarButton, GUILayout.Width(95f))) {
                     CreateTagWindow.GetWindow(null);
                 }
 
                 // Search filter.
                 string _searchPattern = EnhancedEditorGUILayout.ToolbarSearchField(searchFilter);
-                if (_searchPattern != searchFilter)
-                {
+                if (_searchPattern != searchFilter) {
                     searchFilter = _searchPattern;
                     FilterTags();
                 }
 
                 // Refresh.
-                if (GUILayout.Button(refreshGUI, EditorStyles.toolbarButton, GUILayout.Width(55f)) || (Database.TotalTagCount != tags.Count))
-                {
+                if (GUILayout.Button(refreshGUI, EditorStyles.toolbarButton, GUILayout.Width(55f)) || (Database.TotalTagCount != tags.Count))  {
                     RefreshTags();
                 }
             }
 
             // Project tags.
-            using (var _scrollScrop = new GUILayout.ScrollViewScope(scroll))
-            {
+            using (var _scrollScrop = new GUILayout.ScrollViewScope(scroll)) {
                 scroll = _scrollScrop.scrollPosition;
 
                 GUILayout.Space(3f);
-                using (var _scope = new GUILayout.HorizontalScope())
-                {
+                using (var _scope = new GUILayout.HorizontalScope()) {
                     GUILayout.Space(5f);
 
-                    using (var verticalScope = new GUILayout.VerticalScope(GUILayout.Width(position.width - 10f)))
-                    {
-                        if (tags.Count == 0)
-                        {
+                    using (var verticalScope = new GUILayout.VerticalScope(GUILayout.Width(position.width - 10f))) {
+                        if (tags.Count == 0) {
                             // No tag.
                             EditorGUILayout.HelpBox(NoTagMessage, UnityEditor.MessageType.Warning, true);
                         }
-                        else
-                        {
+                        else {
                             int _index = 0;
 
                             // Holders.
@@ -230,7 +222,7 @@ namespace EnhancedEditor.Editor
             }
 
             tagsVisibility.Clear();
-            for (int i = 0; i < tags.Count; i++) {
+            for (int i = tags.Count; i-- > 0;) {
                 tagsVisibility.Add(true);
             }
 
@@ -239,10 +231,8 @@ namespace EnhancedEditor.Editor
 
         private void FilterTags() {
             string _searchFilter = searchFilter.ToLower();
-            for (int i = 0; i < tags.Count; i++) {
-
-                bool _isVisible = tags[i].Name.ToLower().Contains(_searchFilter);
-                tagsVisibility[i] = _isVisible;
+            for (int i = tags.Count; i-- > 0;) {
+                tagsVisibility[i] = tags[i].Name.ToLower().Contains(_searchFilter);
             }
         }
         #endregion
@@ -258,8 +248,7 @@ namespace EnhancedEditor.Editor
             /// used to create a new tag in the project.
             /// </summary>
             /// <returns><see cref="CreateTagWindow"/> instance on screen.</returns>
-            public static CreateTagWindow GetWindow(TagHolder _holder = null)
-            {
+            public static CreateTagWindow GetWindow(TagHolder _holder = null) {
                 CreateTagWindow _window = GetWindow<CreateTagWindow>("Create a new Tag", new Vector2(350f, 70f));
                 _window.tagName = "NewTag";
                 _window.holder  = _holder;
@@ -280,15 +269,14 @@ namespace EnhancedEditor.Editor
 
             private static readonly GUIContent createGUI = new GUIContent("OK", "Create this tag.");
 
-            [SerializeField] private Color tagColor   = TagData.DefaultColor.Get();
             [SerializeField] private TagHolder holder = null;
+            [SerializeField] private Color tagColor   = TagData.DefaultColor.Get();
 
             protected override GUIContent ValidateGUI => createGUI;
 
             // -----------------------
 
-            protected override void WindowContentGUI(Rect _position)
-            {
+            protected override void WindowContentGUI(Rect _position) {
                 // Name.
                 _position.x += 50f;
                 _position.width = NameWidth;
@@ -300,8 +288,7 @@ namespace EnhancedEditor.Editor
                 tagColor = EditorGUI.ColorField(_position, tagColor);
             }
 
-            protected override void Validate()
-            {
+            protected override void Validate() {
                 Database.CreateTag(tagName, tagColor, holder);
                 InternalEditorUtility.RepaintAllViews();
             }
@@ -312,19 +299,17 @@ namespace EnhancedEditor.Editor
         /// <summary>
         /// Utility window used to rename an existing tag.
         /// </summary>
-        public sealed class RenameTagWindow : TagWindow
-        {
+        public sealed class RenameTagWindow : TagWindow {
             /// <summary>
             /// Creates and shows a new <see cref="CreateTagWindow"/> instance,
             /// used to rename an existing tag in the project.
             /// </summary>
             /// <returns><see cref="CreateTagWindow"/> instance on screen.</returns>
-            public static RenameTagWindow GetWindow(TagData _tag)
-            {
+            public static RenameTagWindow GetWindow(TagData _tag) {
                 RenameTagWindow _window = GetWindow<RenameTagWindow>("Rename this Tag", new Vector2(325f, 70f));
 
                 _window.tagName = _tag.name;
-                _window.tag = _tag;
+                _window.tag     = _tag;
 
                 return _window;
             }
@@ -341,16 +326,14 @@ namespace EnhancedEditor.Editor
 
             // -----------------------
 
-            protected override void WindowContentGUI(Rect _position)
-            {
+            protected override void WindowContentGUI(Rect _position) {
                 // Name.
                 _position.x += 50f;
                 _position.width = position.width - _position.x - 5f;
                 tagName = EditorGUI.TextField(_position, tagName);
             }
 
-            protected override void Validate()
-            {
+            protected override void Validate() {
                 Database.SetTagName(tag, tagName);
                 InternalEditorUtility.RepaintAllViews();
             }
@@ -361,10 +344,8 @@ namespace EnhancedEditor.Editor
         /// <summary>
         /// Abstract class inherited by both <see cref="CreateTagWindow"/> and <see cref="RenameTagWindow"/> windows.
         /// </summary>
-        public abstract class TagWindow : EditorWindow
-        {
-            internal static T GetWindow<T>(string _title, Vector2 _size) where T : EditorWindow
-            {
+        public abstract class TagWindow : EditorWindow {
+            internal static T GetWindow<T>(string _title, Vector2 _size) where T : EditorWindow {
                 T _window = GetWindow<T>(true, _title, true);
                 _window.minSize = _window.maxSize
                                 = _size;
@@ -393,8 +374,7 @@ namespace EnhancedEditor.Editor
 
             // -----------------------
 
-            private void OnGUI()
-            {
+            private void OnGUI()  {
                 Undo.RecordObject(this, UndoRecordTitle);
 
                 // Button and content.
@@ -405,29 +385,24 @@ namespace EnhancedEditor.Editor
 
                 // Name validation.
                 string _value = tagName.Trim();
-                if (string.IsNullOrEmpty(_value))
-                {
+                if (string.IsNullOrEmpty(_value))  {
                     DrawHelpBox(EmptyTagMessage);
                 }
-                else if (Database.DoesTagExist(_value))
-                {
+                else if (Database.DoesTagExist(_value)) {
                     DrawHelpBox(ExistingTagMessage);
                 }
-                else
-                {
+                else {
                     // Window validation button.
                     DrawTooltipHelpBox();
 
-                    _position = new Rect()
-                    {
+                    _position = new Rect() {
                         x = position.width - 55f,
                         y = _position.y + _position.height + 10f,
-                        width = 50f,
+                        width  = 50f,
                         height = 25f
                     };
 
-                    if (GUI.Button(_position, ValidateGUI))
-                    {
+                    if (GUI.Button(_position, ValidateGUI)) {
                         Validate();
                         Close();
                     }
@@ -435,10 +410,8 @@ namespace EnhancedEditor.Editor
 
                 // ----- Local Method ----- \\
 
-                void DrawHelpBox(string _message)
-                {
-                    _position = new Rect()
-                    {
+                void DrawHelpBox(string _message) {
+                    _position = new Rect()  {
                         x = 5f,
                         y = _position.y + _position.height + 5f,
                         width = position.width - 10f
@@ -448,10 +421,8 @@ namespace EnhancedEditor.Editor
                     EditorGUI.HelpBox(_position, _message, UnityEditor.MessageType.Error);
                 }
 
-                void DrawTooltipHelpBox()
-                {
-                    Rect _temp = new Rect()
-                    {
+                void DrawTooltipHelpBox() {
+                    Rect _temp = new Rect() {
                         x = 5f,
                         y = _position.y + _position.height + 5f,
                         width = position.width - 65f

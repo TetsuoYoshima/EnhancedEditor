@@ -15,7 +15,7 @@ namespace EnhancedEditor {
     public sealed class SectionAttribute : EnhancedDecoratorAttribute {
         #region Global Members
         public const float DefaultLineWidth = 50f;
-        public const float DefaultMargins = 5f;
+        public const float DefaultMargins   = 5f;
 
         /// <summary>
         /// Label displayed as this section header.

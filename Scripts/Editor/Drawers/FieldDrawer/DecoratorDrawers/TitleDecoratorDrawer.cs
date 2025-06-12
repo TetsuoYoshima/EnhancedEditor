@@ -19,7 +19,7 @@ namespace EnhancedEditor.Editor {
         }
 
         public override void OnGUI(Rect _position) {
-            var _attribute = attribute as TitleAttribute;
+            var _attribute    = attribute as TitleAttribute;
             _position.height -= EditorGUIUtility.standardVerticalSpacing;
 
             EnhancedEditorGUI.UnderlinedLabel(_position, _attribute.Label, EditorStyles.boldLabel);

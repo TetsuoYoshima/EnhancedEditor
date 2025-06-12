@@ -22,7 +22,7 @@ namespace EnhancedEditor {
         #region Reflection
         private const BindingFlags CopyObjectFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-        private static readonly MethodInfo findObjectFromInstanceIDMethod = typeof(Object).GetMethod("FindObjectFromInstanceID", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly MethodInfo findObjectFromInstanceIDMethod   = typeof(Object).GetMethod("FindObjectFromInstanceID", BindingFlags.Static | BindingFlags.NonPublic);
         private static readonly object[] findObjectFromInstanceIDParameters = new object[1];
 
         // -----------------------
@@ -94,7 +94,7 @@ namespace EnhancedEditor {
                 for (int _j = 0; _j < _sourceProperties.Length; _j++) {
                     PropertyInfo _from = _sourceProperties[_i];
 
-                    if (_from.CanRead && (_from.Name == _to.Name) && _to.PropertyType.IsAssignableFrom(_from.PropertyType)) {
+                    if (_from.CanRead && (_from.Name.Equals(_to.Name, StringComparison.Ordinal)) && _to.PropertyType.IsAssignableFrom(_from.PropertyType)) {
                         try {
                             _to.SetValue(_target, _from.GetValue(_source));
                         } catch (Exception) { }
@@ -145,19 +145,19 @@ namespace EnhancedEditor {
         public static int GetStableHashCode(string _string) {
             // Same as GetHashCode, but without any random operation.
             unchecked {
-                int hash1 = 5381;
-                int hash2 = hash1;
+                int _hash1 = 5381;
+                int _hash2 = _hash1;
 
                 for (int i = 0; (i < _string.Length) && (_string[i] != '\0'); i += 2) {
-                    hash1 = ((hash1 << 5) + hash1) ^ _string[i];
+                    _hash1 = ((_hash1 << 5) + _hash1) ^ _string[i];
                     if ((i == _string.Length - 1) || (_string[i + 1] == '\0')) {
                         break;
                     }
 
-                    hash2 = ((hash2 << 5) + hash2) ^ _string[i + 1];
+                    _hash2 = ((_hash2 << 5) + _hash2) ^ _string[i + 1];
                 }
 
-                return hash1 + (hash2 * 1566083941);
+                return _hash1 + (_hash2 * 1566083941);
             }
         }
 
@@ -167,28 +167,29 @@ namespace EnhancedEditor {
         /// <param name="_string"><see cref="string"/> to get a hash code for.</param>
         /// <returns>The hash code for the given <see cref="string"/>.</returns>
         public static ulong GetLongStableHashCode(string _string) {
-            ulong hashCode = 0;
+            ulong _hashCode = 0;
 
             if (!string.IsNullOrEmpty(_string)) {
+
                 // Unicode Encode Covering all characterset.
-                byte[] byteContents = Encoding.Unicode.GetBytes(_string);
-                SHA256 hash = new SHA256CryptoServiceProvider();
-                byte[] hashText = hash.ComputeHash(byteContents);
+                byte[] _byteContents = Encoding.Unicode.GetBytes(_string);
+                SHA256 _hash         = new SHA256CryptoServiceProvider();
+                byte[] _hashText     = _hash.ComputeHash(_byteContents);
 
                 // 32Byte hashText separate
                 //
-                // hashCodeStart = 0~7  8Byte
-                // hashCodeMedium = 8~23  8Byte
-                // hashCodeEnd = 24~31  8Byte
+                // hashCodeStart  = 0~7    8Byte
+                // hashCodeMedium = 8~23   8Byte
+                // hashCodeEnd    = 24~31  8Byte
 
-                ulong hashCodeStart  = BitConverter.ToUInt64(hashText, 0);
-                ulong hashCodeMedium = BitConverter.ToUInt64(hashText, 8);
-                ulong hashCodeEnd    = BitConverter.ToUInt64(hashText, 24);
+                ulong _hashCodeStart  = BitConverter.ToUInt64(_hashText, 0);
+                ulong _hashCodeMedium = BitConverter.ToUInt64(_hashText, 8);
+                ulong _hashCodeEnd    = BitConverter.ToUInt64(_hashText, 24);
 
-                hashCode = hashCodeStart ^ hashCodeMedium ^ hashCodeEnd;
+                _hashCode = _hashCodeStart ^ _hashCodeMedium ^ _hashCodeEnd;
             }
 
-            return hashCode;
+            return _hashCode;
         }
         #endregion
 

@@ -17,7 +17,9 @@ namespace EnhancedEditor.Editor {
         #region Global Members
         public ScriptableObjectDrawerMode DefaultMode = ScriptableObjectDrawerMode.Button | ScriptableObjectDrawerMode.Content;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="ScriptableObjectDrawerEnhancedSettings"/>
         public ScriptableObjectDrawerEnhancedSettings(int _guid) : base(_guid) { }
@@ -27,8 +29,8 @@ namespace EnhancedEditor.Editor {
         private static readonly GUIContent defaultModeGUI = new GUIContent("Scriptable Object default drawer mode",
                                                                            "The default mode used to draw a ScriptableObject in the editor.");
 
-        private static readonly int settingsGUID = "EnhancedEditorScriptableObjectDrawerSetting".GetHashCode();
         private static ScriptableObjectDrawerEnhancedSettings settings = null;
+        private static readonly int settingsGUID = "EnhancedEditorScriptableObjectDrawerSetting".GetHashCode();
 
         // -----------------------
 

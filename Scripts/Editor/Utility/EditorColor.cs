@@ -23,7 +23,9 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         public Color DarkColor;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <param name="_lightColor"><inheritdoc cref="LightColor" path="/summary"/></param>
         /// <param name="_darkColor"><inheritdoc cref="DarkColor" path="/summary"/></param>

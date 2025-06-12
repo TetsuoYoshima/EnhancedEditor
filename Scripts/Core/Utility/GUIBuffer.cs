@@ -38,16 +38,18 @@ namespace EnhancedEditor {
         #endregion
 
         #region Global Members
-        private readonly string name = string.Empty;
-        private readonly Func<T> getter = null;
         private readonly Action<T> setter = null;
+        private readonly Func<T> getter   = null;
+        private readonly string name      = string.Empty;
 
         /// <summary>
         /// All pushed-in-buffer values.
         /// </summary>
         public List<T> Buffer = new List<T>();
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <param name="_getter">Associated value getter.</param>
         /// <param name="_setter">Associated value setter.</param>
@@ -56,7 +58,7 @@ namespace EnhancedEditor {
         public GUIBuffer(Func<T> _getter, Action<T> _setter, string _name) {
             getter = _getter;
             setter = _setter;
-            name = _name;
+            name   = _name;
         }
         #endregion
 
@@ -84,7 +86,7 @@ namespace EnhancedEditor {
             }
 
             int _index = Buffer.Count - 1;
-            T _value = Buffer[_index];
+            T _value   = Buffer[_index];
 
             setter(_value);
             Buffer.RemoveAt(_index);
@@ -109,8 +111,7 @@ namespace EnhancedEditor {
         /// <param name="_value">New buffer value.</param>
         /// <returns>Disposable helper class to wrap your controls within.</returns>
         public GUIBufferScope Scope(T _value) {
-            GUIBufferScope _scope = new GUIBufferScope(this, _value);
-            return _scope;
+            return new GUIBufferScope(this, _value);
         }
         #endregion
     }
@@ -131,7 +132,7 @@ namespace EnhancedEditor {
             /// <inheritdoc cref="GUIBufferScope"/>
             public GUIBufferScope(GUIBuffer<T1, T2> _buffer, T1 _key, T2 _value) {
                 buffer = _buffer;
-                key = _key;
+                key    = _key;
 
                 _buffer.Push(_key, _value);
             }
@@ -145,9 +146,9 @@ namespace EnhancedEditor {
         #endregion
 
         #region Global Members
-        private readonly string name = string.Empty;
-        private readonly Func<T1, T2> getter = null;
         private readonly Action<T1, T2> setter = null;
+        private readonly Func<T1, T2> getter   = null;
+        private readonly string name           = string.Empty;
 
         /// <summary>
         /// All pushed-in-buffer values.
@@ -156,7 +157,9 @@ namespace EnhancedEditor {
         /// </summary>
         public Dictionary<T1, List<T2>> Buffer = new Dictionary<T1, List<T2>>();
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <param name="_getter">Associated value getter.</param>
         /// <param name="_setter">Associated value setter.</param>
@@ -178,8 +181,9 @@ namespace EnhancedEditor {
         public void Push(T1 _key, T2 _value) {
             T2 _previous = getter(_key);
 
-            if (!Buffer.ContainsKey(_key))
+            if (!Buffer.ContainsKey(_key)) {
                 Buffer.Add(_key, new List<T2>());
+            }
 
             Buffer[_key].Add(_previous);
             setter(_key, _value);
@@ -198,13 +202,14 @@ namespace EnhancedEditor {
             }
 
             int _index = Buffer[_key].Count - 1;
-            T2 _value = Buffer[_key][_index];
+            T2 _value  = Buffer[_key][_index];
 
             setter(_key, _value);
             Buffer[_key].RemoveAt(_index);
 
-            if (_index == 0)
+            if (_index == 0) {
                 Buffer.Remove(_key);
+            }
 
             return _value;
         }
@@ -224,8 +229,7 @@ namespace EnhancedEditor {
         /// <param name="_value">New object buffer value.</param>
         /// <returns>Disposable helper class to wrap your controls within.</returns>
         public GUIBufferScope Scope(T1 _key, T2 _value) {
-            GUIBufferScope _scope = new GUIBufferScope(this, _key, _value);
-            return _scope;
+            return new GUIBufferScope(this, _key, _value);
         }
         #endregion
     }

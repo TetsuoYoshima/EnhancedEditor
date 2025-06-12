@@ -47,9 +47,9 @@ namespace EnhancedEditor.Editor {
                     if (_array.isExpanded) {
 
                         // Functional list.
-                        bool _isEditable = _property.FindPropertyRelative("IsEditable").boolValue;
+                        bool _isEditable    = _property.FindPropertyRelative("IsEditable").boolValue;
                         bool _isReorderable = _property.FindPropertyRelative("IsReorderable").boolValue;
-                        bool _isReadonly = _property.FindPropertyRelative("IsReadonly").boolValue;
+                        bool _isReadonly    = _property.FindPropertyRelative("IsReadonly").boolValue;
 
                         _list = new ReorderableList(_array.serializedObject, _array, _isReorderable, true, _isEditable, _isEditable) {
                             drawHeaderCallback = DrawHeader,

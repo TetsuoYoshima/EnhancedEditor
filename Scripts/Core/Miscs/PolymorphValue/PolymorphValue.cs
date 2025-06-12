@@ -92,6 +92,7 @@ namespace EnhancedEditor {
                 Type _type = value.GetType();
                 Type = _type;
 
+                // Update value if setter succeeded.
                 if (Type == _type) {
                     this.value = value;
                 }

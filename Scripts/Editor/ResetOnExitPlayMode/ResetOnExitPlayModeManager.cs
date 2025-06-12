@@ -36,7 +36,9 @@ namespace EnhancedEditor.Editor {
             public string GUID = string.Empty;
             public string Json = string.Empty;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public ObjectWrapper(Object _object) {
                 GUID = EnhancedEditorUtility.GetAssetGUID(_object);
@@ -48,7 +50,9 @@ namespace EnhancedEditor.Editor {
         #region Play Mode State Changed
         private const string MainKey = "ResetOnExitPlayMode_MainKey";
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static ResetOnExitPlayModeManager() {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
@@ -58,6 +62,10 @@ namespace EnhancedEditor.Editor {
                 DeserializeObjects();
             }
         }
+
+        // -------------------------------------------
+        // Internal
+        // -------------------------------------------
 
         private static void OnPlayModeStateChanged(PlayModeStateChange _mode) {
             switch (_mode) {
@@ -78,12 +86,20 @@ namespace EnhancedEditor.Editor {
 
         private static void SerializeObjects() {
             JsonWrapper _json = new JsonWrapper();
+            List<Type> _types = GetObjectTypes();
 
-            foreach (Type _type in GetObjectTypes())
-            foreach (ScriptableObject _object in LoadObjects(_type)) {
-                
-                ObjectWrapper _wrapper = new ObjectWrapper(_object);
-                _json.Objects.Add(_wrapper);
+            for (int i = 0; i < _types.Count; i++) {
+
+                Type _type = _types[i];
+                List<Object> _objects = LoadObjects(_type);
+
+                for (int j = _objects.Count; j-- > 0;) {
+
+                    ScriptableObject _object = (ScriptableObject)_objects[j];
+                    ObjectWrapper _wrapper   = new ObjectWrapper(_object);
+
+                    _json.Objects.Add(_wrapper);
+                }
             }
 
             // Register values to be restored outside Play mode.
@@ -100,8 +116,11 @@ namespace EnhancedEditor.Editor {
             JsonWrapper _wrapper = new JsonWrapper();
             EditorJsonUtility.FromJsonOverwrite(_json, _wrapper);
 
-            foreach (var _obj in _wrapper.Objects) {
-                string _path = AssetDatabase.GUIDToAssetPath(_obj.GUID);
+            ref List<ObjectWrapper> _span = ref _wrapper.Objects;
+            for (int i = _span.Count; i-- > 0;) {
+
+                ObjectWrapper _object = _span[i];
+                string _path = AssetDatabase.GUIDToAssetPath(_object.GUID);
 
                 // If an object can't be found, skip it.
                 if (string.IsNullOrEmpty(_path)) {
@@ -109,7 +128,7 @@ namespace EnhancedEditor.Editor {
                 }
 
                 Object _asset = AssetDatabase.LoadMainAssetAtPath(_path);
-                EditorJsonUtility.FromJsonOverwrite(_obj.Json, _asset);
+                EditorJsonUtility.FromJsonOverwrite(_object.Json, _asset);
             }
 
             // Reset Prefs value to indicate there is nothing to be restored.
@@ -128,7 +147,10 @@ namespace EnhancedEditor.Editor {
             resetTypes.Clear();
 
             #if !ASSEMBLY_REFLECTION
-            foreach (var _type in TypeCache.GetTypesWithAttribute<ResetOnExitPlayModeAttribute>()) {
+            var _types = TypeCache.GetTypesWithAttribute<ResetOnExitPlayModeAttribute>();
+            for (int i = _types.Count; i-- > 0;) {
+
+                Type _type = _types[i];
                 if (_type.IsSubclassOf(_scriptableType)) {
                     resetTypes.Add(_type);
                 }
@@ -147,9 +169,7 @@ namespace EnhancedEditor.Editor {
         }
 
         private static List<Object> LoadObjects(Type _type) {
-            buffer.Clear();
-            buffer.AddRange(EnhancedEditorUtility.LoadAssets(_type));
-
+            buffer.ReplaceBy(EnhancedEditorUtility.LoadAssets(_type));
             return buffer;
         }
         #endregion

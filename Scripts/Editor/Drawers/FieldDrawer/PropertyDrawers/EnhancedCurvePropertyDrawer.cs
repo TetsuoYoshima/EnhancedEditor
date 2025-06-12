@@ -15,7 +15,7 @@ namespace EnhancedEditor.Editor {
     public sealed class EnhancedCurvePropertyDrawer : EnhancedPropertyDrawer {
         #region Drawer Content
         public override bool OnGUI(Rect _position, SerializedProperty _property, GUIContent _label, out float _height) {
-            var _attribute = Attribute as EnhancedCurveAttribute;
+            var _attribute   = Attribute as EnhancedCurveAttribute;
             _position.height = _height
                              = EditorGUIUtility.singleLineHeight;
 

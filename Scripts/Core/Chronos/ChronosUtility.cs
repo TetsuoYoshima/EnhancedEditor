@@ -8,6 +8,7 @@
 #define EDITOR_CHRONOS
 #endif
 
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 #if EDITOR_CHRONOS
@@ -78,7 +79,7 @@ namespace EnhancedEditor {
                 lastUpdateTime  = EditorApplication.timeSinceStartup;
             }
         }
-        #endif
+#endif
         #endregion
 
         #region Utility
@@ -88,6 +89,7 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_realTime">If true, time scale will be ignored.</param>
         /// <returns>Interval in seconds from the last frame to the current one.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetDeltaTime(bool _realTime) {
             return _realTime ? RealDeltaTime : DeltaTime;
         }

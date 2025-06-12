@@ -26,7 +26,9 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         public bool IsCoreSceneEnabled = false;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="CoreSceneEnhancedSettings"/>
         public CoreSceneEnhancedSettings(int _guid) : base(_guid) { }
@@ -35,13 +37,13 @@ namespace EnhancedEditor.Editor {
         #region Project Settings
         private const string CoreSceneMessage = "The Core Scene system allows to always load a specific scene first when entering play mode in the editor.";
 
+        private static readonly GUIContent isCoreSceneEnabledGUI    = new GUIContent("Enabled", "Enables / Disables to core scene system.");
         private static readonly GUIContent coreSceneHeaderGUI       = new GUIContent("Core Scene System", "Settings related to the Core Scene system.");
         private static readonly GUIContent coreSceneGUI             = new GUIContent("Core Scene", "The core scene to load when entering play mode.");
-        private static readonly GUIContent isCoreSceneEnabledGUI    = new GUIContent("Enabled", "Enables / Disables to core scene system.");
 
 
-        private static readonly int settingsGUID = "CoreSceneSettings".GetHashCode();
         private static CoreSceneEnhancedSettings settings = null;
+        private static readonly int settingsGUID          = "CoreSceneSettings".GetHashCode();
 
         // -----------------------
 

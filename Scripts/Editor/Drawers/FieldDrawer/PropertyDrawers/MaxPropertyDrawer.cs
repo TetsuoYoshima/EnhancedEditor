@@ -20,8 +20,9 @@ namespace EnhancedEditor.Editor {
             // Get maximum allowed value and ceil property value.
             if (_attribute.MaxMember == null) {
                 _maxValue = _attribute.MaxValue;
-            } else if (!_attribute.MaxMember.Value.GetValue(_property, out _maxValue))
+            } else if (!_attribute.MaxMember.Value.GetValue(_property, out _maxValue)) {
                 return;
+            }
 
             EnhancedEditorUtility.CeilSerializedPropertyValue(_property, _maxValue);
         }

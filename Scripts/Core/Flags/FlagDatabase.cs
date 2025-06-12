@@ -93,9 +93,9 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_resetPersistent">If true, also resets game flags marked as 'persistent'.</param>
         public void ResetFlags(bool _resetPersistent = false) {
-
-            for (int i = holders.Length; i-- > 0;) {
-                holders[i].ResetFlags(_resetPersistent);
+            ref FlagHolder[] _holders = ref holders;
+            for (int i = _holders.Length; i-- > 0;) {
+                _holders[i].ResetFlags(_resetPersistent);
             }
         }
         #endregion
@@ -128,14 +128,15 @@ namespace EnhancedEditor {
             return false;
         }
 
-        /// <param name="_name"><inheritdoc cref="FindFlag(string, string, out Flag, out FlagHolder" path="/param[@name='_flagName']"/></param>
+        /// <param name="_name"><inheritdoc cref="FindFlag(string, string, out Flag)" path="/param[@name='_flagName']"/></param>
         /// <inheritdoc cref="FindFlag(string, string, out Flag)"/>
         public bool FindFlag(string _name, out Flag _flag) {
 
-            int _length = holders.Length;
+            ref FlagHolder[] _holders = ref holders;
+            int _length = _holders.Length;
 
             for (int i = 0; i < _length; i++) {
-                if (holders[i].FindFlag(_name, out _flag)) {
+                if (_holders[i].FindFlag(_name, out _flag)) {
                     return true;
                 }
             }
@@ -169,10 +170,11 @@ namespace EnhancedEditor {
         /// <returns>True if a <see cref="FlagHolder"/> with the given name could be successfully found, false otherwise.</returns>
         public bool FindHolder(string _name, out FlagHolder _holder) {
 
-            int _length = holders.Length;
+            ref FlagHolder[] _holders = ref holders;
+            int _length = _holders.Length;
 
             for (int i = 0; i < _length; i++) {
-                FlagHolder _temp = holders[i];
+                FlagHolder _temp = _holders[i];
 
                 if (_temp.name.Equals(_name, StringComparison.Ordinal)) {
                     _holder = _temp;

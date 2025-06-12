@@ -17,7 +17,8 @@ namespace EnhancedEditor.Editor {
         #region Drawer Content
         internal protected override float GetDefaultHeight(SerializedProperty _property, GUIContent _label) {
             Rect _position = EnhancedEditorGUIUtility.GetViewControlRect();
-            float _height = _position.height;
+            float _height  = _position.height;
+
             try {
                 _height += EnhancedEditorGUI.GetTagGroupExtraHeight(_position, _property, _label);
             } catch (NullReferenceException) { }
@@ -27,8 +28,8 @@ namespace EnhancedEditor.Editor {
 
         protected override float OnEnhancedGUI(Rect _position, SerializedProperty _property, GUIContent _label) {
             // As the full height is given on position, set it for one line only.
-            _position.height = EditorGUIUtility.singleLineHeight;
             float _extraHeight = 0f;
+            _position.height   = EditorGUIUtility.singleLineHeight;
 
             try {
                 EnhancedEditorGUI.TagGroupField(_position, _property, _label, out _extraHeight);

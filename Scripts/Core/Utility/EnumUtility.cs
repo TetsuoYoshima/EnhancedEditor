@@ -264,7 +264,8 @@ namespace EnhancedEditor {
             string _name = string.Empty;
 
             // Get enum name.
-            foreach (var _pair in _enumNames) {
+            for (int i = _enumNames.Count; i-- > 0;) {
+                EnumValueInfo _pair = _enumNames[i];
 
                 if (_pair.Value == _enumValue) {
                     _name = _pair.Name;

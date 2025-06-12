@@ -19,8 +19,8 @@ namespace EnhancedEditor.Editor {
     public sealed class ShapeshifterWindow : EditorWindow {
         #region Styles
         private static class Styles {
-            public static readonly GUIStyle TabStyle = new GUIStyle("ObjectPickerTab");
             public static readonly GUIStyle BackgroundStyle = new GUIStyle("ProjectBrowserIconAreaBg");
+            public static readonly GUIStyle TabStyle        = new GUIStyle("ObjectPickerTab");
         }
         #endregion
 

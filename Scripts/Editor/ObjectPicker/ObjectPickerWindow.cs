@@ -22,14 +22,14 @@ namespace EnhancedEditor.Editor {
     public sealed class ObjectPickerWindow : EditorWindow {
         #region Styles
         private static class Styles {
-            public static readonly GUIStyle PickerTabStyle = new GUIStyle("ObjectPickerTab");
-            public static readonly GUIStyle PickerBackgroundStyle = new GUIStyle("ProjectBrowserIconAreaBg");
-            public static readonly GUIStyle ObjectLabelStyle = new GUIStyle("ProjectBrowserGridLabel");
-            public static readonly GUIStyle PreviewDropShadowStyle = new GUIStyle("ProjectBrowserTextureIconDropShadow");
+            public static readonly GUIStyle PickerTabStyle           = new GUIStyle("ObjectPickerTab");
+            public static readonly GUIStyle PickerBackgroundStyle    = new GUIStyle("ProjectBrowserIconAreaBg");
+            public static readonly GUIStyle ObjectLabelStyle         = new GUIStyle("ProjectBrowserGridLabel");
+            public static readonly GUIStyle PreviewDropShadowStyle   = new GUIStyle("ProjectBrowserTextureIconDropShadow");
             public static readonly GUIStyle InspectorBackgroundStyle = new GUIStyle("PopupCurveSwatchBackground");
-            public static readonly GUIStyle BottomResizeStyle = new GUIStyle("WindowBottomResize");
-            public static readonly GUIStyle PreviewBackgroundStyle = new GUIStyle("ObjectPickerPreviewBackground");
-            public static readonly GUIStyle SmallStatusStyle = new GUIStyle("ObjectPickerSmallStatus");
+            public static readonly GUIStyle BottomResizeStyle        = new GUIStyle("WindowBottomResize");
+            public static readonly GUIStyle PreviewBackgroundStyle   = new GUIStyle("ObjectPickerPreviewBackground");
+            public static readonly GUIStyle SmallStatusStyle         = new GUIStyle("ObjectPickerSmallStatus");
         }
         #endregion
 
@@ -39,15 +39,17 @@ namespace EnhancedEditor.Editor {
             public string Name;
             public bool IsVisible;
 
-            // -----------------------
-
-            public ObjectInfo(GameObject _object, string _name) {
-                Object = _object;
-                Name = _name;
-                IsVisible = true;
-            }
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public ObjectInfo(GameObject _object) : this(_object, _object.name) { }
+
+            public ObjectInfo(GameObject _object, string _name) {
+                Object    = _object;
+                Name      = _name;
+                IsVisible = true;
+            }
         }
         #endregion
 
@@ -67,7 +69,6 @@ namespace EnhancedEditor.Editor {
             GameObject _gameObject = (_selectedObject != null)
                                    ? _selectedObject.gameObject
                                    : null;
-
 
             ObjectPickerWindow _window = GetWindow(_controlID, _gameObject, _requiredTypes, _allowSceneObjects, (go) =>
             {

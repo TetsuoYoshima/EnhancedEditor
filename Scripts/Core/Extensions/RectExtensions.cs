@@ -25,6 +25,7 @@ namespace EnhancedEditor {
         /// <param name="_position">Rectangle on the screen to get associated event.</param>
         /// <param name="_event">Current event.</param>
         /// <returns>Current <see cref="EventType"/> on this position (<see cref="EventType.Ignore"/> if the mouse position is not hover it).</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EventType Event(this Rect _position, out Event _event) {
             _event = UnityEngine.Event.current;
             if (_position.Contains(_event.mousePosition)) {

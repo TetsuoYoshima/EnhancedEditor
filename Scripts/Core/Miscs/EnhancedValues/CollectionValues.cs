@@ -78,11 +78,16 @@ namespace EnhancedEditor {
                 return;
             }
 
-            int _count = Count;
-            if (_count != _list.Count) {
-                Array.Resize(ref Values, _list.Count);
-                for (int i = _count; i < Count; i++) {
-                    Values[i] = defaultValue;
+            ref T[] _valueSpan = ref Values;
+
+            int _baseCount = _valueSpan.Length;
+            int _newCount  = _list.Count;
+
+            if (_baseCount != _newCount) {
+
+                Array.Resize(ref _valueSpan, _newCount);
+                for (int i = _baseCount; i < _newCount; i++) {
+                    _valueSpan[i] = defaultValue;
                 }
             }
         }

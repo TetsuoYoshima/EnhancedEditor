@@ -9,6 +9,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace EnhancedEditor {
+    // ===== Base ===== \\
+    
     /// <summary>
     /// Base class for bundle asynchronous operation inherited by
     /// <see cref="LoadBundleAsyncOperation"/> and <see cref="UnloadBundleAsyncOperation"/>.
@@ -78,6 +80,8 @@ namespace EnhancedEditor {
         #endregion
     }
 
+    // ===== Derived ===== \\
+
     /// <summary>
     /// Asynchronous operation used for loading a <see cref="SceneBundle"/>.
     /// <br/> Can be used as a yield instruction, checked manually to know when the operation is done,
@@ -112,10 +116,11 @@ namespace EnhancedEditor {
         /// activated as soon as it is ready (true by default).
         /// </summary>
         public bool AllowFirstSceneActivation {
-            get => allowFirstSceneActivation;
+            get { return allowFirstSceneActivation; }
             set {
-                if (sceneIndex == 0)
+                if (sceneIndex == 0) {
                     currentOperation.allowSceneActivation = value;
+                }
 
                 allowFirstSceneActivation = value;
             }
@@ -137,13 +142,13 @@ namespace EnhancedEditor {
         // -------------------------------------------
 
         internal LoadBundleAsyncOperation() {
-            isDone = true;
+            isDone   = true;
             progress = 1f;
         }
 
         internal LoadBundleAsyncOperation(SceneBundle _bundle, LoadSceneParameters _parameters) {
-            bundle = _bundle;
             parameters = new LoadSceneParameters(LoadSceneMode.Additive, _parameters.localPhysicsMode);
+            bundle     = _bundle;
 
             // Launch first operation.
             if (LoadNextScene(_parameters)) {
@@ -176,7 +181,7 @@ namespace EnhancedEditor {
             // Complete once all scenes have been loaded.
             if (sceneIndex == bundle.Scenes.Length) {
                 // Set active scene.
-                isDone = true;
+                isDone   = true;
                 progress = 1f;
 
                 OnCompleted?.Invoke(this);
@@ -199,7 +204,7 @@ namespace EnhancedEditor {
 
                 // Complete operation.
                 if (sceneIndex == bundle.Scenes.Length) {
-                    isDone = true;
+                    isDone   = true;
                     progress = 1f;
 
                     OnCompleted?.Invoke(this);
@@ -239,19 +244,21 @@ namespace EnhancedEditor {
         /// <summary>
         /// Has the operation finished, that is all scenes in this bundle been fully unloaded?
         /// </summary>
-        public override bool IsDone => isDone;
+        public override bool IsDone {
+            get { return isDone; }
+        }
 
         // -------------------------------------------
         // Constructor(s)
         // -------------------------------------------
 
         internal UnloadBundleAsyncOperation() {
-            isDone = true;
+            isDone   = true;
             progress = 1f;
         }
 
         internal UnloadBundleAsyncOperation(SceneBundle _bundle, UnloadSceneOptions _options) {
-            bundle = _bundle;
+            bundle  = _bundle;
             options = _options;
 
             // Launch first operation.
@@ -275,7 +282,7 @@ namespace EnhancedEditor {
 
             // Complete once all scenes have been unloaded.
             if (sceneIndex == bundle.Scenes.Length) {
-                isDone = true;
+                isDone   = true;
                 progress = 1f;
 
                 OnCompleted?.Invoke(this);
@@ -299,7 +306,7 @@ namespace EnhancedEditor {
 
                 // Complete operation.
                 if (!_canUnloadScene || (sceneIndex == bundle.Scenes.Length)) {
-                    isDone = true;
+                    isDone   = true;
                     progress = 1f;
 
                     OnCompleted?.Invoke(this);

@@ -131,14 +131,15 @@ namespace EnhancedEditor {
         /// <returns>True if a matching <see cref="SceneBundle"/> could be found, false otherwise.</returns>
         public bool GetSceneBundle(string _name, out SceneBundle _bundle) {
 
-            int _length = sceneBundles.Length;
             _name = _name.Replace(SceneBundle.Prefix, string.Empty);
 
-            for (int i = 0; i < _length; i++) {
-                SceneBundle _temp = sceneBundles[i];
+            ref SceneBundle[] _span = ref sceneBundles;
+            int _count = _span.Length;
 
-                if (_temp.name.Replace(SceneBundle.Prefix, string.Empty).Equals(_name, StringComparison.Ordinal)) {
-                    _bundle = _temp;
+            for (int i = 0; i < _count; i++) {
+                _bundle = _span[i];
+
+                if (_bundle.name.Replace(SceneBundle.Prefix, string.Empty).Equals(_name, StringComparison.Ordinal)) {
                     return true;
                 }
             }
@@ -159,10 +160,15 @@ namespace EnhancedEditor {
             bool _valid = false;
             _bundle = null;
 
-            foreach (SceneBundle _temp in sceneBundles) {
+            ref SceneBundle[] _span = ref sceneBundles;
+            int _count = _span.Length;
+
+            for (int i = 0; i < _count; i++) {
+                SceneBundle _temp = _span[i];
+
                 if (_temp.ContainScene(_scene)) {
                     _bundle = _temp;
-                    _valid = true;
+                    _valid  = true;
 
                     if (_temp.Scenes.Length == 1) {
                         return true;
@@ -181,10 +187,15 @@ namespace EnhancedEditor {
             bool _valid = false;
             _bundle = null;
 
-            foreach (SceneBundle _temp in sceneBundles) {
+            ref SceneBundle[] _span = ref sceneBundles;
+            int _count = _span.Length;
+
+            for (int i = 0; i < _count; i++) {
+                SceneBundle _temp = _span[i];
+
                 if (_temp.ContainScenes(_scenes)) {
                     _bundle = _temp;
-                    _valid = true;
+                    _valid  = true;
 
                     if (_temp.Scenes.Length == _scenes.Length) {
                         return true;
@@ -205,10 +216,15 @@ namespace EnhancedEditor {
             bool _valid = false;
             _bundle = null;
 
-            foreach (SceneBundle _temp in sceneBundles) {
+            ref SceneBundle[] _span = ref sceneBundles;
+            int _count = _span.Length;
+
+            for (int i = 0; i < _count; i++) {
+                SceneBundle _temp = _span[i];
+
                 if (_temp.ContainScene(_scene)) {
                     _bundle = _temp;
-                    _valid = true;
+                    _valid  = true;
 
                     if (_temp.Scenes.Length == 1) {
                         return true;
@@ -229,10 +245,15 @@ namespace EnhancedEditor {
             bool _valid = false;
             _bundle = null;
 
-            foreach (SceneBundle _temp in sceneBundles) {
+            ref SceneBundle[] _span = ref sceneBundles;
+            int _count = _span.Length;
+
+            for (int i = 0; i < _count; i++) {
+                SceneBundle _temp = _span[i];
+
                 if (_temp.ContainScenes(_scenes)) {
                     _bundle = _temp;
-                    _valid = true;
+                    _valid  = true;
 
                     if (_temp.Scenes.Length == _scenes.Length) {
                         return true;
@@ -251,8 +272,7 @@ namespace EnhancedEditor {
         /// <param name="_sceneGUID">GUID of the scene to get associated build index.</param>
         /// <returns>Build index of the scene if it was included in build, -1 otherwise.</returns>
         public static int GetSceneBuildIndex(string _sceneGUID) {
-            int _index = Array.IndexOf(Database.buildSceneGUIDs, _sceneGUID);
-            return _index;
+            return Array.IndexOf(Database.buildSceneGUIDs, _sceneGUID);
         }
 
         /// <summary>
@@ -262,9 +282,13 @@ namespace EnhancedEditor {
         /// <returns>Name of this scene if in editor or in a development build, and an empty string otherwise.</returns>
         internal static string GetNonBuildSceneName(string _sceneGUID) {
             #if NON_BUILD_SCENES
-            foreach (NonBuildScene _scene in Database.nonBuildScenes) {
-                if (_scene.GUID == _sceneGUID)
+            ref NonBuildScene[] _span = ref Database.nonBuildScenes;
+            for (int i = _span.Length; i-- > 0;) {
+
+                NonBuildScene _scene = _span[i];
+                if (string.Equals(_scene.GUID, _sceneGUID, StringComparison.Ordinal)) {
                     return _scene.Name;
+                }
             }
             #endif
 
@@ -297,7 +321,7 @@ namespace EnhancedEditor {
                 }
             }
 
-            sceneBundles = _sceneBundles;
+            sceneBundles    = _sceneBundles;
             buildSceneGUIDs = _sceneGUIDS;
 
             #if NON_BUILD_SCENES

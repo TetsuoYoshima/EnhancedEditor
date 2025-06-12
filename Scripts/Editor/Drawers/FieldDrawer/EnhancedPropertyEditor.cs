@@ -5,8 +5,8 @@
 // ============================================================================ //
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,7 +23,7 @@ namespace EnhancedEditor.Editor {
     [CustomPropertyDrawer(typeof(EnhancedAttribute), false)]
     public class EnhancedPropertyEditor : PropertyDrawer {
         #region Property Infos
-        internal class PropertyInfos {
+        internal sealed class PropertyInfos {
             public readonly bool RequireConstantRepaint = false;
 
             public EnhancedPropertyDrawer[] PropertyDrawers = null;
@@ -67,6 +67,8 @@ namespace EnhancedEditor.Editor {
         private const int CacheLimit = 500;
         internal static readonly Dictionary<string, PropertyInfos> propertyInfos = new Dictionary<string, PropertyInfos>();
 
+        private readonly GUIContent labelGUI = new GUIContent();
+
         // -----------------------
 
         public override sealed float GetPropertyHeight(SerializedProperty _property, GUIContent _label) {
@@ -101,16 +103,26 @@ namespace EnhancedEditor.Editor {
 
             // For some unknown reasons, the property label may be set to an empty string when using certain APIs (like GetPropertyHeight).
             // To ensure its viability, use another reference.
-            _label = new GUIContent(_label);
+            GUIContent _temp = labelGUI;
+            _temp.tooltip    = _label.tooltip;
+            _temp.image      = _label.image;
+            _temp.text       = _label.text;
+
+            _label = _temp;
 
             // Constantly repaint for the drawers who need it.
-            if (_infos.RequireConstantRepaint)
+            if (_infos.RequireConstantRepaint) {
                 EnhancedEditorGUIUtility.Repaint(_property.serializedObject);
+            }
 
             using (var _changeCheck = new EditorGUI.ChangeCheckScope()) {
+
+                ref EnhancedPropertyDrawer[] _drawers = ref _infos.PropertyDrawers;
+                int _drawerCount = _drawers.Length;
+
                 // Pre GUI callback.
-                foreach (EnhancedPropertyDrawer _drawer in _infos.PropertyDrawers) {
-                    if (_drawer.OnBeforeGUI(_position, _property, _label, out float _height)) {
+                for (int i = 0; i < _drawerCount; i++) {
+                    if (_drawers[i].OnBeforeGUI(_position, _property, _label, out float _height)) {
                         IncreasePosition(_height);
                         CalculateFullHeight();
 
@@ -122,8 +134,8 @@ namespace EnhancedEditor.Editor {
 
                 // Property GUI.
                 bool _isDrawn = false;
-                foreach (EnhancedPropertyDrawer _drawer in _infos.PropertyDrawers) {
-                    if (_drawer.OnGUI(_position, _property, _label, out float _height)) {
+                for (int i = 0; i < _drawerCount; i++) {
+                    if (_drawers[i].OnGUI(_position, _property, _label, out float _height)) {
                         IncreasePosition(_height);
                         _isDrawn = true;
 
@@ -142,18 +154,20 @@ namespace EnhancedEditor.Editor {
                 }
 
                 // Post GUI callback.
-                foreach (EnhancedPropertyDrawer _drawer in _infos.PropertyDrawers) {
-                    _drawer.OnAfterGUI(_position, _property, _label, out float _height);
+                for (int i = 0; i < _drawerCount; i++) {
+                    _drawers[i].OnAfterGUI(_position, _property, _label, out float _height);
                     IncreasePosition(_height);
                 }
 
                 // On property value changed callback.
                 if (_changeCheck.changed) {
-                    _property.serializedObject.ApplyModifiedProperties();
-                    _property.serializedObject.Update();
 
-                    foreach (EnhancedPropertyDrawer _drawer in _infos.PropertyDrawers) {
-                        _drawer.OnValueChanged(_property);
+                    SerializedObject _serializedObject = _property.serializedObject;
+                    _serializedObject.ApplyModifiedProperties();
+                    _serializedObject.Update();
+
+                    for (int i = 0; i < _drawerCount; i++) {
+                        _drawers[i].OnValueChanged(_property);
                     }
                 }
             }
@@ -168,21 +182,21 @@ namespace EnhancedEditor.Editor {
                 GenericMenu _menu = new GenericMenu();
                 _infos.OnContextMenu(_menu, _property);
 
-                if (_menu.GetItemCount() > 0)
+                if (_menu.GetItemCount() > 0) {
                     _menu.ShowAsContext();
+                }
             }
 
             // ----- Local Methods ----- \\
 
             void IncreasePosition(float _height) {
-                if (_height != 0f)
+                if (_height != 0f) {
                     _position.y += _height + EditorGUIUtility.standardVerticalSpacing;
+                }
             }
 
             void CalculateFullHeight() {
-                float _height = _position.y - _yOrigin;
-                _height -= EditorGUIUtility.standardVerticalSpacing;
-
+                float _height = (_position.y - _yOrigin) - EditorGUIUtility.standardVerticalSpacing;
                 _infos.Height = EnhancedEditorGUI.ManageDynamicControlHeight(_property, _height);
             }
         }
@@ -217,7 +231,7 @@ namespace EnhancedEditor.Editor {
         /// <returns>Total height used to draw this property field.</returns>
         internal float DrawEnhancedProperty(Rect _position, SerializedProperty _property, GUIContent _label) {
             float _height = OnEnhancedGUI(_position, _property, _label);
-            string _id = EnhancedEditorUtility.GetSerializedPropertyID(_property);
+            string _id    = EnhancedEditorUtility.GetSerializedPropertyID(_property);
 
             if (!defaultPropertyHeight.ContainsKey(_id)) {
                 if (defaultPropertyHeight.Count > CacheLimit) {

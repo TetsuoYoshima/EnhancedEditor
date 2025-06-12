@@ -57,7 +57,7 @@ namespace EnhancedEditor {
         /// <returns>True if the <see cref="GameObject"/> tags could be successfully assigned, false otherwise.</returns>
         public static bool SetTags(this GameObject _gameObject, TagGroup _tags) {
             if (_gameObject.TryGetComponent(out ExtendedBehaviour _behaviour)) {
-                _behaviour.Tags = _tags;
+                _behaviour.Tags.SetTags(_tags);
                 return true;
             }
 
@@ -99,9 +99,9 @@ namespace EnhancedEditor {
         /// <param name="_gameObject"><see cref="GameObject"/> to check.</param>
         /// <param name="_tags"><see cref="TagGroup"/> to check.</param>
         /// <returns>True if the <see cref="GameObject"/> has any tag in the given <see cref="TagGroup"/>, false otherwise.</returns>
-        public static bool HasAnyTag(this GameObject _gameObject, TagGroup _tags, bool validIfEmpty = false) {
+        public static bool HasAnyTag(this GameObject _gameObject, TagGroup _tags, bool _validIfEmpty = false) {
             if (_gameObject.TryGetComponent(out ExtendedBehaviour _behaviour)) {
-                return _behaviour.Tags.ContainsAny(_tags, validIfEmpty);
+                return _behaviour.Tags.ContainsAny(_tags, _validIfEmpty);
             }
 
             return false;
@@ -203,7 +203,7 @@ namespace EnhancedEditor {
 
             // ----- Local Method ----- \\
 
-            void SetLayer(Transform _transform, GameObject _gameObject, int _layer) {
+            static void SetLayer(Transform _transform, GameObject _gameObject, int _layer) {
                 _gameObject.layer = _layer;
 
                 for (int i = _transform.childCount; i-- > 0;) {

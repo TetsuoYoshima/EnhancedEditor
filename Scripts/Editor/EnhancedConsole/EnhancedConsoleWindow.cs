@@ -91,13 +91,12 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// Implements the interface on another class to avoid Unity creating a new instance of the console window.
         /// </summary>
-        private class BuildPreprocessor : IPreprocessBuildWithReport {
+        private sealed class BuildPreprocessor : IPreprocessBuildWithReport {
             int IOrderedCallback.callbackOrder {
                 get { return -1; }
             }
 
             void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport _report) {
-
                 if (HasOpenInstances<EnhancedConsoleWindow>()) {
                     GetWindow().OnPreprocessBuild(_report);
                 }
@@ -138,7 +137,7 @@ namespace EnhancedEditor.Editor {
         }
 
         [Serializable]
-        internal class OriginalLogEntry : LogEntry {
+        internal sealed class OriginalLogEntry : LogEntry {
             public override bool IsDuplicate {
                 get { return false; }
             }
@@ -231,7 +230,7 @@ namespace EnhancedEditor.Editor {
         }
 
         [Serializable]
-        internal class DuplicateLogEntry : LogEntry {
+        internal sealed class DuplicateLogEntry : LogEntry {
             public override bool IsDuplicate {
                 get { return true; }
             }
@@ -303,7 +302,7 @@ namespace EnhancedEditor.Editor {
         // -----------------------
 
         [Serializable]
-        internal class LogStack {
+        internal sealed class LogStack {
             public OriginalLogEntry Entry = null;
             public string Header = string.Empty;
             public List<LogStackCall> Calls = new List<LogStackCall>();
@@ -319,7 +318,7 @@ namespace EnhancedEditor.Editor {
         }
 
         [Serializable]
-        internal class LogStackCall {
+        internal sealed class LogStackCall {
             public GUIContent Header = GUIContent.none;
             public string FilePath = string.Empty;
 
@@ -355,7 +354,7 @@ namespace EnhancedEditor.Editor {
         // -----------------------
 
         [Serializable]
-        internal class LogsWrapper {
+        internal sealed class LogsWrapper {
             [SerializeReference] public List<LogEntry> Logs = new List<LogEntry>();
         }
 
@@ -793,7 +792,7 @@ namespace EnhancedEditor.Editor {
 
         #region Log Column
         [Serializable]
-        private class LogColumn {
+        private sealed class LogColumn {
             public LogColumnType Column = 0;
             public ColumnVisibility Visibility = 0;
 
@@ -932,45 +931,45 @@ namespace EnhancedEditor.Editor {
         [Flags]
         public enum Flags {
             // Settings.
-            Collapse = 1 << 0,
-            ErrorPause = 1 << 1,
-            ClearOnPlay = 1 << 2,
-            ClearOnBuild = 1 << 3,
-            ClearOnCompile = 1 << 4,
+            Collapse        = 1 << 0,
+            ErrorPause      = 1 << 1,
+            ClearOnPlay     = 1 << 2,
+            ClearOnBuild    = 1 << 3,
+            ClearOnCompile  = 1 << 4,
 
             // Debug.
-            LogButton = 1 << 30,
-            Disabled = 1 << 31
+            LogButton       = 1 << 30,
+            Disabled        = 1 << 31
         }
 
         [Flags]
         public enum LogColumnType {
-            Icon = 1 << 0,
-            Type = 1 << 1,
+            Icon        = 1 << 0,
+            Type        = 1 << 1,
 
             // Log file.
-            Namespace = 1 << 3,
-            Class = 1 << 4,
-            Method = 1 << 6,
-            Log = 1 << 10,
-            Object = 1 << 15,
-            File = 1 << 18,
+            Namespace   = 1 << 3,
+            Class       = 1 << 4,
+            Method      = 1 << 6,
+            Log         = 1 << 10,
+            Object      = 1 << 15,
+            File        = 1 << 18,
 
             // Additional infos.
-            Frame = 1 << 21,
-            Timestamp = 1 << 22,
+            Frame       = 1 << 21,
+            Timestamp   = 1 << 22,
         }
 
         public enum ColumnVisibility {
-            Hidden = 0,
-            Visible = 1,
-            AlwaysVisible = 2
+            Hidden          = 0,
+            Visible         = 1,
+            AlwaysVisible   = 2
         }
 
         public enum ColumnResizeType {
-            Static,
-            Resizable,
-            DynamicSize,
+            Static      = 0,
+            Resizable   = 1,
+            DynamicSize = 2,
         }
         #endregion
 
@@ -2513,7 +2512,7 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// Utility window displayed when importing a large log file.
         /// </summary>
-        public class ImportLogsWindow : EditorWindow {
+        public sealed class ImportLogsWindow : EditorWindow {
             /// <summary>
             /// Creates and shows a new <see cref="ImportLogsWindow"/> instance,
             /// used to create a new build preset in the project.

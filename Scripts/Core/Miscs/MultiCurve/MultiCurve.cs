@@ -105,9 +105,9 @@ namespace EnhancedEditor {
         #region Operator
         public AnimationCurve this[int _index] {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Curves[_index].AnimationCurve;
+            get { return Curves[_index].AnimationCurve; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => Curves[_index].AnimationCurve = value;
+            set { Curves[_index].AnimationCurve = value; }
         }
         #endregion
 
@@ -116,8 +116,8 @@ namespace EnhancedEditor {
         /// Evaluates a curve at the give index.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Evaluate(int index, float percent) {
-            return Curves[index].AnimationCurve.Evaluate(percent);
+        public float Evaluate(int _index, float _percent) {
+            return Curves[_index].AnimationCurve.Evaluate(_percent);
         }
         #endregion
     }

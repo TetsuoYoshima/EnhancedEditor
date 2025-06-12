@@ -37,7 +37,9 @@ namespace EnhancedEditor {
             get { return Values.Length; }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <param name="_defaultValue"><inheritdoc cref="DefaultValue" path="/summary"/></param>
         /// <inheritdoc cref="EnumValues{Enum, T}"/>
@@ -75,7 +77,8 @@ namespace EnhancedEditor {
 
         #region IEnumerable
         public IEnumerator<T> GetEnumerator() {
-            for (int i = 0; i < Count; i++) {
+            int _count = Count;
+            for (int i = 0; i < _count; i++) {
                 yield return Values[i].Second;
             }
         }
@@ -140,10 +143,11 @@ namespace EnhancedEditor {
         /// <param name="_enum">The <see cref="Enum"/> to get the associated value index.</param>
         /// <returns>The index of the value associated with this enum (-1 if none).</returns>
         public int GetValueIndex(Enum _enum) {
+            ref Pair<int, T>[] _valueSpan = ref Values;
             int _enumValue = Convert.ToInt32(_enum);
 
-            for (int i = 0; i < Values.Length; i++) {
-                if (_enumValue == Values[i].First) {
+            for (int i = _valueSpan.Length; i-- > 0;) {
+                if (_enumValue == _valueSpan[i].First) {
                     return i;
                 }
             }
@@ -157,9 +161,10 @@ namespace EnhancedEditor {
         /// <param name="_value">The value to get the associated enum index.</param>
         /// <returns>The index of the enum associated with this value (-1 if none).</returns>
         public int GetEnumIndex(T _value) {
-
-            for (int i = 0; i < Values.Length; i++) {
-                if (_value.Equals(Values[i].Second)) {
+            ref Pair<int, T>[] _valueSpan = ref Values;
+            
+            for (int i = _valueSpan.Length; i-- > 0;) {
+                if (EqualityUtility.Equals(_value, _valueSpan[i].Second)) {
                     return i;
                 }
             }
@@ -177,7 +182,9 @@ namespace EnhancedEditor {
             return Values[_index];
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Internal
+        // -------------------------------------------
 
         private void Fill() {
             Type _type = typeof(Enum);
@@ -200,11 +207,16 @@ namespace EnhancedEditor {
                 }
             }
 
-            foreach (int _value in _integers) {
+            // Fill.
+            ref Pair<int, T>[] _valueSpan = ref Values;
 
-                bool _add = true;
-                for (int i = 0; i < Values.Length; i++) {
-                    if (Values[i].First == _value) {
+            for (int i = _integers.Length; i-- > 0;) {
+
+                int _value = _integers[i];
+                bool _add  = true;
+
+                for (int j = 0; j < _valueSpan.Length; j++) {
+                    if (_valueSpan[j].First == _value) {
                         _add = false;
                         break;
                     }
@@ -221,9 +233,12 @@ namespace EnhancedEditor {
         }
 
         private int AddValue(int _enum) {
+            ref Pair<int, T>[] _valueSpan = ref Values;
+            int _count = _valueSpan.Length;
+
             int _index;
-            for (_index = 0; _index < Values.Length; _index++) {
-                if (_enum < Values[_index].First) {
+            for (_index = 0; _index < _count; _index++) {
+                if (_enum < _valueSpan[_index].First) {
                     break;
                 }
             }
@@ -233,7 +248,7 @@ namespace EnhancedEditor {
                 EnhancedUtility.CopyObjectContent(DefaultValue, _value);
             }
 
-            ArrayUtility.Insert(ref Values, _index, new Pair<int, T>(_enum, _value));
+            ArrayUtility.Insert(ref _valueSpan, _index, new Pair<int, T>(_enum, _value));
             return _index;
         }
 

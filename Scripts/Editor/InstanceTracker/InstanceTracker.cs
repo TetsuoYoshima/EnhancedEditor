@@ -46,7 +46,7 @@ namespace EnhancedEditor.Editor {
 
                 SceneInstances.Sort((a, b) => a.name.CompareTo(b.name));
 
-                IsLoaded = true;
+                IsLoaded  = true;
                 IsVisible = false;
             }
 
@@ -104,12 +104,14 @@ namespace EnhancedEditor.Editor {
 
         #region Global Members
         [SerializeField] internal string targetTypeName = string.Empty;
-        [SerializeField] internal SceneTrack[] tracks = new SceneTrack[] { };
+        [SerializeField] internal SceneTrack[] tracks   = new SceneTrack[] { };
 
         [NonSerialized] internal InstanceTrackerEditor editor = null;
         internal Type targetType = null;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static InstanceTracker() {
             EditorSceneManager.sceneSaved -= OnSceneSaved;
@@ -138,12 +140,9 @@ namespace EnhancedEditor.Editor {
             _types = TypeCache.GetTypesWithAttribute<InstanceTrackerAttribute>();
             #else
             Type[] _typesArray = new Type[] { };
-            foreach (Assembly _assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (Type _type in _assembly.GetTypes())
-                {
-                    if (_type.GetCustomAttribute<InstanceTrackerAttribute>() != null)
-                    {
+            foreach (Assembly _assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                foreach (Type _type in _assembly.GetTypes()) {
+                    if (_type.GetCustomAttribute<InstanceTrackerAttribute>() != null) {
                         ArrayUtility.Add(ref _typesArray, _type);
                     }
                 }
@@ -180,8 +179,9 @@ namespace EnhancedEditor.Editor {
             for (int _i = trackers.Length; _i-- > 0;) {
                 InstanceTracker _tracker = trackers[_i];
 
-                if (_tracker.Initialize())
+                if (_tracker.Initialize()) {
                     _tracker.TrackScene(_scene, _guid);
+                }
             }
         }
 
@@ -260,14 +260,16 @@ namespace EnhancedEditor.Editor {
         #endregion
 
         #region Project Settings
-        public const string DefaultDirectory = "EnhancedEditor/Editor/InstanceTrackers";
         private const string DirectoryPanelTitle = "Instance Trackers Directory";
+        private const string DefaultDirectory    = "EnhancedEditor/Editor/InstanceTrackers";
 
         private static readonly GUIContent directoryGUI = new GUIContent("Instance Tracker Dir.",
                                                                          "Directory in the project where are created all instance trackers.");
 
-        private static readonly int settingsGUID = "InstanceTrackerDirectory".GetHashCode();
         private static FolderEnhancedSettings settings = null;
+        private static readonly int settingsGUID       = "InstanceTrackerDirectory".GetHashCode();
+
+        // -----------------------
 
         /// <summary>
         /// Instace tracker related project settings.
@@ -285,7 +287,9 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Settings
+        // -------------------------------------------
 
         [EnhancedEditorProjectSettings(Order = 11)]
         private static void DrawSetting() {

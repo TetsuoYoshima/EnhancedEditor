@@ -56,10 +56,11 @@ namespace EnhancedEditor.Editor {
                     _value = Path.Combine(_value, EditorFolder);
                 }
 
-                _value = Path.Combine(_value, typeof(T).ToString());
-                return _value;
+                return Path.Combine(_value, typeof(T).ToString());
             }
         }
+
+        // -----------------------
 
         private T[] resources = new T[0];
         #endregion
@@ -94,10 +95,12 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         /// <returns>First loaded resource asset.</returns>
         public T GetResource() {
-            if ((resources.Length == 0) || (resources[0] == null))
+            ref T[] _span = ref resources;
+            if ((_span.Length == 0) || (_span[0] == null)) {
                 Reload();
+            }
 
-            return resources[0];
+            return _span[0];
         }
 
         /// <summary>
@@ -107,8 +110,9 @@ namespace EnhancedEditor.Editor {
         /// <param name="_resource">Found resource asset.</param>
         /// <returns>True if a resource asset with this same exist and was found, false otherwise.</returns>
         public bool GetResource(string _name, out T _resource) {
-            if (resources.Length == 0)
+            if (resources.Length == 0) {
                 Reload();
+            }
 
             _name = _name.ToLower();
 
@@ -135,8 +139,9 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         /// <returns>All loaded resource assets.</returns>
         public T[] GetResources() {
-            if (resources.Length == 0)
+            if (resources.Length == 0) {
                 Reload();
+            }
 
             return resources;
         }
@@ -158,8 +163,7 @@ namespace EnhancedEditor.Editor {
 
         /// <inheritdoc cref="CreateResource(string, T)"/>
         public T CreateResource(string _name) {
-            T _resource = CreateResource(_name, ScriptableObject.CreateInstance<T>());
-            return _resource;
+            return CreateResource(_name, ScriptableObject.CreateInstance<T>());
         }
 
         /// <summary>

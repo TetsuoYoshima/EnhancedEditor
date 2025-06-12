@@ -47,8 +47,8 @@ namespace EnhancedEditor {
         /// <param name="_component"><see cref="Component"/> to check.</param>
         /// <inheritdoc cref="GameObjectExtensions.HasAnyTag(GameObject, TagGroup)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool HasAnyTag(this Component _component, TagGroup _tags, bool validIfEmpty = false) {
-            return _component.gameObject.HasAnyTag(_tags, validIfEmpty);
+        public static bool HasAnyTag(this Component _component, TagGroup _tags, bool _validIfEmpty = false) {
+            return _component.gameObject.HasAnyTag(_tags, _validIfEmpty);
         }
         #endregion
 

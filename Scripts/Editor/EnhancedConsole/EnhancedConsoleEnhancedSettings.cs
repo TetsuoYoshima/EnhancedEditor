@@ -29,18 +29,20 @@ namespace EnhancedEditor.Editor {
         [Enhanced, Duo(nameof(UseMethod), 20f)] public string Method = "Method";
         [SerializeField, HideInInspector, DisplayName("Enabled")] public bool UseMethod = true;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         public ConsoleLogIgnoredStackCall() { }
 
         public ConsoleLogIgnoredStackCall(string _namespace, string _class, string _method, bool _useNamespace = true, bool _useClass = true, bool _useMethod = true) {
             Namespace = _namespace;
-            Class = _class;
-            Method = _method;
+            Class     = _class;
+            Method    = _method;
 
             UseNamespace = _useNamespace;
-            UseClass = _useClass;
-            UseMethod = _useMethod;
+            UseClass     = _useClass;
+            UseMethod    = _useMethod;
         }
         #endregion
     }
@@ -78,11 +80,11 @@ namespace EnhancedEditor.Editor {
         public BlockArray<DefaultConsoleLogFilter> DefaultFilters = new BlockArray<DefaultConsoleLogFilter>(false, false);
 
         public BlockArray<ConsoleLogIgnoredStackCall> IgnoredStackCalls = new BlockArray<ConsoleLogIgnoredStackCall>() {
-            new ConsoleLogIgnoredStackCall("EnhancedEditor", "Debug", "Log", true, true, false),
-            new ConsoleLogIgnoredStackCall("EnhancedEditor", "UnityObjectDebugLogger", "Log", true, true, false),
+            new ConsoleLogIgnoredStackCall("EnhancedEditor", "Debug",                   "Log", true, true, false),
+            new ConsoleLogIgnoredStackCall("EnhancedEditor", "UnityObjectDebugLogger",  "Log", true, true, false),
 
-            new ConsoleLogIgnoredStackCall("UnityEngine", "Debug", "Log", true, true, false),
-            new ConsoleLogIgnoredStackCall("UnityEngine", "Logger", "Log", true, true, false),
+            new ConsoleLogIgnoredStackCall("UnityEngine",    "Debug",                   "Log", true, true, false),
+            new ConsoleLogIgnoredStackCall("UnityEngine",    "Logger",                  "Log", true, true, false),
         };
 
         /// <summary>
@@ -92,7 +94,9 @@ namespace EnhancedEditor.Editor {
             get { return CustomFilters.Count + DefaultFilters.Count; }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="EnhancedConsoleEnhancedSettings"/>
         public EnhancedConsoleEnhancedSettings(int _guid) : base(_guid) { }
@@ -113,67 +117,67 @@ namespace EnhancedEditor.Editor {
             Array.Resize(ref DefaultFilters.Array, DefaultFilterCount);
 
             DefaultFilters[0] = new DefaultConsoleLogFilter(LogType.Log) {
-                Name = "Log",
-                Color = new Color(1f, 1f, 1f, .7f),
-                UseColor = false,
-                FilterIcon = ConsoleLogFilterIcon.Grey,
+                Name        = "Log",
+                Color       = new Color(1f, 1f, 1f, .7f),
+                UseColor    = false,
+                FilterIcon  = ConsoleLogFilterIcon.Grey,
             };
 
             DefaultFilters[1] = new DefaultConsoleLogFilter(LogType.Warning) {
-                Name = "Warning",
-                Color = new Color(.5f, .45f, .1f, .7f),
-                UseColor = true,
-                FilterIcon = ConsoleLogFilterIcon.Pumpkin,
+                Name        = "Warning",
+                Color       = new Color(.5f, .45f, .1f, .7f),
+                UseColor    = true,
+                FilterIcon  = ConsoleLogFilterIcon.Pumpkin,
             };
 
             DefaultFilters[2] = new DefaultConsoleLogFilter(LogType.Error) {
-                Name = "Error",
-                Color = new Color(.7f, .15f, .15f, .7f),
-                UseColor = true,
-                FilterIcon = ConsoleLogFilterIcon.Strawberry,
+                Name        = "Error",
+                Color       = new Color(.7f, .15f, .15f, .7f),
+                UseColor    = true,
+                FilterIcon  = ConsoleLogFilterIcon.Strawberry,
             };
 
             DefaultFilters[3] = new DefaultConsoleLogFilter(LogType.Assert) {
-                Name = "Assert",
-                Color = new Color(.8f, .5f, .2f, .7f),
-                UseColor = true,
-                FilterIcon = ConsoleLogFilterIcon.Peach,
+                Name        = "Assert",
+                Color       = new Color(.8f, .5f, .2f, .7f),
+                UseColor    = true,
+                FilterIcon  = ConsoleLogFilterIcon.Peach,
 
                 DoPinFilter = false,
             };
 
             DefaultFilters[4] = new DefaultConsoleLogFilter(LogType.Exception) {
-                Name = "Exception",
-                Color = new Color(.75f, .2f, .7f, .7f),
-                UseColor = true,
-                FilterIcon = ConsoleLogFilterIcon.Grape,
+                Name        = "Exception",
+                Color       = new Color(.75f, .2f, .7f, .7f),
+                UseColor    = true,
+                FilterIcon  = ConsoleLogFilterIcon.Grape,
             };
 
             DefaultFilters[5] = new DefaultConsoleLogFilter(LogType.External) {
-                Name = "External",
-                Color = new Color(.25f, .5f, .7f, .7f),
-                UseColor = true,
+                Name        = "External",
+                Color       = new Color(.25f, .5f, .7f, .7f),
+                UseColor    = true,
                 FilterIcon = ConsoleLogFilterIcon.Blueberry,
 
-                Enabled = false,
+                Enabled     = false,
                 DoPinFilter = false,
             };
 
             DefaultFilters[6] = new DefaultConsoleLogFilter(LogType.Compilation) {
-                Name = "Compilation",
-                Color = new Color(.7f, .25f, .4f, .7f),
-                UseColor = true,
-                FilterIcon = ConsoleLogFilterIcon.Radish,
+                Name        = "Compilation",
+                Color       = new Color(.7f, .25f, .4f, .7f),
+                UseColor    = true,
+                FilterIcon  = ConsoleLogFilterIcon.Radish,
 
                 DoPinFilter = false,
             };
 
             CustomFilters[0] = new CustomConsoleLogFilter() {
-                Name = "Test",
-                UseColor = true,
-                FilterIcon = ConsoleLogFilterIcon.Watermelon,
+                Name        = "Test",
+                UseColor    = true,
+                FilterIcon  = ConsoleLogFilterIcon.Watermelon,
 
-                Enabled = false,
+                Enabled     = false,
                 DoPinFilter = false,
             };
 
@@ -186,11 +190,15 @@ namespace EnhancedEditor.Editor {
         /// Get if a specific stack call should be ignored.
         /// </summary>
         public bool IgnoreCall(string _namespace, string _class, string _method) {
-            foreach (ConsoleLogIgnoredStackCall _ignore in IgnoredStackCalls) {
-                if ((_ignore.UseNamespace   || _ignore.UseClass || _ignore.UseMethod)
-                 && (!_ignore.UseNamespace  || _namespace.Contains(_ignore.Namespace))
-                 && (!_ignore.UseClass      || _class.Contains(_ignore.Class))
-                 && (!_ignore.UseMethod     || _method.Contains(_ignore.Method))) {
+
+            for (int i = IgnoredStackCalls.Count; i-- > 0;) {
+                ConsoleLogIgnoredStackCall _ignore = IgnoredStackCalls[i];
+
+                if ((_ignore.UseNamespace  || _ignore.UseClass || _ignore.UseMethod)
+                 && (!_ignore.UseNamespace || _namespace.Contains(_ignore.Namespace))
+                 && (!_ignore.UseClass     || _class.Contains(_ignore.Class))
+                 && (!_ignore.UseMethod    || _method.Contains(_ignore.Method))) {
+
                     return true;
                 }
             }
@@ -205,11 +213,12 @@ namespace EnhancedEditor.Editor {
         /// <param name="_index">The index to get the filter at.</param>
         /// <returns>The log filter at the given index.</returns>
         public ConsoleLogFilter GetFilterAt(int _index) {
-            if (_index < CustomFilters.Count) {
+            int _customFiltersCount = CustomFilters.Count;
+            if (_index < _customFiltersCount) {
                 return CustomFilters[_index];
             }
 
-            _index -= CustomFilters.Count;
+            _index -= _customFiltersCount;
             return DefaultFilters[_index];
         }
 
@@ -220,34 +229,45 @@ namespace EnhancedEditor.Editor {
         /// <returns>The best matching filter for this log.</returns>
         internal ConsoleLogFilter GetBestFilter(LogEntry _entry) {
             // Search in all custom filters first for the first matching one.
-            foreach (CustomConsoleLogFilter _filter in CustomFilters) {
-                if (_filter.Match(_entry)) {
-                    return _filter;
-                }
+            if (GetMatch(CustomFilters, _entry, out ConsoleLogFilter _match)) {
+                return _match;
             }
 
-            // Then only in the default filters (use a reverse loop to get external types first).
-            for (int i = DefaultFilters.Count; i-- > 1;) {
-                DefaultConsoleLogFilter _filter = DefaultFilters[i];
-
-                if (_filter.Match(_entry)) {
-                    return _filter;
-                }
+            if (GetMatch(DefaultFilters, _entry, out _match)) {
+                return _match;
             }
 
             return DefaultFilters[0];
+
+            // ----- Local Method ----- \\
+
+            static bool GetMatch<T>(BlockArray<T> _filters, LogEntry _entry, out ConsoleLogFilter _match) where T : ConsoleLogFilter {
+                for (int i = _filters.Count; i-- > 0;) {
+                    _match = _filters[i];
+
+                    if (_match.Match(_entry)) {
+                        return true;
+                    }
+                }
+
+                _match = null;
+                return false;
+            }
         }
 
         /// <summary>
         /// Resets all filters displayed count.
         /// </summary>
         internal void ResetFiltersDisplayedCount() {
-            foreach (CustomConsoleLogFilter _filter in CustomFilters) {
-                _filter.DisplayedCount = 0;
-            }
+            Reset(DefaultFilters);
+            Reset(CustomFilters);
 
-            foreach (DefaultConsoleLogFilter _filter in DefaultFilters) {
-                _filter.DisplayedCount = 0;
+            // ----- Local Method ----- \\
+
+            static void Reset<T>(BlockArray<T> _filters) where T : ConsoleLogFilter {
+                for (int i = _filters.Count; i-- > 0;) {
+                    _filters[i].DisplayedCount = 0;
+                }
             }
         }
 
@@ -256,11 +276,11 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         /// <param name="_settings">The setting values to copy.</param>
         public void CopyValues(EnhancedConsoleEnhancedSettings _settings) {
-            selectedTabIndex = _settings.selectedTabIndex;
+            selectedTabIndex  = _settings.selectedTabIndex;
 
-            Columns = _settings.Columns;
-            CustomFilters = _settings.CustomFilters;
-            DefaultFilters = _settings.DefaultFilters;
+            Columns           = _settings.Columns;
+            CustomFilters     = _settings.CustomFilters;
+            DefaultFilters    = _settings.DefaultFilters;
             IgnoredStackCalls = _settings.IgnoredStackCalls;
         }
         #endregion
@@ -271,9 +291,9 @@ namespace EnhancedEditor.Editor {
         private const float ButtonWidth = 55f;
 
         public const string PreferencesFileExtension = "txt";
-        public const string UndoRecordTitle = "Enhanced Console Preferences change";
+        public const string UndoRecordTitle          = "Enhanced Console Preferences change";
 
-        public const string PreferencesPath = EnhancedEditorSettings.UserSettingsPath + "/Enhanced Console";
+        public const string PreferencesPath  = EnhancedEditorSettings.UserSettingsPath + "/Enhanced Console";
         public const string PreferencesLabel = "Enhanced Console";
 
         public static readonly string[] PreferencesKeywords = new string[] {
@@ -296,7 +316,7 @@ namespace EnhancedEditor.Editor {
 
         private static readonly int settingsGUID = "EnhancedEditorConsoleSetting".GetStableHashCode();
         private static EnhancedConsoleEnhancedSettings settings = null;
-        private static SerializedProperty settingsProperty = null;
+        private static SerializedProperty settingsProperty      = null;
 
         /// <inheritdoc cref="EnhancedConsoleEnhancedSettings"/>
         public static EnhancedConsoleEnhancedSettings Settings {
@@ -340,7 +360,9 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Settings
+        // -------------------------------------------
 
         public static EditorWindow OpenUserSettings() {
             EditorWindow _preferences = SettingsService.OpenUserPreferences(PreferencesPath);

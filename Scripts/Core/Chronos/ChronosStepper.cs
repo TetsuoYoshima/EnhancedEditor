@@ -56,7 +56,7 @@ namespace EnhancedEditor {
         }
 
         // -------------------------------------------
-        // Utility
+        // Internal
         // -------------------------------------------
 
         private static void SetChronos(float _chronos) {
@@ -64,11 +64,14 @@ namespace EnhancedEditor {
         }
 
         private static int GetChronosValueIndex() {
-            float _scale   = Time.timeScale;
-            float _nearest = Mathf.Abs(_scale - StepChronos[0]);
 
-            for (int i = 1; i < StepChronos.Length; i++) {
-                float _value = StepChronos[i];
+            ref float[] _steps = ref StepChronos;
+
+            float _scale   = Time.timeScale;
+            float _nearest = Mathf.Abs(_scale - _steps[0]);
+
+            for (int i = 1; i < _steps.Length; i++) {
+                float _value = _steps[i];
                 float _difference = Mathf.Abs(_scale - _value);
 
                 if (_difference > _nearest)
@@ -77,7 +80,7 @@ namespace EnhancedEditor {
                 _nearest = _difference;
             }
 
-            return StepChronos.Length - 1;
+            return _steps.Length - 1;
         }
         #endregion
     }

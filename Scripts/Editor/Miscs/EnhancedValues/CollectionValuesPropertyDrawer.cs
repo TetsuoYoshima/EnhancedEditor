@@ -57,7 +57,9 @@ namespace EnhancedEditor.Editor {
             if (_property.isExpanded) {
                 // Draw each collection value.
                 using (var _scope = new EditorGUI.IndentLevelScope(1)) {
-                    for (int i = 0; i < _valuesProperty.arraySize; i++) {
+
+                    int _size = _valuesProperty.arraySize;
+                    for (int i = 0; i < _size; i++) {
                         SerializedProperty _valueProperty = _valuesProperty.GetArrayElementAtIndex(i);
 
                         _position.height = EditorGUI.GetPropertyHeight(_valueProperty, true);
@@ -74,7 +76,7 @@ namespace EnhancedEditor.Editor {
             void IncrementPosition() {
                 float _spacing = _position.height + EditorGUIUtility.standardVerticalSpacing;
 
-                _height += _spacing;
+                _height     += _spacing;
                 _position.y += _spacing;
             }
 

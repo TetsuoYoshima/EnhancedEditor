@@ -20,7 +20,7 @@ namespace EnhancedEditor {
         /// <param name="_array">Array to add element in.</param>
         /// <param name="_element">Element to add.</param>
         public static void Add<T>(ref T[] _array, T _element) {
-            int _length = _array.Length;
+            int _length   = _array.Length;
             T[] _newArray = new T[_length + 1];
 
             Array.Copy(_array, _newArray, _length);
@@ -36,7 +36,7 @@ namespace EnhancedEditor {
         /// <param name="_source">Source array to add elements in.</param>
         /// <param name="_content">Array to insert content into source.</param>
         public static void AddRange<T>(ref T[] _source, T[] _content) {
-            int _sourceLength = _source.Length;
+            int _sourceLength  = _source.Length;
             int _contentLength = _content.Length;
 
             T[] _newArray = new T[_sourceLength + _contentLength];
@@ -55,7 +55,7 @@ namespace EnhancedEditor {
         /// <param name="_index">Index of the array where to insert the new element.</param>
         /// <param name="_element">Element to insert.</param>
         public static void Insert<T>(ref T[] _array, int _index, T _element) {
-            int _length = _array.Length;
+            int _length   = _array.Length;
             T[] _newArray = new T[_length + 1];
 
             Array.Copy(_array, _newArray, _index);
@@ -103,7 +103,7 @@ namespace EnhancedEditor {
         /// <param name="_array">Array to remove element from.</param>
         /// <param name="_index">Index of the element to remove.</param>
         public static void RemoveAt<T>(ref T[] _array, int _index) {
-            int _count = _array.Length;
+            int _count   = _array.Length;
             T[] _newTags = new T[_count - 1];
 
             Array.Copy(_array, _newTags, _index);
@@ -131,12 +131,15 @@ namespace EnhancedEditor {
         /// <param name="_destinationIndex">New destination index where to move this element.</param>
         public static void Move<T>(T[] _array, int _index, int _destinationIndex) {
             T _element = _array[_index];
+
             if (_index < _destinationIndex) {
-                for (int _i = _index; _i < _destinationIndex; _i++)
+                for (int _i = _index; _i < _destinationIndex; _i++) {
                     _array[_i] = _array[_i + 1];
+                }
             } else {
-                for (int _i = _index; _i-- > _destinationIndex;)
+                for (int _i = _index; _i-- > _destinationIndex;) {
                     _array[_i + 1] = _array[_i];
+                }
             }
 
             _array[_destinationIndex] = _element;
@@ -185,12 +188,12 @@ namespace EnhancedEditor {
         /// <param name="_oldIndex">Current index of the element to shift.</param>
         /// <param name="_newIndex">New destination index of the element to shift.</param>
         public static void ShiftLoopElement<T>(T[] _array, int _oldIndex, int _newIndex) {
-            if ((_oldIndex == _newIndex) || (_newIndex < 0) || (_newIndex >= _array.Length) || (_array.Length == 0)) {
+            int _length = _array.Length;
+            if ((_oldIndex == _newIndex) || (_newIndex < 0) || (_newIndex >= _length) || (_length == 0)) {
                 return;
             }
 
-            int _count = _newIndex - _oldIndex;
-
+            int _count  = _newIndex - _oldIndex;
             if (_count > 0) {
 
                 for (int i = 0; i < _count; i++) {
@@ -208,16 +211,16 @@ namespace EnhancedEditor {
 
             void ShiftLeft() {
                 var _tmp = _array.First();
-                for (int i = 1; i < _array.Length; i++) {
+                for (int i = 1; i < _length; i++) {
                     _array[i - 1] = _array[i];
                 }
 
-                _array[_array.Length - 1] = _tmp;
+                _array[_length - 1] = _tmp;
             }
 
             void ShiftRight() {
                 var _tmp = _array.Last();
-                for (int i = _array.Length; i-- > 1;) {
+                for (int i = _length; i-- > 1;) {
                     _array[i] = _array[i - 1];
                 }
 
@@ -232,7 +235,7 @@ namespace EnhancedEditor {
         /// <param name="_array">Array to set all elements value.</param>
         /// <param name="_value">Value to assign to each element of the array.</param>
         public static void Fill<T>(T[] _array, T _value) {
-            for (int _i = 0; _i < _array.Length; _i++) {
+            for (int _i = _array.Length; _i-- > 0;) {
                 _array[_i] = _value;
             }
         }
@@ -251,16 +254,30 @@ namespace EnhancedEditor {
                 _array[_i] = _value;
             }
         }
+
+        /// <summary>
+        /// Resizes this array content if its length if inferior to a given value.
+        /// </summary>
+        /// <typeparam name="T">Array element type.</typeparam>
+        /// <param name="_array">Array to realloc.</param>
+        /// <param name="_length">New minimal length of this array.</param>
+        public static void Realloc<T>(ref T[] _array, int _length) {
+            if (_array.Length < _length) {
+                Array.Resize(ref _array, _length);
+            }
+        }
         #endregion
 
         #region Filter
         /// <returns><inheritdoc cref="Filter{T1, T2}(T1[], T2, Func{T1, T2, bool})" path="/returns"/></returns>
         /// <inheritdoc cref="Filter{T}(ref T[], Func{T, bool})"/>
         public static T[] Filter<T>(T[] _array, Func<T, bool> _filter) {
-            int _count = 0;
-            T[] _newArray = new T[_array.Length];
+            int _length = _array.Length;
+            int _count  = 0;
 
-            for (int _i = 0; _i < _array.Length; _i++) {
+            T[] _newArray = new T[_length];
+
+            for (int _i = 0; _i < _length; _i++) {
                 if (_filter(_array[_i])) {
                     _newArray[_count] = _array[_i];
                     _count++;
@@ -277,11 +294,14 @@ namespace EnhancedEditor {
         /// <returns></returns>
         /// <inheritdoc cref="Filter{T1, T2}(T1[], T2, Func{T1, T2, bool})"/>
         public static void Filter<T>(ref T[] _array, Func<T, bool> _filter) {
+            int _length = _array.Length;
             int _count = 0;
-            for (int _i = 0; _i < _array.Length; _i++) {
+
+            for (int _i = 0; _i < _length; _i++) {
                 if (_filter(_array[_i])) {
-                    if (_count != _i)
+                    if (_count != _i) {
                         _array[_count] = _array[_i];
+                    }
 
                     _count++;
                 }
@@ -305,11 +325,15 @@ namespace EnhancedEditor {
                 return _array;
 
             // Create a new array to store all filtered elements.
-            T1[] _filteredArray = new T1[_array.Length];
+            int _length = _array.Length;
+
+            T1[] _filteredArray = new T1[_length];
             int _count = 0;
 
             // Get all filtered element.
-            foreach (T1 _element in _array) {
+            for (int i = 0; i < _length; i++) {
+                T1 _element = _array[i];
+
                 if (_filter(_element, _filterOption)) {
                     _filteredArray[_count] = _element;
                     _count++;

@@ -125,15 +125,13 @@ namespace EnhancedEditor {
 
         /// <inheritdoc cref="SetX(Vector3, float)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 SetX(this Vector2 _vector, float _value)
-        {
+        public static Vector2 SetX(this Vector2 _vector, float _value) {
             return new Vector2(_value, _vector.y);
         }
 
         /// <inheritdoc cref="SetY(Vector3, float)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 SetY(this Vector2 _vector, float _value)
-        {
+        public static Vector2 SetY(this Vector2 _vector, float _value) {
             return new Vector2(_vector.x, _value);
         }
 

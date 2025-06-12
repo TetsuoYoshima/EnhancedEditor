@@ -52,9 +52,9 @@ namespace EnhancedEditor {
         #region Operator
         public Tag this[int _index] {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Tags[_index];
+            get { return Tags[_index]; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => Tags[_index] = value;
+            set { Tags[_index] = value; }
         }
         #endregion
 
@@ -97,8 +97,7 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_group">Group to copy the tags from.</param>
         public void SetTags(TagGroup _group) {
-            Tags.Clear();
-            Tags.AddRange(_group.Tags);
+            Tags.ReplaceBy(_group.Tags);
         }
         #endregion
 
@@ -156,15 +155,15 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_group">Group to check content.</param>
         /// <returns>True if this group contain any of the other group tag, false otherwise.</returns>
-        public bool ContainsAny(TagGroup _group, bool validIfEmpty = false) {
+        public bool ContainsAny(TagGroup _group, bool _validIfEmpty = false) {
             ref List<Tag> _span = ref _group.Tags;
-            int count = _span.Count;
+            int _count = _span.Count;
 
-            if (validIfEmpty && (count == 0) || (_group.Count == 0))
+            if (_validIfEmpty && ((_count == 0) || (_group.Count == 0)))
                 return true;
 
             if (Tags.Count != 0) {
-                for (int i = count; i-- > 0;) {
+                for (int i = _count; i-- > 0;) {
                     if (Contains(_span[i])) {
                         return true;
                     }

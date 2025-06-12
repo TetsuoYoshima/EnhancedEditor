@@ -13,11 +13,13 @@ namespace EnhancedEditor.Editor {
     /// Custom <see cref="TagHolder"/> editor.
     /// </summary>
     [CustomEditor(typeof(TagHolder), true)]
-    public class TagHolderEditor : UnityObjectEditor {
+    public sealed class TagHolderEditor : UnityObjectEditor {
         #region Editor GUI
         private const string UndoRecordTitle = "Tag Holder Change";
         private const string TooltipMessage  = "You can edit any tag name and color using the context menu.";
         private const string NoTagMessage    = "No tag could be found in this holder! Create a new one using the button below.";
+
+        private static readonly GUIContent createGUI = new GUIContent("Create Tag", "Create a new Tag in the project");
 
         private TagHolder tagHolder = null;
         private Vector2 scroll      = new Vector2();
@@ -60,10 +62,13 @@ namespace EnhancedEditor.Editor {
                 } else {
                     // Displayed tags.
                     Rect _position = EditorGUILayout.GetControlRect();
-                    Rect _temp = new Rect(_position);
+                    Rect _temp     = new Rect(_position);
 
-                    for (int i = 0; i < tagHolder.Count; i++) {
-                        TagData _tag = tagHolder.Tags[i];
+                    ref TagData[] _span = ref tagHolder.Tags;
+                    int _count = _span.Length;
+
+                    for (int i = 0; i < _count; i++) {
+                        TagData _tag = _span[i];
 
                         // Draw this tag and remove it from the project on associated button click.
                         if (EnhancedEditorGUI.DrawTagGroupElement(_position, ref _temp, _tag)
@@ -72,6 +77,8 @@ namespace EnhancedEditor.Editor {
                                                         "Are you sure you want to do this? All uses of this tag will become obsolete and will be ignored.", "Yes", "Cancel")) {
                             tagHolder.DeleteTag(_tag);
                             InternalEditorUtility.RepaintAllViews();
+
+                            break;
                         }
                     }
 
@@ -86,7 +93,7 @@ namespace EnhancedEditor.Editor {
                 }
 
                 GUILayout.Space(5f);
-                if (GUILayout.Button("Create Tag")) {
+                if (GUILayout.Button(createGUI)) {
                     MultiTagsWindow.CreateTagWindow.GetWindow(tagHolder);
                 }
             }

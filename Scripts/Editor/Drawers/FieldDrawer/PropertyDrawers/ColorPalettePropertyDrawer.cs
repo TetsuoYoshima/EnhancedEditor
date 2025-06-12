@@ -27,15 +27,16 @@ namespace EnhancedEditor.Editor {
                          ? Color.white
                          : _property.colorValue;
 
-            _position.y -= EditorGUIUtility.standardVerticalSpacing;
+            _position.y     -= EditorGUIUtility.standardVerticalSpacing;
             _position.height = _height
                              = EnhancedEditorGUI.GetColorPaletteExtraHeight(_id, _position, _label, _color) - EditorGUIUtility.standardVerticalSpacing;
 
             // Color palette field.
             using (var _scope = new EditorGUI.PropertyScope(_position, GUIContent.none, _property))
             using (var _changeCheck = new EditorGUI.ChangeCheckScope()) {
+
                 _position.y += EditorGUIUtility.standardVerticalSpacing;
-                _color = EnhancedEditorGUI.DoColorPaletteField(_id, _position, _label, _color);
+                _color       = EnhancedEditorGUI.DoColorPaletteField(_id, _position, _label, _color);
 
                 // Save new value.
                 if (_changeCheck.changed) {

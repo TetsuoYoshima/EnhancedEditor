@@ -43,7 +43,7 @@ namespace EnhancedEditor.Editor {
             float _height = 0f;
 
             // Button.
-            _position.height = EditorGUIUtility.singleLineHeight;
+            _position.height     = EditorGUIUtility.singleLineHeight;
             _property.isExpanded = EditorGUI.Foldout(_position, _property.isExpanded, _label, true);
 
             IncrementPosition();
@@ -65,7 +65,8 @@ namespace EnhancedEditor.Editor {
                         return _height;
                     }
 
-                    for (int i = 0; i < _arrayProperty.arraySize; i++) {
+                    int _size = _arrayProperty.arraySize;
+                    for (int i = 0; i < _size; i++) {
                         SerializedProperty _elementProperty = _arrayProperty.GetArrayElementAtIndex(i);
                         SerializedProperty _enumProperty    = _elementProperty.FindPropertyRelative("First");
                         SerializedProperty _valueProperty   = _elementProperty.FindPropertyRelative("Second");
@@ -86,7 +87,7 @@ namespace EnhancedEditor.Editor {
             void IncrementPosition() {
                 float _spacing = _position.height + EditorGUIUtility.standardVerticalSpacing;
 
-                _height += _spacing;
+                _height     += _spacing;
                 _position.y += _spacing;
             }
 

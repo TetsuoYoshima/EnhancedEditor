@@ -20,7 +20,7 @@ namespace EnhancedEditor.Editor {
         }
 
         public override void OnGUI(Rect _position) {
-            var _attribute = attribute as HorizontalLineAttribute;
+            var _attribute    = attribute as HorizontalLineAttribute;
             _position.height -= EditorGUIUtility.standardVerticalSpacing;
 
             EnhancedEditorGUI.HorizontalLine(_position, _attribute.Color, _attribute.Margins);

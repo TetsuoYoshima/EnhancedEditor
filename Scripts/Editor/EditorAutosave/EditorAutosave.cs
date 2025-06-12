@@ -30,20 +30,20 @@ namespace EnhancedEditor.Editor {
         private const float MinSaveInterval     = 5f;
         private const float UpdateMaxInterval   = .5f;
 
-        private const string EnabledKey = "AutosaveEnabled";
         private const string RemainingTimeKey = "AutosaveRemainingTime";
+        private const string EnabledKey       = "AutosaveEnabled";
 
         private const string EnableTooltip = "Toggle Assets & Open Scene(s) Autosave\n\nCurrently enabled (next save in less than {0} seconds).";
 
-        private static readonly GUIContent enableGUI = new GUIContent(string.Empty, EnableTooltip);
+        private static readonly GUIContent enableGUI  = new GUIContent(string.Empty, EnableTooltip);
         private static readonly GUIContent disableGUI = new GUIContent(string.Empty, "Toggle Assets & Open Scene(s) Autosave\n\nCurrently disabled.");
 
-        private static readonly int settingsGUID = "EnhancedEditorAutosaveSetting".GetStableHashCode();
+        private static readonly int settingsGUID      = "EnhancedEditorAutosaveSetting".GetStableHashCode();
         private static FloatEnhancedSettings settings = null;
 
-        private static float saveInterval = 0f;
         private static float saveRemainingTime = 0f;
-        private static bool isEnabled = false;
+        private static float saveInterval      = 0f;
+        private static bool isEnabled          = false;
 
         /// <summary>
         /// Autosave-related user settings.
@@ -61,20 +61,22 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static EditorAutosave() {
             EditorApplication.update -= Update;
             EditorApplication.update += Update;
 
-            enableGUI.image = EditorGUIUtility.FindTexture("Record On");
+            enableGUI.image  = EditorGUIUtility.FindTexture("Record On");
             disableGUI.image = EditorGUIUtility.FindTexture("SaveAs");
 
             saveInterval = Settings.Value + UpdateMaxInterval;
 
             // Loads session values.
-            isEnabled = SessionState.GetBool(EnabledKey, isEnabled);
             saveRemainingTime = SessionState.GetFloat(RemainingTimeKey, saveRemainingTime);
+            isEnabled         = SessionState.GetBool(EnabledKey, isEnabled);
         }
         #endregion
 
@@ -84,8 +86,8 @@ namespace EnhancedEditor.Editor {
             if (isEnabled && !EditorApplication.isPlaying && InternalEditorUtility.isApplicationActive) {
 
                 float _deltaTime = Math.Min(UpdateMaxInterval, ChronosUtility.RealDeltaTime);
-
                 saveRemainingTime -= _deltaTime;
+
                 if (saveRemainingTime < 0f) {
                     EditorSceneManager.SaveOpenScenes();
                     AssetDatabase.SaveAssets();
@@ -109,7 +111,7 @@ namespace EnhancedEditor.Editor {
         [EnhancedEditorUserSettings(Order = 10)]
         private static void DrawSettings() {
             // Autosave interval.
-            float _interval = saveInterval - UpdateMaxInterval;
+            float _interval    = saveInterval - UpdateMaxInterval;
             float _newInterval = EnhancedEditorGUILayout.MinField(autosaveIntervalGUI, _interval, MinSaveInterval);
 
             if (_newInterval != _interval) {
@@ -136,7 +138,7 @@ namespace EnhancedEditor.Editor {
 
             if (isEnabled) {
                 string _time = saveRemainingTime.ToString("##0");
-                enableGUI.text = EditorApplication.isPlaying ? string.Empty : $" {_time}s";
+                enableGUI.text    = EditorApplication.isPlaying ? string.Empty : $" {_time}s";
                 enableGUI.tooltip = string.Format(EnableTooltip, _time);
 
                 _label = enableGUI;

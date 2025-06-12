@@ -23,6 +23,7 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         [MenuItem(InternalUtility.MenuItemPath + "Rename Multiple #TAB", false, 201)]
         public static void RenameMultiple() {
+            const string UndoName = "Rename object(s)";
 
             Object[] _objects = Selection.objects;
             if (_objects.Length == 0)
@@ -41,24 +42,25 @@ namespace EnhancedEditor.Editor {
             // ----- Local Methods ----- \\
 
             void Rename(string _name, string _toReplace, string _replaceBy, string _numberFormat, int _decimalCount) {
-                Undo.RecordObjects(_objects, "Rename object(s)");
+                Undo.RecordObjects(_objects, UndoName);
 
                 // Multiple rename.
-                for (int i = 0; i < _objects.Length; i++) {
+                for (int i = _objects.Length; i-- > 0;) {
                     _objects[i].name = GetName(i, _name, _toReplace, _replaceBy, _numberFormat, _decimalCount);
                 }
             }
 
             void RenameAsset(string _name, string _toReplace, string _replaceBy, string _numberFormat, int _decimalCount) {
-                Undo.RecordObjects(_objects, "Rename object(s)");
+                Undo.RecordObjects(_objects, UndoName);
 
                 // Multiple rename.
-                for (int i = 0; i < _objects.Length; i++) {
+                for (int i = _objects.Length; i-- > 0;) {
                     Object _object = _objects[i];
-                    string _path = AssetDatabase.GetAssetPath(_object);
+                    string _path   = AssetDatabase.GetAssetPath(_object);
 
-                    if (string.IsNullOrEmpty(_path))
+                    if (string.IsNullOrEmpty(_path)) {
                         continue;
+                    }
 
                     string _message = AssetDatabase.RenameAsset(_path, GetName(i, _name, _toReplace, _replaceBy, _numberFormat, _decimalCount));
                     if (!string.IsNullOrEmpty(_message)) {
@@ -143,7 +145,7 @@ namespace EnhancedEditor.Editor {
                                 = new Vector2(325f, 95f);
 
                 _window.objectName = _name;
-                _window.callback = _callback;
+                _window.callback   = _callback;
 
                 _window.ShowUtility();
                 return _window;

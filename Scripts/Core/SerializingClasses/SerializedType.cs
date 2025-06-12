@@ -40,10 +40,12 @@ namespace EnhancedEditor {
 
 		private Type type = null;
 
-		/// <summary>
-		/// The serialized type reference value.
-		/// </summary>
-		public Type Type {
+        // -----------------------
+
+        /// <summary>
+        /// The serialized type reference value.
+        /// </summary>
+        public Type Type {
 			get {
 				return type;
 			} set {
@@ -141,7 +143,7 @@ namespace EnhancedEditor {
 
         #region Comparer
         int IComparer<SerializedType<T>>.Compare(SerializedType<T> a, SerializedType<T> b) {
-			return a.Type.Name.CompareTo(b.Type.Name);
+			return string.Compare(a.typeName, b.typeName, StringComparison.Ordinal);
 		}
 		#endregion
 

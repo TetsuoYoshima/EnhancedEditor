@@ -29,13 +29,15 @@ namespace EnhancedEditor.Editor {
         private const string ScriptTemplateMenuItem = "        [MenuItem(ScriptCreatorSubMenu + \"{0}\", false, MenuItemOrder)]\n" +
                                                       "        public static void Create{1}() => ScriptGeneratorWindow.GetWindow(\"{2}\");\n\n";
 
-        private const string ScriptGeneratorName = "ScriptGenerator";
         private const string ScriptGeneratorMenuName = "ScriptGeneratorMenu";
+        private const string ScriptGeneratorName     = "ScriptGenerator";
+        public const string ScriptCreatorSubMenu     = "Assets/Create/Template C# Script/";
 
-        public const string ScriptCreatorSubMenu = "Assets/Create/Template C# Script/";
         public const int MenuItemOrder = 170;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static ScriptGenerator() {
             if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || EnhancedEditorUtility.isReloadingAssemblies)
@@ -43,8 +45,9 @@ namespace EnhancedEditor.Editor {
 
             // Template directory management.
             string _templateDirectory = $"{Application.dataPath}/{Settings.Folder}";
-            if (!Directory.Exists(_templateDirectory))
+            if (!Directory.Exists(_templateDirectory)) {
                 Directory.CreateDirectory(_templateDirectory);
+            }
 
             // Get all templates.
             string[] _templates = Directory.GetFiles(_templateDirectory, "*.txt", SearchOption.AllDirectories);
@@ -52,7 +55,7 @@ namespace EnhancedEditor.Editor {
 
             for (int _i = 0; _i < _templates.Length; _i++) {
                 // For each one of them, add a new item in the menu.
-                string _template= _templates[_i].Replace('\\', '/');
+                string _template = _templates[_i].Replace('\\', '/');
                 string _itemName = ObjectNames.NicifyVariableName(_template.Remove(0, _templateDirectory.Length + 1).Split('.')[0]);
                 string _name = Path.GetFileNameWithoutExtension(_template);
 
@@ -64,7 +67,7 @@ namespace EnhancedEditor.Editor {
 
             // Get script full path.
             string[] _files = Directory.GetFiles(Application.dataPath, "*.cs", SearchOption.AllDirectories);
-            string _path = string.Empty;
+            string _path    = string.Empty;
 
             foreach (string _file in _files) {
                 string _name = Path.GetFileNameWithoutExtension(_file);
@@ -92,8 +95,9 @@ namespace EnhancedEditor.Editor {
 
             _template = Path.Combine(Application.dataPath, _template);
 
-            if (File.Exists(_path))
+            if (File.Exists(_path)) {
                 _path = Path.GetDirectoryName(_path);
+            }
 
             string _templateName = Path.GetFileNameWithoutExtension(_template);
             string[] _parts = _templateName.Split('_');
@@ -121,8 +125,9 @@ namespace EnhancedEditor.Editor {
             File.WriteAllText(_path, _content);
             AssetDatabase.Refresh();
 
-            if (_doOpen)
+            if (_doOpen) {
                 Process.Start(_path);
+            }
         }
         #endregion
 
@@ -135,8 +140,8 @@ namespace EnhancedEditor.Editor {
                 ScriptGeneratorWindow _window = GetWindow<ScriptGeneratorWindow>(true, "Create New Script");
 
                 _window.template = _template;
-                _window.minSize = _window.maxSize
-                                = new Vector2(300f, 60f);
+                _window.minSize  = _window.maxSize
+                                 = new Vector2(300f, 60f);
 
                 _window.ShowUtility();
                 return _window;
@@ -149,12 +154,12 @@ namespace EnhancedEditor.Editor {
             private const float CreateAndOpenButtonWidth = 95f;
             private const float CreateButtonWidth        = 50f;
 
-            private const string UndoRecordTitle  = "New Script Name Changes";
             private const string EmptyNameMessage = "This file name cannot be null or empty!";
+            private const string UndoRecordTitle  = "New Script Name Changes";
 
-            private readonly GUIContent nameGUI          = new GUIContent("Name:", "Name of the script to create.");
-            private readonly GUIContent createGUI        = new GUIContent("Create", "Create a new script with this name.");
             private readonly GUIContent createAndOpenGUI = new GUIContent("Create & Open", "Create a new script with this name and open it.");
+            private readonly GUIContent createGUI        = new GUIContent("Create", "Create a new script with this name.");
+            private readonly GUIContent nameGUI          = new GUIContent("Name:", "Name of the script to create.");
 
             private string template = string.Empty;
             private string fileName = "NewScript";
@@ -230,6 +235,7 @@ namespace EnhancedEditor.Editor {
                 EnhancedEditorProjectSettings _projectSettings = EnhancedEditorProjectSettings.Instance;
 
                 if ((settings == null) && !_projectSettings.GetSetting(settingsGUID, out settings, out _)) {
+
                     settings = new FolderEnhancedSettings(settingsGUID, DefaultDirectory, true);
                     _projectSettings.AddSetting(settings);
                 }

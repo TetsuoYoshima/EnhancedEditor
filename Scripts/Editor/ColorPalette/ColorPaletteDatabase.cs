@@ -57,12 +57,12 @@ namespace EnhancedEditor.Editor {
 
             // Update required controls palette.
             for (int _i = 0; _i < controlsPaletteGUID.Count; _i++) {
-                if (controlsPaletteGUID[_i] == _palette.guid)
+                if (controlsPaletteGUID[_i] == _palette.guid) {
                     controlsPaletteGUID[_i] = _newPalette.guid;
+                }
             }
 
             SaveChanges();
-
             return _newPalette;
         }
 
@@ -76,8 +76,9 @@ namespace EnhancedEditor.Editor {
 
             // Update required controls palette.
             for (int _i = 0; _i < controlsPaletteGUID.Count; _i++) {
-                if (controlsPaletteGUID[_i] == _palette.guid)
+                if (controlsPaletteGUID[_i] == _palette.guid) {
                     controlsPaletteGUID[_i] = CreatePalette().guid;
+                }
             }
 
             SaveChanges();
@@ -90,8 +91,7 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         /// <returns>Created <see cref="ColorPalette"/>.</returns>
         internal ColorPalette CreatePalette() {
-            ColorPalette _palette = new ColorPalette()
-            {
+            ColorPalette _palette = new ColorPalette()  {
                 guid = GUID.Generate().ToString()
             };
 
@@ -142,8 +142,9 @@ namespace EnhancedEditor.Editor {
                 });
 
                 // Creates a new palette for this control if no matching one could be found.
-                if (_palette == null)
+                if (_palette == null) {
                     _palette = CreatePalette();
+                }
 
                 controlsID.Add(_controlID);
                 controlsPaletteGUID.Add(_palette.guid);

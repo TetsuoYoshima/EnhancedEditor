@@ -10,6 +10,8 @@ using System.Text;
 
 [assembly: InternalsVisibleTo("EnhancedEditor.Editor")]
 namespace EnhancedEditor {
+    // ===== Base ===== \\
+
     /// <summary>
     /// Base class to inherit managing <see cref="Flag"/> classes.
     /// </summary>
@@ -62,6 +64,8 @@ namespace EnhancedEditor {
         #endregion
     }
 
+    // ===== Derived ===== \\
+
     /// <summary>
     /// Group holder for multiple <see cref="FlagReference"/>.
     /// </summary>
@@ -98,10 +102,12 @@ namespace EnhancedEditor {
 
         public override string ToString() {
             StringBuilder _builder = new StringBuilder(string.Empty);
-            int _length = Flags.Length;
+
+            ref FlagReference[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                _builder.Append($"{Flags[i].Flag.Name}; ");
+                _builder.Append($"{_flagSpan[i].Flag.Name}; ");
             }
 
             return _builder.ToString();
@@ -124,10 +130,11 @@ namespace EnhancedEditor {
         }
 
         public override bool ContainFlag(Flag _flag, out int _index) {
-            int _length = Flags.Length;
+            ref FlagReference[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                if (Flags[i].Flag.guid == _flag.guid) {
+                if (_flagSpan[i].Flag.guid == _flag.guid) {
                     _index = i;
                     return true;
                 }
@@ -160,8 +167,9 @@ namespace EnhancedEditor {
         /// <returns>True if all flags are valid, false otherwise.</returns>
         public bool Valid {
             get {
-                for (int i = Flags.Length; i-- > 0;) {
-                    if (!Flags[i]) {
+                ref FlagValue[] _flagSpan = ref Flags;
+                for (int i = _flagSpan.Length; i-- > 0;) {
+                    if (!_flagSpan[i]) {
                         return false;
                     }
                 }
@@ -195,10 +203,12 @@ namespace EnhancedEditor {
 
         public override string ToString() {
             StringBuilder _builder = new StringBuilder(string.Empty);
-            int _length = Flags.Length;
+
+            ref FlagValue[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                _builder.Append($"{Flags[i]}; ");
+                _builder.Append($"{_flagSpan[i]}; ");
             }
 
             return _builder.ToString();
@@ -225,10 +235,11 @@ namespace EnhancedEditor {
         }
 
         public override bool ContainFlag(Flag _flag, out int _index) {
-            int _length = Flags.Length;
+            ref FlagValue[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                if (Flags[i].Flag == _flag) {
+                if (_flagSpan[i].Flag == _flag) {
                     _index = i;
                     return true;
                 }
@@ -244,8 +255,10 @@ namespace EnhancedEditor {
         /// Set the value of all flags in this group.
         /// </summary>
         public void SetValues() {
-            for (int i = Flags.Length; i-- > 0;) {
-                Flags[i].SetFlag();
+            ref FlagValue[] _flagSpan = ref Flags;
+
+            for (int i = _flagSpan.Length; i-- > 0;) {
+                _flagSpan[i].SetFlag();
             }
         }
 
@@ -254,8 +267,10 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_valid">Whether to set or unset these flags.</param>
         public void SetValues(bool _valid) {
-            for (int i = Flags.Length; i-- > 0;) {
-                FlagValue _flag = Flags[i];
+            ref FlagValue[] _flagSpan = ref Flags;
+
+            for (int i = _flagSpan.Length; i-- > 0;) {
+                FlagValue _flag = _flagSpan[i];
 
                 bool _value = _flag.Value;
                 if (!_valid) {

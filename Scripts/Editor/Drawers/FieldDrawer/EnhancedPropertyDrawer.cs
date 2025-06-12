@@ -43,10 +43,18 @@ namespace EnhancedEditor.Editor {
         // -----------------------
 
         private void DuringSceneGUI(SceneView _scene) {
-            foreach (UnityEditor.Editor _editor in ActiveEditorTracker.sharedTracker.activeEditors) {
-                if (_editor.serializedObject == SerializedProperty.serializedObject) {
-                    OnSceneGUI(_scene);
-                    return;
+            UnityEditor.Editor[] _editors = ActiveEditorTracker.sharedTracker.activeEditors;
+            int _count = _editors.Length;
+
+            if (_count != 0) {
+
+                SerializedObject _target = SerializedProperty.serializedObject;
+                for (int i = 0; i < _count; i++) {
+
+                    if (_editors[i].serializedObject == _target) {
+                        OnSceneGUI(_scene);
+                        return;
+                    }
                 }
             }
 

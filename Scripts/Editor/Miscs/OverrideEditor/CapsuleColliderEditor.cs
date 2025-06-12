@@ -16,22 +16,26 @@ namespace EnhancedEditor.Editor {
     /// </summary>
     [CustomEditor(typeof(CapsuleCollider), true), CanEditMultipleObjects]
     public sealed class CapsuleColliderEditor : UnityObjectEditor {
-        #region Data
         /// <summary>
         /// Serializable <see cref="CapsuleCollider"/> data.
         /// </summary>
         [Serializable]
         private sealed class Data : PlayModeObjectData {
+            #region Content
             public Vector3 Center;
             public float Height;
             public int Direction;
             public bool IsTrigger;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public Data() : base() { }
 
-            // -----------------------
+            // -------------------------------------------
+            // Utility
+            // -------------------------------------------
 
             public override void Save(Object _object) {
 
@@ -60,13 +64,13 @@ namespace EnhancedEditor.Editor {
 
                 return false;
             }
+            #endregion
         }
-        #endregion
 
         #region Editor Content
         private static readonly GUIContent resetCenterGUI = new GUIContent(" Adjust Center", "Adjust this collider position and reset its center.");
         private static readonly Type editorType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.CapsuleColliderEditor");
-        private static Data data = new Data();
+        private static readonly Data data = new Data();
 
         private UnityEditor.Editor colliderEditor = null;
 
@@ -78,7 +82,6 @@ namespace EnhancedEditor.Editor {
 
         protected override void OnEnable() {
             base.OnEnable();
-
             colliderEditor = CreateEditor(serializedObject.targetObjects, editorType);
         }
 
@@ -89,13 +92,15 @@ namespace EnhancedEditor.Editor {
 
             // Adjust center button.
             if ((target is CapsuleCollider _collider) && (_collider.center != Vector3.zero)) {
+
                 Rect position = EditorGUILayout.GetControlRect(true, 20f);
                 position.xMin = position.xMax - SaveValueButtonWidth;
 
                 if (EnhancedEditorGUI.IconDropShadowButton(position, resetCenterGUI)) {
+                    Object[] _targets = targets;
 
-                    foreach (Object _target in targets) {
-                        if (_target is CapsuleCollider _capsule) {
+                    for (int i = _targets.Length; i-- > 0;) {
+                        if (_targets[i] is CapsuleCollider _capsule) {
                             SceneDesignerUtility.AdjustCapsuleCenter(_capsule);
                         }
                     }
@@ -117,7 +122,6 @@ namespace EnhancedEditor.Editor {
         // -------------------------------------------
 
         protected override PlayModeObjectData SaveData(Object _object) {
-
             data.Save(_object);
             return data;
         }

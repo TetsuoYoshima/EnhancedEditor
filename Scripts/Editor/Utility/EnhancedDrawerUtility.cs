@@ -77,7 +77,7 @@ namespace EnhancedEditor.Editor {
                 #endif
             }
 
-            void RegisterDrawer(Dictionary<Type, Type> _dataDictionary, Type _typeToRegister) {
+            static void RegisterDrawer(Dictionary<Type, Type> _dataDictionary, Type _typeToRegister) {
                 var _customDrawer = _typeToRegister.GetCustomAttribute<CustomDrawerAttribute>(true);
                 if (_customDrawer != null) {
                     _dataDictionary[_typeToRegister] = _customDrawer.TargetType;

@@ -7,6 +7,8 @@
 using System;
 
 namespace EnhancedEditor.Editor {
+    // ===== Base ===== \\
+    
     /// <summary>
     /// Allows you to draw your own settings controls in the Enhanced Editor preferences window.
     /// </summary>
@@ -20,12 +22,14 @@ namespace EnhancedEditor.Editor {
         #endregion
     }
 
-    /// <inheritdoc cref="EnhancedEditorSettingsAttribute"/>
-    /// <remarks>Use this to draw user-related preferences settings.</remarks>
-    public sealed class EnhancedEditorUserSettingsAttribute : EnhancedEditorSettingsAttribute { }
+    // ===== Derived ===== \\
 
     /// <inheritdoc cref="EnhancedEditorSettingsAttribute"/>
     /// <remarks>Use this to global shared project settings.
     /// <br/> The method must take a <see cref="EnhancedEditorProjectSettings"/> parameter.</remarks>
     public sealed class EnhancedEditorProjectSettingsAttribute : EnhancedEditorSettingsAttribute { }
+
+    /// <inheritdoc cref="EnhancedEditorSettingsAttribute"/>
+    /// <remarks>Use this to draw user-related preferences settings.</remarks>
+    public sealed class EnhancedEditorUserSettingsAttribute    : EnhancedEditorSettingsAttribute { }
 }

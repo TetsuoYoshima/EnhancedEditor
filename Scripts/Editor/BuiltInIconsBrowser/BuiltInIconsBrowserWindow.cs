@@ -19,7 +19,7 @@ namespace EnhancedEditor.Editor {
     /// </summary>
 	public sealed class BuiltInIconsBrowserWindow : EditorWindow {
         #region Icon Wrapper
-        private class Icon {
+        private sealed class Icon {
             public string Name = string.Empty;
             public GUIContent IconContent = null;
             public GUIContent FullContent = null;
@@ -27,7 +27,9 @@ namespace EnhancedEditor.Editor {
             public Vector2 Size = Vector2.zero;
             public float LargerSide = 0f;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public Icon(string _name, GUIContent _content) {
                 Texture _texture = _content.image;
@@ -518,9 +520,9 @@ namespace EnhancedEditor.Editor {
 
         #region Utility
         private void FilterIcons() {
-            int _filteredCount = 0;
-            string _searchFilter = searchFilter.ToLower();
             bool _useSearchFilter = !string.IsNullOrEmpty(searchFilter);
+            string _searchFilter  = searchFilter.ToLower();
+            int _filteredCount    = 0;
 
             for (int _i = 0; _i < icons.Length; _i++) {
                 Icon _icon = icons[_i];
@@ -588,21 +590,23 @@ namespace EnhancedEditor.Editor {
                     break;
             }
 
-            if (!doSortAscending)
+            if (!doSortAscending) {
                 Array.Reverse(icons);
+            }
 
             // ----- Local Methods ----- \\
 
-            int CompareByName(Icon _a, Icon _b) {
-                return _a.Name.CompareTo(_b.Name);
+            int CompareByName(Icon a, Icon b) {
+                return string.Compare(a.Name, b.Name, StringComparison.Ordinal);
             }
 
-            int CompareBySize(Icon _a, Icon _b) {
-                int _compare = _a.LargerSide.CompareTo(_b.LargerSide);
-                if (_compare == 0)
-                    _compare = _a.Name.CompareTo(_b.Name);
+            int CompareBySize(Icon a, Icon b) {
+                int _compare = a.LargerSide.CompareTo(b.LargerSide);
+                if (_compare != 0) {
+                    return _compare;
+                }
 
-                return _compare;
+                return CompareByName(a, b);
             }
         }
 

@@ -4,6 +4,7 @@
 //
 // ============================================================================ //
 
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace EnhancedEditor {
@@ -32,6 +33,7 @@ namespace EnhancedEditor {
         /// <param name="_value">Source value to compare.</param>
         /// <param name="_other">Other value to compare to.</param>
         /// <returns>True if the comparison is validated, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Compare(this Comparison _comparison, int _value, int _other) {
             switch (_comparison) {
 
@@ -62,6 +64,7 @@ namespace EnhancedEditor {
         /// <param name="_value">Source value to compare.</param>
         /// <param name="_other">Other value to compare to.</param>
         /// <returns>True if the comparison is validated, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Compare(this Comparison _comparison, float _value, float _other) {
             switch (_comparison) {
 

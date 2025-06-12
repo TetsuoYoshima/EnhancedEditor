@@ -56,8 +56,8 @@ namespace EnhancedEditor.Editor {
         // -------------------------------------------
         // Drawer
         // -------------------------------------------
-        [EnhancedEditorUserSettings(Order = 20)]
 
+        [EnhancedEditorUserSettings(Order = 20)]
         private static void DrawSettings() {
             var _settings = Settings;
             float _height = EditorGUILayout.Slider(separatorHeightGUI, _settings.Value, 0f, 100f);

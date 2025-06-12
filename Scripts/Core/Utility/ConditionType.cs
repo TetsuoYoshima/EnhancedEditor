@@ -4,6 +4,8 @@
 //
 // ============================================================================ //
 
+using System.Runtime.CompilerServices;
+
 namespace EnhancedEditor {
     /// <summary>
     /// Used to define how a condition is considered as fullfiled,
@@ -24,6 +26,7 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_condition"><see cref="ConditionType"/> to get value.</param>
         /// <returns>Condition as a <see cref="bool"/> value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Get(this ConditionType _condition) {
             switch (_condition) {
                 case ConditionType.True:

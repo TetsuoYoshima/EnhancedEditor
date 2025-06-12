@@ -5,6 +5,7 @@
 // ============================================================================ //
 
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 using LogColumnType = EnhancedEditor.Editor.EnhancedConsoleWindow.LogColumnType;
@@ -33,14 +34,16 @@ namespace EnhancedEditor.Editor {
         Watermelon
     }
 
+    // ===== Base ===== \\
+
     /// <summary>
     /// <see cref="EnhancedConsoleWindow"/>-related base log filter class.
     /// </summary>
     [Serializable]
     public abstract class ConsoleLogFilter {
         #region Global Members
-        [SerializeField, HideInInspector] public string Name = "New Filter";
-        [SerializeField, HideInInspector] public bool Enabled = true;
+        [SerializeField, HideInInspector] public string Name    = "New Filter";
+        [SerializeField, HideInInspector] public bool Enabled   = true;
         [SerializeField, HideInInspector] public bool IsVisible = true;
 
         [Space(5f)]
@@ -53,7 +56,7 @@ namespace EnhancedEditor.Editor {
         [Enhanced, Duo(nameof(UseTextColor), EnhancedEditorGUIUtility.IconWidth)]
         public Color TextColor = Color.white;
 
-        [SerializeField, HideInInspector, DisplayName("Enabled")] public bool UseColor = false;
+        [SerializeField, HideInInspector, DisplayName("Enabled")] public bool UseColor     = false;
         [SerializeField, HideInInspector, DisplayName("Enabled")] public bool UseTextColor = false;
 
         [Space(10f)]
@@ -94,6 +97,8 @@ namespace EnhancedEditor.Editor {
         #endregion
     }
 
+    // ===== Derived ===== \\
+
     /// <summary>
     /// <see cref="EnhancedConsoleWindow"/>-related default log filter class.
     /// </summary>
@@ -103,19 +108,21 @@ namespace EnhancedEditor.Editor {
         /// Defines all default filter types.
         /// </summary>
         public enum Type {
-            Log = 0,
-            Warning,
-            Error,
-            Assert,
-            Exception,
-            External,
-            Compilation
+            Log         = 0,
+            Warning     = 1,
+            Error       = 2,
+            Assert      = 3,
+            Exception   = 4,
+            External    = 5,
+            Compilation = 6,
         }
 
         #region Global Members
         [SerializeField, HideInInspector] public Type LogType = Type.Log;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="DefaultConsoleLogFilter"/>
         public DefaultConsoleLogFilter(Type _type) {
@@ -171,7 +178,7 @@ namespace EnhancedEditor.Editor {
         /// <see cref="CustomConsoleLogFilter"/> keyword wrapper class.
         /// </summary>
         [Serializable]
-        public class Keyword {
+        public sealed class Keyword {
             #region Global Members
             [Tooltip("The keyword to search for")]
             [Enhanced, DisplayName("Keyword")] public string Value = "Keyword";
@@ -184,7 +191,9 @@ namespace EnhancedEditor.Editor {
             [Tooltip("The log columns to search in"), Enhanced, DisplayName("Search in Column(s)")]
             public LogColumnType Columns = LogColumnType.Log;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             /// <inheritdoc cref="Keyword(string, FlagLogType, LogColumnType)"/>
             public Keyword() : this("Keyword", ~FlagLogType.None, LogColumnType.Log) { }
@@ -194,8 +203,8 @@ namespace EnhancedEditor.Editor {
             /// <param name="_columns"><inheritdoc cref="Columns" path="/summary"/></param>
             /// <inheritdoc cref="Keyword"/>
             public Keyword(string _keyword, FlagLogType _logs, LogColumnType _columns) {
-                Value = _keyword;
-                Logs = _logs;
+                Value   = _keyword;
+                Logs    = _logs;
                 Columns = _columns;
             }
             #endregion
@@ -217,14 +226,18 @@ namespace EnhancedEditor.Editor {
                 return false;
             }
 
-            foreach (Keyword _keyword in Keywords) {
+            ref Keyword[] _span = ref Keywords.Array;
+            for (int i = _span.Length; i-- > 0;) {
+
+                Keyword _keyword = _span[i];
                 if (!_keyword.Logs.HasFlagUnsafe(_entry.Type)) {
                     continue;
                 }
 
                 string _value = _keyword.Value.ToLower();
-                foreach (LogColumnType _column in columnValues) {
-                    if (Match(_keyword, _value, _column)) {
+                for (int j = columnValues.Length; j-- > 0;) {
+
+                    if (Match(_entry, _keyword, _value, columnValues[j])) {
                         return true;
                     }
                 }
@@ -234,7 +247,7 @@ namespace EnhancedEditor.Editor {
 
             // ----- Local Method ----- \\
 
-            bool Match(Keyword _keyword, string _value, LogColumnType _column) {
+            static bool Match(LogEntry _entry, Keyword _keyword, string _value, LogColumnType _column) {
 
                 if (!_keyword.Columns.HasFlagUnsafe(_column)) {
                     return false;
@@ -290,6 +303,8 @@ namespace EnhancedEditor.Editor {
         #endregion
     }
 
+    // ===== Extensions ===== \\
+
     /// <summary>
     /// Contains multiple <see cref="ConsoleLogFilterIcon"/>-related extension methods.
     /// </summary>
@@ -300,6 +315,7 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         /// <param name="_icon">The icon to load the associated <see cref="Texture"/>.</param>
         /// <returns>The loaded <see cref="Texture"/> associated with this icon (null if none).</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Texture Get(this ConsoleLogFilterIcon _icon) {
             if (_icon == ConsoleLogFilterIcon.None) {
                 return null;

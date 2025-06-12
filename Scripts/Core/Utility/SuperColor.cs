@@ -4,6 +4,7 @@
 //
 // ============================================================================ //
 
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace EnhancedEditor {
@@ -56,6 +57,7 @@ namespace EnhancedEditor {
         /// <param name="_superColor">Enum value to get color from.</param>
         /// <param name="_alpha"><see cref="Color"/> alpha value (from 0 to 1).</param>
         /// <returns>New <see cref="Color"/> associated with this <see cref="SuperColor"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color Get(this SuperColor _superColor, float _alpha = 1f) {
             switch (_superColor) {
                 // White to Black

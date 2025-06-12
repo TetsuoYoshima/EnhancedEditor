@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -373,9 +374,7 @@ namespace EnhancedEditor {
                 counter = _highestId;
             }
 
-            counter++;
-
-            TagData _data = new TagData(counter, _name, _color);
+            TagData _data = new TagData(++counter, _name, _color);
 
             AddTag(_data, _holder);
             SaveChanges();
@@ -440,6 +439,7 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_name">Tag name to check.</param>
         /// <returns>True if a tag with this name exist and was found in the project, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool DoesTagExist(string _name) {
             return GetTag(_name, out TagData _);
         }
@@ -449,6 +449,7 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_id">Tag id to check.</param>
         /// <returns>True if a tag with this id exist and was found in the project, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool DoesTagExist(long _id) {
             return GetTag(_id, out TagData _);
         }

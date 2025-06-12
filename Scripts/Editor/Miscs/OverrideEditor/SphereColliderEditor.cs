@@ -16,29 +16,33 @@ namespace EnhancedEditor.Editor {
     /// </summary>
     [CustomEditor(typeof(SphereCollider), true), CanEditMultipleObjects]
     public sealed class SphereColliderEditor : UnityObjectEditor {
-        #region Data
         /// <summary>
         /// Serializable <see cref="SphereCollider"/> data.
         /// </summary>
         [Serializable]
         private sealed class Data : PlayModeObjectData {
+            #region Content
             public Vector3 Center;
             public float Radius;
             public bool IsTrigger;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public Data() : base() { }
 
-            // -----------------------
+            // -------------------------------------------
+            // Utility
+            // -------------------------------------------
 
             public override void Save(Object _object) {
 
                 if (_object is SphereCollider _collider) {
 
-                    Center = _collider.center;
-                    Radius = _collider.radius;
                     IsTrigger = _collider.isTrigger;
+                    Center    = _collider.center;
+                    Radius    = _collider.radius;
                 }
 
                 base.Save(_object);
@@ -48,22 +52,22 @@ namespace EnhancedEditor.Editor {
 
                 if (_object is SphereCollider _collider) {
 
-                    _collider.center = Center;
-                    _collider.radius = Radius;
                     _collider.isTrigger = IsTrigger;
+                    _collider.center    = Center;
+                    _collider.radius    = Radius;
 
                     return true;
                 }
 
                 return false;
             }
+            #endregion
         }
-        #endregion
 
         #region Editor Content
         private static readonly GUIContent resetCenterGUI = new GUIContent(" Adjust Center", "Adjust this collider position and reset its center.");
         private static readonly Type editorType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.SphereColliderEditor");
-        private static Data data = new Data();
+        private static readonly Data data = new Data();
 
         private UnityEditor.Editor colliderEditor = null;
 
@@ -75,7 +79,6 @@ namespace EnhancedEditor.Editor {
 
         protected override void OnEnable() {
             base.OnEnable();
-
             colliderEditor = CreateEditor(serializedObject.targetObjects, editorType);
         }
 
@@ -86,13 +89,15 @@ namespace EnhancedEditor.Editor {
 
             // Adjust center button.
             if ((target is SphereCollider _collider) && (_collider.center != Vector3.zero)) {
+
                 Rect _position = EditorGUILayout.GetControlRect(true, 20f);
                 _position.xMin = _position.xMax - SaveValueButtonWidth;
 
                 if (EnhancedEditorGUI.IconDropShadowButton(_position, resetCenterGUI)) {
+                    Object[] _targets = targets;
 
-                    foreach (Object _target in targets) {
-                        if (_target is SphereCollider _sphere) {
+                    for (int i = _targets.Length; i-- > 0;) {
+                        if (_targets[i] is SphereCollider _sphere) {
                             SceneDesignerUtility.AdjustSphereCenter(_sphere);
                         }
                     }
@@ -114,7 +119,6 @@ namespace EnhancedEditor.Editor {
         // -------------------------------------------
 
         protected override PlayModeObjectData SaveData(Object _object) {
-
             data.Save(_object);
             return data;
         }

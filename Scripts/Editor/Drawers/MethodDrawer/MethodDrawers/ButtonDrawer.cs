@@ -34,7 +34,7 @@ namespace EnhancedEditor.Editor {
             // Parameter informations.
             parameters = MethodInfo.GetParameters();
             parameterValues = new object[parameters.Length];
-            parametersGUI = new GUIContent[parameters.Length];
+            parametersGUI   = new GUIContent[parameters.Length];
 
             for (int _i = 0; _i < parameters.Length; _i++) {
                 ParameterInfo _parameter = parameters[_i];
@@ -56,7 +56,6 @@ namespace EnhancedEditor.Editor {
         public override bool OnGUI() {
             ButtonAttribute _attribute = Attribute as ButtonAttribute;
 
-
             if (!_attribute.Mode.IsActive() ||
                 (useCondition && _attribute.ConditionMember.GetValue(SerializedObject, out bool _value) && (_value != _attribute.ConditionType.Get()))) {
                 return false;
@@ -67,8 +66,10 @@ namespace EnhancedEditor.Editor {
 
                 // Pack all button GUI controls within a nice box group.
                 float _size = Mathf.Max(EditorStyles.label.CalcSize(Label).x + 20f, EnhancedEditorGUIUtility.ScreenWidth - 250f);
+
                 using (var _verticalScope = new GUILayout.VerticalScope(EditorStyles.helpBox, GUILayout.Width(_size))) {
                     using (EnhancedGUI.GUIColor.Scope(_attribute.Color)) {
+
                         if (GUILayout.Button(Label, GUILayout.Height(ButtonHeight))) {
                             foreach (Object _target in SerializedObject.targetObjects) {
                                 MethodInfo.Invoke(_target, parameterValues);
@@ -78,8 +79,9 @@ namespace EnhancedEditor.Editor {
 
                     // Adjust the label width according to the size of the button.
                     using (var _labelScope = EnhancedEditorGUI.GUILabelWidth.Scope(_size * LabelWidthCoef)) {
-                        for (int _i = 0; _i < parameters.Length; _i++)
-                            DrawParameterField(_i);
+                        for (int i = 0; i < parameters.Length; i++) {
+                            DrawParameterField(i);
+                        }
                     }
                 }
 
@@ -116,12 +118,12 @@ namespace EnhancedEditor.Editor {
 
         private void DrawParameterField(int _index) {
             ParameterInfo _parameter = parameters[_index];
-            GUIContent _name = parametersGUI[_index];
+            GUIContent _name  = parametersGUI[_index];
             ref object _value = ref parameterValues[_index];
 
             Type _type = _parameter.ParameterType;
-            if (parameterTypes.ContainsKey(_parameter.ParameterType)) {
-                switch (parameterTypes[_type]) {
+            if (parameterTypes.TryGetValue(_parameter.ParameterType, out int _typeIndex)) {
+                switch (_typeIndex) {
                     // Boolean.
                     case 0:
                         _value = EditorGUILayout.Toggle(_name, (bool)_value);

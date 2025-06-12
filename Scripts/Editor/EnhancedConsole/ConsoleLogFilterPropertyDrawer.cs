@@ -14,11 +14,11 @@ namespace EnhancedEditor.Editor {
     [CustomPropertyDrawer(typeof(ConsoleLogFilter), true)]
     public sealed class ConsoleLogFilterPropertyDrawer : EnhancedPropertyEditor {
         #region Drawer Content
-        private static readonly GUIContent enabledGUI = new GUIContent(EditorGUIUtility.FindTexture("scenevis_visible_hover"), "Toggles this filter activation (currently enabled)");
         private static readonly GUIContent disabledGUI = new GUIContent(EditorGUIUtility.FindTexture("SceneViewVisibility"), "Toggles this filter activation (currently disabled)");
+        private static readonly GUIContent enabledGUI  = new GUIContent(EditorGUIUtility.FindTexture("scenevis_visible_hover"), "Toggles this filter activation (currently enabled)");
 
         private static readonly GUIContent previewHeaderGUI = new GUIContent("Preview", "Log preview with this filter");
-        private static readonly GUIContent previewLabelGUI = new GUIContent("Here is a preview log", string.Empty);
+        private static readonly GUIContent previewLabelGUI  = new GUIContent("Here is a preview log", string.Empty);
 
         // -----------------------
 
@@ -26,8 +26,8 @@ namespace EnhancedEditor.Editor {
             _position.height = EditorGUIUtility.singleLineHeight;
 
             // Header with the filter name next to a foldout, and an enabled toggle.
-            SerializedProperty _nameProperty = _property.FindPropertyRelative("Name");
             SerializedProperty _enabledProperty = _property.FindPropertyRelative("Enabled");
+            SerializedProperty _nameProperty    = _property.FindPropertyRelative("Name");
 
             _property.isExpanded = EditorGUI.Foldout(_position, _property.isExpanded, GUIContent.none, false);
 
@@ -42,7 +42,7 @@ namespace EnhancedEditor.Editor {
             _temp.xMax = _position.xMax;
 
             using (var _scope = new EditorGUI.PropertyScope(_temp, GUIContent.none, _enabledProperty)) {
-                bool _enabled = _enabledProperty.boolValue;
+                bool _enabled   = _enabledProperty.boolValue;
                 GUIContent _gui = _enabled
                                 ? enabledGUI
                                 : disabledGUI;
@@ -64,7 +64,7 @@ namespace EnhancedEditor.Editor {
 
                 _extraHeight += 5f;
 
-                _position.y += _extraHeight + EditorGUIUtility.standardVerticalSpacing;
+                _position.y      += _extraHeight + EditorGUIUtility.standardVerticalSpacing;
                 _position.height += EditorGUIUtility.standardVerticalSpacing;
 
                 // Filter preview.
@@ -81,13 +81,13 @@ namespace EnhancedEditor.Editor {
             EditorGUI.LabelField(_position, previewHeaderGUI, EditorStyles.boldLabel);
 
             _position.y += _position.height + EditorGUIUtility.standardVerticalSpacing;
-            _height += _position.height + EditorGUIUtility.standardVerticalSpacing;
+            _height     += _position.height + EditorGUIUtility.standardVerticalSpacing;
 
             EditorGUI.DrawRect(_position, SuperColor.Black.Get());
 
             _position.x += 1f;
             _position.y += 1f;
-            _position.width -= 2f;
+            _position.width  -= 2f;
             _position.height -= 2f;
 
             // Background color.
@@ -106,7 +106,7 @@ namespace EnhancedEditor.Editor {
                 x = _position.x + 5f,
                 y = _position.y + 1f,
                 width = EnhancedEditorGUIUtility.IconWidth,
-                yMax = _position.yMax - 1f,
+                yMax  = _position.yMax - 1f,
             };
 
             _content.image = _property.FindPropertyRelative("Icon").objectReferenceValue as Texture;

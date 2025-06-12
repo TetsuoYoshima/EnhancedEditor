@@ -29,43 +29,55 @@ namespace EnhancedEditor.Editor {
             public void DrawMethodDrawers(bool _isOnTop) {
                 Rect _position = EditorGUILayout.GetControlRect(false, -EditorGUIUtility.standardVerticalSpacing);
 
+                ref MethodDrawer[] _span = ref MethodDrawers;
+                int _length  = _span.Length;
+
                 // Pre GUI callback.
-                foreach (MethodDrawer _drawer in MethodDrawers) {
-                    if ((_isOnTop == _drawer.Attribute.IsDrawnOnTop) && _drawer.OnBeforeGUI())
+                for (int i = 0; i < _length; i++) {
+                    MethodDrawer _drawer = _span[i];
+                    if ((_isOnTop == _drawer.Attribute.IsDrawnOnTop) && _drawer.OnBeforeGUI()) {
                         return;
+                    }
                 }
 
                 // Method GUI.
-                foreach (MethodDrawer _drawer in MethodDrawers) {
-                    if ((_isOnTop == _drawer.Attribute.IsDrawnOnTop) && _drawer.OnGUI())
+                for (int i = 0; i < _length; i++) {
+                    MethodDrawer _drawer = _span[i];
+                    if ((_isOnTop == _drawer.Attribute.IsDrawnOnTop) && _drawer.OnGUI()) {
                         break;
+                    }
                 }
 
                 // Post GUI callback.
-                foreach (MethodDrawer _drawer in MethodDrawers) {
-                    if (_isOnTop == _drawer.Attribute.IsDrawnOnTop)
+                for (int i = 0; i < _length; i++) {
+                    MethodDrawer _drawer = _span[i];
+                    if (_isOnTop == _drawer.Attribute.IsDrawnOnTop) {
                         _drawer.OnAfterGUI();
+                    }
                 }
 
                 // Context click menu. 
                 _position.height = GUILayoutUtility.GetLastRect().yMax - _position.y;
 
                 if (EnhancedEditorGUIUtility.ContextClick(_position)) {
-                    GenericMenu _menu = new GenericMenu();
-                    foreach (MethodDrawer _drawer in MethodDrawers)
-                        _drawer.OnContextMenu(_menu);
 
-                    if (_menu.GetItemCount() > 0)
+                    GenericMenu _menu = new GenericMenu();
+                    for (int i = 0; i < _length; i++) {
+                        _span[i].OnContextMenu(_menu);
+                    }
+
+                    if (_menu.GetItemCount() > 0) {
                         _menu.ShowAsContext();
+                    }
                 }
             }
         }
         #endregion
 
         #region Editor Content
-        private const string ScriptPropertyName     = "m_Script";
-        private const string ChronosPropertyName    = "chronos";
         protected const float SaveValueButtonWidth  = 100f;
+        private const string ChronosPropertyName    = "chronos";
+        private const string ScriptPropertyName     = "m_Script";
 
         private const BindingFlags MethodInfoFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
 
@@ -78,8 +90,8 @@ namespace EnhancedEditor.Editor {
         private static readonly Dictionary<UnityObjectEditor, Type> editors = new Dictionary<UnityObjectEditor, Type>();
         private readonly List<SerializedProperty> properties = new List<SerializedProperty>();
 
-        private UnityObjectDrawer[] objectDrawers = new UnityObjectDrawer[] { };
         private MethodDrawerGroup[] methodDrawerGroups = new MethodDrawerGroup[] { };
+        private UnityObjectDrawer[] objectDrawers      = new UnityObjectDrawer[] { };
 
         /// <summary>
         /// Indicates if the data of the editing object can be saved.
@@ -104,8 +116,9 @@ namespace EnhancedEditor.Editor {
             // Registration.
             editors.Add(this, target.GetType());
 
-            saveValueGUI.image = EditorGUIUtility.FindTexture("SaveAs");
-            loadValueGUI.image = EditorGUIUtility.FindTexture("SaveAs");
+            Texture2D _image = EditorGUIUtility.FindTexture("SaveAs");
+            saveValueGUI.image = _image;
+            loadValueGUI.image = _image;
 
             // Get properties.
             SerializedProperty _property = serializedObject.GetIterator();
@@ -199,48 +212,62 @@ namespace EnhancedEditor.Editor {
 
         public override void OnInspectorGUI() {
             try {
+                ref MethodDrawerGroup[] _groupSpan = ref methodDrawerGroups;
+                int _groupCount = _groupSpan.Length;
+
                 // Top method drawers.
-                foreach (MethodDrawerGroup _group in methodDrawerGroups) {
-                    _group.DrawMethodDrawers(true);
+                for (int i = 0; i < _groupCount; i++) {
+                    _groupSpan[i].DrawMethodDrawers(true);
                 }
 
                 // Inspector.
                 bool _drawInspector = true;
-                foreach (UnityObjectDrawer _drawer in objectDrawers) {
-                    if (_drawer.OnInspectorGUI()) {
-                        _drawInspector = false;
-                        break;
+                {
+                    ref UnityObjectDrawer[] _drawerSpan = ref objectDrawers;
+                    int _drawerCount = _drawerSpan.Length;
+
+                    for (int i = 0; i < _drawerCount; i++) {
+                        if (_drawerSpan[i].OnInspectorGUI()) {
+                            _drawInspector = false;
+                            break;
+                        }
                     }
                 }
 
                 if (_drawInspector) {
 
-                    if (properties.Count != 0) {
+                    List<SerializedProperty> _propertySpan = properties;
+                    int _propertyCount = _propertySpan.Count;
 
-                        serializedObject.Update();
+                    if (_propertyCount != 0) {
+
+                        SerializedObject _serializedObject = serializedObject;
+                        _serializedObject.Update();
+
                         int _startIndex = 0;
 
                         // First property is script type, so display it as readonly.
-                        if (properties[0].propertyPath == ScriptPropertyName) {
+                        SerializedProperty _property = _propertySpan[0];
+                        if (_property.propertyPath.Equals(ScriptPropertyName, StringComparison.Ordinal)) {
 
                             _startIndex++;
-                            EnhancedEditorGUILayout.ReadonlyField(properties[0], true);
+                            EnhancedEditorGUILayout.ReadonlyField(_property, true);
                         }
 
-                        if ((properties.Count > 2) && (properties[1].propertyPath == ChronosPropertyName)) {
+                        _property = _propertySpan[1];
+                        if ((_propertyCount > 2) && _property.propertyPath.Equals(ChronosPropertyName, StringComparison.Ordinal)) {
 
                             _startIndex++;
-                            EnhancedEditorGUILayout.ReadonlyField(properties[1], true);
+                            EnhancedEditorGUILayout.ReadonlyField(_property, true);
                         }
 
                         if (DrawInspectorGUI()) {
-                            for (int i = _startIndex; i < properties.Count; i++) {
-                                SerializedProperty _property = properties[i];
-                                EditorGUILayout.PropertyField(_property, true);
+                            for (int i = _startIndex; i < _propertyCount; i++) {
+                                EditorGUILayout.PropertyField(_propertySpan[i], true);
                             }
                         }
 
-                        serializedObject.ApplyModifiedProperties();
+                        _serializedObject.ApplyModifiedProperties();
 
                     } else {
 
@@ -254,8 +281,8 @@ namespace EnhancedEditor.Editor {
                 GUILayout.Space(10f);
 
                 // Bottom method drawers.
-                foreach (MethodDrawerGroup _group in methodDrawerGroups) {
-                    _group.DrawMethodDrawers(false);
+                for (int i = 0; i < _groupCount; i++) {
+                    _groupSpan[i].DrawMethodDrawers(false);
                 }
             } catch (InvalidOperationException e) {
                 this.LogException(e);
@@ -267,8 +294,8 @@ namespace EnhancedEditor.Editor {
             // Unegistration.
             editors.Remove(this);
 
-            foreach (var _drawer in objectDrawers) {
-                _drawer.OnDisable();
+            for (int i = 0; i < objectDrawers.Length; i++) {
+                objectDrawers[i].OnDisable();
             }
         }
 
@@ -342,9 +369,8 @@ namespace EnhancedEditor.Editor {
             using (var _scope = EnhancedGUI.GUIContentColor.Scope(saveButtonColor)) {
                 if (EnhancedEditorGUI.IconDropShadowButton(_position, saveValueGUI)) {
 
-                    foreach (Object _target in targets) {
-
-                        MenuCommand _command = new MenuCommand(_target);
+                    for (int i = 0; i < targets.Length; i++) {
+                        MenuCommand _command = new MenuCommand(targets[i]);
                         SaveData(_command);
                     }
                 }
@@ -359,9 +385,8 @@ namespace EnhancedEditor.Editor {
             using (var _scope = EnhancedGUI.GUIContentColor.Scope(loadButtonColor)) {
                 if (EnhancedEditorGUI.IconDropShadowButton(_position, loadValueGUI)) {
 
-                    foreach (Object _target in targets) {
-
-                        MenuCommand _command = new MenuCommand(_target);
+                    for (int i = 0; i < targets.Length; i++) {
+                        MenuCommand _command = new MenuCommand(targets[i]);
                         LoadData(_command);
                     }
                 }
@@ -381,8 +406,8 @@ namespace EnhancedEditor.Editor {
 
         #region Context
         private const int ContextMenuOrder = 900;
-        private const string SaveDataMenu = "CONTEXT/Component/Save Data";
-        private const string LoadDataMenu = "CONTEXT/Component/Load Data";
+        private const string SaveDataMenu  = "CONTEXT/Component/Save Data";
+        private const string LoadDataMenu  = "CONTEXT/Component/Load Data";
 
         // -------------------------------------------
         // Save
@@ -420,11 +445,9 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         [MenuItem(LoadDataMenu, false, ContextMenuOrder)]
         public static void LoadData(MenuCommand _command) {
-
             Object _context = _command.context;
 
-            if (CanSaveObjectData(_context, out UnityObjectEditor _editor)) {
-
+            if (CanSaveObjectData(_context, out _)) {
                 PlayModeDataSave.LoadData(_context);
             }
         }

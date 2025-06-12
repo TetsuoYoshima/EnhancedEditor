@@ -21,17 +21,19 @@ namespace EnhancedEditor.Editor {
             public GUIContent[] Names = new GUIContent[0];
             public int[] Values = new int[0];
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public EnumInfos(List<EnumValueInfo> _values) {
 
                 int _count = _values.Count;
 
-                Names = new GUIContent[_count];
+                Names  = new GUIContent[_count];
                 Values = new int[_count];
 
                 for (int i = 0; i < _count; i++) {
-                    Names[i] = new GUIContent(ObjectNames.NicifyVariableName(_values[i].Name), _values[i].Tooltip);
+                    Names[i]  = new GUIContent(ObjectNames.NicifyVariableName(_values[i].Name), _values[i].Tooltip);
                     Values[i] = _values[i].Value;
 
                     if (Names[i].text == "_") {

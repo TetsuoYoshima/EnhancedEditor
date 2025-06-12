@@ -7,6 +7,8 @@
 using System;
 
 namespace EnhancedEditor.Editor {
+    // ===== Base ===== \\
+    
     /// <summary>
     /// Allows you to draw your own extension controls on the main editor toolbar.
     /// <br/>Extensions can be drawn whether on the left or on the right side of the play mode buttons.
@@ -23,11 +25,13 @@ namespace EnhancedEditor.Editor {
         #endregion
     }
 
-    /// <inheritdoc cref="EditorToolbarExtension"/>
-    /// <remarks>Order is from right (smaller) to left (greater).</remarks>
-    public sealed class EditorToolbarLeftExtension : EditorToolbarExtension { }
+    // ===== Derived ===== \\
 
     /// <inheritdoc cref="EditorToolbarExtension"/>
     /// <remarks>Order is from left (smaller) to right (greater).</remarks>
     public sealed class EditorToolbarRightExtension : EditorToolbarExtension { }
+
+    /// <inheritdoc cref="EditorToolbarExtension"/>
+    /// <remarks>Order is from right (smaller) to left (greater).</remarks>
+    public sealed class EditorToolbarLeftExtension  : EditorToolbarExtension { }
 }

@@ -13,36 +13,36 @@ namespace EnhancedEditor {
     /// A list of emoji that can be converted to their unicode value using
     /// <see cref="UnicodeEmojiExtensions.Get(UnicodeEmoji)"/>.
     /// </summary>
-    public enum UnicodeEmoji {  // The enum index can be used as decimal code.
-        CheckMark       = 10004,
-        Cross           = 10006,
-        HeavyCross      = 10008,
-        GreekCross      = 10010,
+    public enum UnicodeEmoji { // The enum index can be used as decimal code.
+        CheckMark           = 10004,
+        Cross               = 10006,
+        HeavyCross          = 10008,
+        GreekCross          = 10010,
 
-        Star            = 9733,
-        StarFourPoint   = 10022,
+        Star                = 9733,
+        StarFourPoint       = 10022,
 
-        Spade           = 9824,
-        HeartOutline    = 9825,
-        Club            = 9827,
-        Heart           = 9829,
-        Diamond         = 9830,
+        Spade               = 9824,
+        HeartOutline        = 9825,
+        Club                = 9827,
+        Heart               = 9829,
+        Diamond             = 9830,
 
-        Flower           = 10047,
-        BeamedEighthNote = 9835,
-        EighthNote       = 9834,
+        Flower              = 10047,
+        BeamedEighthNote    = 9835,
+        EighthNote          = 9834,
 
-        LeftArrow       = 8592,
-        UpArrow         = 8593,
-        RightArrow      = 8594,
-        DownArrow       = 8595,
+        LeftArrow           = 8592,
+        UpArrow             = 8593,
+        RightArrow          = 8594,
+        DownArrow           = 8595,
 
-        HeavyRightArrow = 10132,
+        HeavyRightArrow     = 10132,
 
-        UpTriangle      = 9650,
-        RightTriangle   = 9654,
-        DownTriangle    = 9660,
-        LeftTriangle    = 9664,
+        UpTriangle          = 9650,
+        RightTriangle       = 9654,
+        DownTriangle        = 9660,
+        LeftTriangle        = 9664,
     }
 
     /// <summary>

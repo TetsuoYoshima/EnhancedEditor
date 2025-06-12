@@ -1013,12 +1013,18 @@ namespace EnhancedEditor.Editor {
 
             Rect _temp = _position;
 
+            Debug.LogWarning("Pos #1 => " + _temp + " - " + EditorGUIUtility.labelWidth + " - "  + Event.current.type);
+
             if (_temp.width > EditorGUIUtility.labelWidth) {
                 _temp = EditorGUI.PrefixLabel(_position, _label);
             }
 
+            Debug.LogWarning("Pos #2 => " + _temp + " - " + Event.current.type);
+
             _temp.width -= _secondPropertyWidth;
             _temp.height = Mathf.Max(EditorGUI.GetPropertyHeight(_property), EditorGUI.GetPropertyHeight(_secondProperty));
+
+            Debug.LogWarning("Pos #3 => " + _temp + " - " + Event.current.type);
 
             // Draw both properties.
             using (ZeroIndentScope()) {

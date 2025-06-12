@@ -77,6 +77,7 @@ namespace EnhancedEditor {
         // Create
         // -------------------------------------------
 
+        /// <inheritdoc cref="TagDatabase.CreateTag(string, Color)"/>
         public void CreateTag(string _name, Color _color) {
             TagDatabase.Database.CreateTag(_name, _color, this);
         }
@@ -100,11 +101,13 @@ namespace EnhancedEditor {
         /// <param name="_id">ID of the <see cref="TagData"/> to delete.</param>
         /// <inheritdoc cref="DeleteTag(TagData)"/>
         public bool DeleteTag(long _id) {
-            for (int i = Tags.Length; i-- > 0;) {
-                if (Tags[i].ID == _id) {
+            ref TagData[] _tagSpan = ref Tags;
+
+            for (int i = _tagSpan.Length; i-- > 0;) {
+                if (_tagSpan[i].ID == _id) {
 
                     RecordChanges();
-                    ArrayUtility.RemoveAt(ref Tags, i);
+                    ArrayUtility.RemoveAt(ref _tagSpan, i);
                     SaveChanges();
                     return true;
                 }
@@ -135,8 +138,10 @@ namespace EnhancedEditor {
         /// <param name="_id">ID of the <see cref="TagData"/> to find.</param>
         /// <inheritdoc cref="GetTag(string,out TagData)"/>
         public bool GetTag(long _id, out TagData _data) {
-            for (int i = Tags.Length; i-- > 0;) {
-                TagData _temp = Tags[i];
+            ref TagData[] _tagSpan = ref Tags;
+
+            for (int i = _tagSpan.Length; i-- > 0;) {
+                TagData _temp = _tagSpan[i];
 
                 if (_temp.ID == _id) {
                     _data = _temp;
@@ -155,8 +160,10 @@ namespace EnhancedEditor {
         /// <param name="_data">The retrieved <see cref="TagData"/> (null if none).</param>
         /// <returns>True if the corresponding tag could be found, false otherwise.</returns>
         public bool GetTag(string _name, out TagData _data) {
-            for (int i = Tags.Length; i-- > 0;) {
-                TagData _temp = Tags[i];
+            ref TagData[] _tagSpan = ref Tags;
+            
+            for (int i = _tagSpan.Length; i-- > 0;) {
+                TagData _temp = _tagSpan[i];
 
                 if (_temp.Name.Equals(_name, StringComparison.Ordinal)) {
                     _data = _temp;
@@ -184,8 +191,7 @@ namespace EnhancedEditor {
         /// </summary>
         internal void RecordChanges() {
             #if UNITY_EDITOR
-            try
-            {
+            try {
                 Undo.RegisterCompleteObjectUndo(this, "Tag Holder changes");
             }
             catch (ArgumentNullException) { }

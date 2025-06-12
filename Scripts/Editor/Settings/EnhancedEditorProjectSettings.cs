@@ -20,6 +20,8 @@ namespace EnhancedEditor.Editor {
         private const string DefaultSettingsDirectory = "EnhancedEditor/Editor/Settings/";
         private static EnhancedEditorProjectSettings instance = null;
 
+        // -----------------------
+
         /// <inheritdoc cref="EnhancedEditorProjectSettings"/>
         public static EnhancedEditorProjectSettings Instance {
             get {
@@ -47,8 +49,7 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         [MenuItem(MenuPath + "Project Settings", false, -50), Button(SuperColor.Green, IsDrawnOnTop = false)]
         public static EditorWindow OpenSettings() {
-            EditorWindow _projectSettings = SettingsService.OpenProjectSettings(ProjectSettingsPath);
-            return _projectSettings;
+            return SettingsService.OpenProjectSettings(ProjectSettingsPath);
         }
 
         public override void Save() {

@@ -25,7 +25,6 @@ namespace EnhancedEditor {
         /// <param name="_text"><inheritdoc cref="Doc(string)" path="/param[@name='_text']"/></param>
         /// <param name="_richTextTag">The rich text tag to encapsulate this text within.</param>
         /// <param name="_tagValue">The value of this tag.</param>
-        /// <param name="_text"><inheritdoc cref="Doc(string)" path="/param[@name='_text']"/></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Encapsulate(string _text, string _richTextTag, string _tagValue) {
             return $"<{_richTextTag}={_tagValue}>{_text}</{_richTextTag}>";
@@ -33,12 +32,14 @@ namespace EnhancedEditor {
         #endregion
 
         #region Rich Text
+        public const string ItalicTag   = "i";
         public const string ColorTag    = "color";
         public const string SizeTag     = "size";
         public const string BoldTag     = "b";
-        public const string ItalicTag   = "i";
 
-        // --- Color --- \\
+        // -------------------------------------------
+        // Color
+        // -------------------------------------------
 
         /// <inheritdoc cref="Color(string, UnityEngine.Color)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,7 +58,9 @@ namespace EnhancedEditor {
             return Encapsulate(_text, ColorTag, $"#{ColorUtility.ToHtmlStringRGBA(_color)}");
         }
 
-        // --- Various --- \\
+        // -------------------------------------------
+        // Other
+        // -------------------------------------------
 
         /// <summary>
         /// Renders a specific <see cref="string"/> text in boldface.

@@ -93,8 +93,8 @@ namespace EnhancedEditor {
             return !(a == b);
         }
 
-        public override readonly bool Equals(object obj) {
-            if (obj is not Tag _tag)
+        public override readonly bool Equals(object _object) {
+            if (_object is not Tag _tag)
                 return false;
 
             return _tag.Equals(this);
