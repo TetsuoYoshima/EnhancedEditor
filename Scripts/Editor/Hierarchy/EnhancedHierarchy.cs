@@ -244,7 +244,7 @@ namespace EnhancedEditor.Editor {
 
         private static bool isHierarchyFocused      = false;
 
-        private static TreeViewState treeView       = null;
+        private static TreeViewState<int> treeView  = null;
         private static object treeViewController    = null;
         private static List<int> dragSelection      = null;
 
@@ -559,7 +559,11 @@ namespace EnhancedEditor.Editor {
 
         private static readonly Type hierarchyType                  = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchy");
         private static readonly Type hierarchyWindowType            = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
-        private static readonly Type treeViewControllerType         = typeof(EditorWindow).Assembly.GetType("UnityEditor.IMGUI.Controls.TreeViewController");
+        private static readonly Type treeViewControllerType         = typeof(EditorWindow).Assembly.GetType("UnityEditor.IMGUI.Controls.TreeViewController`1")
+                                                                        #if UNITY_6000_2
+                                                                        .MakeGenericType(typeof(int))
+                                                                        #endif
+                                                                        ;
 
         private static readonly FieldInfo treeViewField             = hierarchyType.GetField("m_TreeViewState", BindingFlags.Instance | Flags);
         private static readonly FieldInfo treeViewControllerField   = hierarchyType.GetField("m_TreeView", BindingFlags.Instance | Flags);
@@ -572,7 +576,11 @@ namespace EnhancedEditor.Editor {
 
         #if UNITY_2021
         private static readonly Type integerCacheType               = treeViewControllerType.GetNestedType("IntegerCache", Flags);
-        private static readonly FieldInfo dragListField             = integerCacheType.GetField("m_List", BindingFlags.Instance | Flags);
+        private static readonly FieldInfo dragListField             = integerCacheType
+                                                                        #if UNITY_6000_2
+                                                                        .MakeGenericType(typeof(int))
+                                                                        #endif
+                                                                        .GetField("m_List", BindingFlags.Instance | Flags);
         #endif
 
         private static readonly HierarchyStyle tempStyle = new HierarchyStyle();
@@ -583,7 +591,7 @@ namespace EnhancedEditor.Editor {
             try {
                 if (GetHierarchy(out var _hierarchy)) {
 
-                    treeView = treeViewField.GetValue(_hierarchy) as TreeViewState;
+                    treeView = treeViewField.GetValue(_hierarchy) as TreeViewState<int>;
                     treeViewController = treeViewControllerField.GetValue(_hierarchy);
                 }
             } catch (Exception e) {
