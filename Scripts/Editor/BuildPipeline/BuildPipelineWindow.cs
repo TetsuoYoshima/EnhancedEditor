@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEditorInternal;
 using UnityEngine;
@@ -802,10 +803,10 @@ namespace EnhancedEditor.Editor {
 
         private void RefreshProjectScenes() {
             UnityEditor.SceneAsset[] _projectScenes = EnhancedEditorUtility.LoadAssets<UnityEditor.SceneAsset>();
-            for (int _i = _projectScenes.Length; _i-- > 0;) {
-                UnityEditor.SceneAsset _scene = _projectScenes[_i];
+            for (int i = _projectScenes.Length; i-- > 0;) {
+                UnityEditor.SceneAsset _scene = _projectScenes[i];
                 if (Array.Exists(buildScenes, (b) => b.Scene == _scene)) {
-                    ArrayUtility.RemoveAt(ref _projectScenes, _i);
+                    ArrayUtility.RemoveAt(ref _projectScenes, i);
                 }
             }
 
@@ -846,11 +847,11 @@ namespace EnhancedEditor.Editor {
         }
 
         private void MoveSelectedScenes(ref SceneWrapper[] _removeFrom, ref SceneWrapper[] _addTo) {
-            for (int _i = _removeFrom.Length; _i-- > 0;) {
-                SceneWrapper _scene = _removeFrom[_i];
+            for (int i = _removeFrom.Length; i-- > 0;) {
+                SceneWrapper _scene = _removeFrom[i];
                 if (_scene.IsSelected) {
                     ArrayUtility.Add(ref _addTo, _scene);
-                    ArrayUtility.RemoveAt(ref _removeFrom, _i);
+                    ArrayUtility.RemoveAt(ref _removeFrom, i);
 
                     _scene.IsSelected = false;
                     _scene.IsEnabled = true;
@@ -908,7 +909,7 @@ namespace EnhancedEditor.Editor {
                 options = _preset.BuildOptions
             };
 
-            string _symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(_options.targetGroup);
+            string _symbols = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(_options.targetGroup));
             SetScriptingDefineSymbols(_options.targetGroup, _preset.ScriptingDefineSymbols);
 
             bool _succeed = BuildPipeline.BuildPlayer(_options).summary.result == BuildResult.Succeeded;
@@ -1372,8 +1373,8 @@ namespace EnhancedEditor.Editor {
             int _index = 0;
 
             // Custom symbols.
-            for (int _i = 0; _i < customSymbols.Length; _i++) {
-                ScriptingDefineSymbolInfo _symbol = customSymbols[_i];
+            for (int i = 0; i < customSymbols.Length; i++) {
+                ScriptingDefineSymbolInfo _symbol = customSymbols[i];
                 if (!_symbol.IsVisible)
                     continue;
 
@@ -1400,7 +1401,7 @@ namespace EnhancedEditor.Editor {
                 EditorGUI.LabelField(_temp, _symbol.Label);
 
                 // Scroll focus.
-                if ((_i == lastSelectedSymbol) && doFocusSymbol && (Event.current.type == EventType.Repaint)) {
+                if ((i == lastSelectedSymbol) && doFocusSymbol && (Event.current.type == EventType.Repaint)) {
                     Vector2 _areaSize = new Vector2(0f, SectionHeight - 21f);
                     customSymbolsScroll = EnhancedEditorGUIUtility.FocusScrollOnPosition(customSymbolsScroll, _position, _areaSize);
 
@@ -1409,7 +1410,7 @@ namespace EnhancedEditor.Editor {
                 }
 
                 // Select on click.
-                EnhancedEditorGUIUtility.MultiSelectionClick(_position, customSymbols, _i, IsSymbolSelected, CanSelectSymbol, SelectSymbol);
+                EnhancedEditorGUIUtility.MultiSelectionClick(_position, customSymbols, i, IsSymbolSelected, CanSelectSymbol, SelectSymbol);
             }
         }
 
@@ -1589,22 +1590,23 @@ namespace EnhancedEditor.Editor {
             Array.Sort(customSymbols, (a, b) => a.DefineSymbol.Symbol.CompareTo(b.DefineSymbol.Symbol));
 
             // Get all active symbols.
-            activeSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)).Split(ScriptingDefineSymbolSeparator);
+            NamedBuildTarget _buildTarget = NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            activeSymbols = PlayerSettings.GetScriptingDefineSymbols(_buildTarget).Split(ScriptingDefineSymbolSeparator);
 
             // When no symbol is enabled, an empty string will be returned; ignore it.
             if ((activeSymbols.Length == 1) && string.IsNullOrEmpty(activeSymbols[0])) {
-                activeSymbols = new string[] { };
-                otherSymbols = new string[] { };
+                activeSymbols = new string[0];
+                otherSymbols  = new string[0];
             } else {
                 // Get "other" symbols, that is non custom active symbols.
                 Array.Sort(activeSymbols);
                 otherSymbols = activeSymbols;
 
-                for (int _i = otherSymbols.Length; _i-- > 0;) {
-                    int _index = Array.FindIndex(customSymbols, (s) => s.DefineSymbol.Symbol == otherSymbols[_i]);
+                for (int i = otherSymbols.Length; i-- > 0;) {
+                    int _index = Array.FindIndex(customSymbols, (s) => s.DefineSymbol.Symbol == otherSymbols[i]);
                     if (_index > -1) {
                         customSymbols[_index].IsEnabled = true;
-                        ArrayUtility.RemoveAt(ref otherSymbols, _i);
+                        ArrayUtility.RemoveAt(ref otherSymbols, i);
                     }
                 }
             }
@@ -1636,7 +1638,7 @@ namespace EnhancedEditor.Editor {
         }
 
         private void UpdateNeedToApplySymbols() {
-            string _symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            string _symbols = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)));
             doNeedToApplySymbols = _symbols != string.Join(ScriptingDefineSymbolSeparator.ToString(), activeSymbols);
         }
 
@@ -1668,7 +1670,7 @@ namespace EnhancedEditor.Editor {
 
         private void SetScriptingDefineSymbols(BuildTargetGroup _targetGroup, string _symbols) {
             EditorUtility.DisplayProgressBar("Reloading Assemblies", "Reloading assemblies... This can take up to a few minutes.", 1f);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(_targetGroup, _symbols);
+            PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(_targetGroup), _symbols);
 
             doNeedToApplySymbols = false;
             EditorUtility.ClearProgressBar();
@@ -1869,10 +1871,10 @@ namespace EnhancedEditor.Editor {
             }
 
             // Preset initialization.
-            _customPreset.buildCount = 0;
             _customPreset.BuildOptions = 0;
-            _customPreset.BuildTarget = EditorUserBuildSettings.activeBuildTarget;
-            _customPreset.ScriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(_customPreset.BuildTarget));
+            _customPreset.buildCount   = 0;
+            _customPreset.BuildTarget  = EditorUserBuildSettings.activeBuildTarget;
+            _customPreset.ScriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(_customPreset.BuildTarget)));
         }
 
         private void CreateBuildPreset(string _name) {

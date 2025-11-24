@@ -266,8 +266,8 @@ namespace EnhancedEditor.Editor {
                 _title += _requiredTypes[0].Name;
             } else {
                 _title += $"Object with {_requiredTypes[0].Name}";
-                for (int _i = 1; _i < _requiredTypes.Length; _i++) {
-                    _title += $", {_requiredTypes[_i].Name}";
+                for (int i = 1; i < _requiredTypes.Length; i++) {
+                    _title += $", {_requiredTypes[i].Name}";
                 }
             }
 
@@ -285,7 +285,7 @@ namespace EnhancedEditor.Editor {
             // Objects.
             assetObjects = GetMatchingObjects(EnhancedEditorUtility.LoadAssets<GameObject>());
             if (_allowSceneObjects) {
-                sceneObjects = GetMatchingObjects(FindObjectsOfType<GameObject>());
+                sceneObjects = GetMatchingObjects(FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None));
                 selectedTab = ((selectedObject != null) && Array.Exists(assetObjects, o => o.Object == selectedObject))
                             ? 0
                             : 1;

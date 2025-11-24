@@ -566,8 +566,7 @@ namespace EnhancedEditor.Editor {
             // ----- Local Method ----- \\
 
             Animator[] GetSceneAnimators() {
-                Animator[] _animators = FindObjectsOfType<Animator>();
-                return _animators;
+                return FindObjectsByType<Animator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             }
         }
 
