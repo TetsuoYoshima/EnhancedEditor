@@ -70,12 +70,14 @@ namespace EnhancedEditor {
             if (!_resetPersistent && isPersistent)
                 return;
 
-            int _length = Flags.Length;
+            ref Flag[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                Flag _flag = Flags[i];
 
+                Flag _flag = _flagSpan[i];
                 _flag.value = false;
+
                 FlagUtility.OnFlagChanged(_flag, _flag.value);
             }
 
@@ -87,10 +89,11 @@ namespace EnhancedEditor {
         /// <param name="_guid">Guid of the <see cref="Flag"/> to find.</param>
         /// <inheritdoc cref="FindFlag(string, out Flag)"/>
         public bool FindFlag(int _guid, out Flag _flag) {
-            int _length = Flags.Length;
+            ref Flag[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                Flag _temp = Flags[i];
+                Flag _temp = _flagSpan[i];
 
                 if (_temp == _guid) {
                     _flag = _temp;
@@ -109,12 +112,13 @@ namespace EnhancedEditor {
         /// <param name="_flag">The retrieved <see cref="Flag"/> (null if none).</param>
         /// <returns>True if the corresponding flag could be found, false otherwise.</returns>
         public bool FindFlag(string _name, out Flag _flag) {
-            int _length = Flags.Length;
+            ref Flag[] _flagSpan = ref Flags;
+            int _length = _flagSpan.Length;
 
             for (int i = 0; i < _length; i++) {
-                Flag _temp = Flags[i];
+                Flag _temp = _flagSpan[i];
 
-                if (_temp.Name == _name) {
+                if (_temp.Name.Equals(_name, StringComparison.Ordinal)) {
                     _flag = _temp;
                     return true;
                 }
@@ -159,7 +163,7 @@ namespace EnhancedEditor {
 
         [ContextMenu("Sort by Name", false, 10)]
         private void Sort() {
-            Array.Sort(Flags, (a, b) => a.Name.CompareTo(b.Name));
+            Array.Sort(Flags, (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             EditorUtility.SetDirty(this);
         }
         #endif

@@ -57,14 +57,14 @@ namespace EnhancedEditor.Editor {
             public HierarchyObject(int _id) {
                 ID = _id;
 
-                property = new HierarchyProperty(HierarchyType.GameObjects);
+                property   = new HierarchyProperty(HierarchyType.GameObjects);
                 gameObject = EditorUtility.InstanceIDToObject(_id) as GameObject;
 
                 hasGameObject = gameObject != null;
 
                 // Extended behaviour.
                 if (hasGameObject) {
-                    behaviour = gameObject.GetExtendedBehaviour();
+                    behaviour    = gameObject.GetExtendedBehaviour();
                     hasBehaviour = behaviour != null;
 
                     icon = PrefabUtility.GetIconForGameObject(gameObject);
@@ -98,9 +98,7 @@ namespace EnhancedEditor.Editor {
 
             public bool IsSceneHeader {
                 get {
-                    return property.isValid
-                         ? property.isSceneHeader
-                         : false;
+                    return property.isValid && property.isSceneHeader;
                 }
             }
 

@@ -29,6 +29,7 @@ namespace EnhancedEditor.Editor {
             // This attribute only work with Bounds and BoundsInt property types.
             if ((SerializedProperty.propertyType == SerializedPropertyType.Bounds || SerializedProperty.propertyType == SerializedPropertyType.BoundsInt)
              && (SerializedProperty.serializedObject.targetObject is MonoBehaviour)) {
+
                 handle = new BoxBoundsHandle();
                 handle.SetColor(_attribute.Color);
 

@@ -43,26 +43,28 @@ namespace EnhancedEditor.Editor {
 
             // Folder.
             public string FolderName = string.Empty;
-            public bool Foldout = true;
+            public bool Foldout      = true;
 
             // Asset.
-            public string Type = string.Empty;
             public Object Asset = null;
+            public string Type  = string.Empty;
 
             // Global.
-            public int Indent = 0;
             public bool IsFolder = false;
+            public int Indent    = 0;
 
-            public bool IsVisible = true;
             public bool IsSelected = false;
+            public bool IsVisible  = true;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             /// <summary>
             /// Folder constructor.
             /// </summary>
             public PinObject() {
-                IsFolder = true;
+                IsFolder   = true;
                 FolderName = "New Folder";
             }
 
@@ -73,14 +75,14 @@ namespace EnhancedEditor.Editor {
             /// <br/> Must be an asset in the database, not a scene instance.</param>
             public PinObject(Object _asset, int _indent) {
                 Asset = _asset;
-                Type = _asset.GetType().ToString();
+                Type  = _asset.GetType().ToString();
 
                 // Modify the folder type name so that they are always displayed on top.
                 if (Type == FolderTypeName) {
                     Type = $"*{Type}";
                 }
 
-                Indent = _indent;
+                Indent   = _indent;
                 IsFolder = false;
             }
         }
@@ -90,7 +92,7 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// All pinned objects in the pinboard.
         /// </summary>
-        public PinObject[] PinObjects = new PinObject[] { };
+        public PinObject[] PinObjects = new PinObject[0];
         #endregion
 
         #region Utility

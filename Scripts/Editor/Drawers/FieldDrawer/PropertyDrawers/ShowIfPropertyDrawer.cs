@@ -22,7 +22,7 @@ namespace EnhancedEditor.Editor {
             }
 
             var _attribute = Attribute as ShowIfAttribute;
-            bool _hide = _attribute.ConditionMember.GetValue(_property, out bool _value) && (_value != _attribute.ConditionType.Get());
+            bool _hide     = _attribute.ConditionMember.GetValue(_property, out bool _value) && (_value != _attribute.ConditionType.Get());
 
             return _hide;
         }

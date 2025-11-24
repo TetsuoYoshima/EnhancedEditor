@@ -13,6 +13,9 @@ namespace EnhancedEditor.Editor {
     /// </summary>
     public static class SceneDesignerUtility {
         #region Collider
+        /// <summary>
+        /// Adjust the center of a given collider.
+        /// </summary>
         public static void AdjustCapsuleCenter(CapsuleCollider _capsule) {
             if (_capsule.center == Vector3.zero)
                 return;
@@ -28,6 +31,7 @@ namespace EnhancedEditor.Editor {
             EditorUtility.SetDirty(_capsule);
         }
 
+        /// <inheritdoc cref="AdjustCapsuleCenter"/>
         public static void AdjustSphereCenter(SphereCollider _sphere) {
             if (_sphere.center == Vector3.zero)
                 return;
@@ -43,6 +47,7 @@ namespace EnhancedEditor.Editor {
             EditorUtility.SetDirty(_sphere);
         }
 
+        /// <inheritdoc cref="AdjustCapsuleCenter"/>
         public static void AdjustBoxCenter(BoxCollider _box) {
             if (_box.center == Vector3.zero)
                 return;

@@ -86,7 +86,9 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Shortcut(s)
+        // -------------------------------------------
 
         [Shortcut(ShortcutBasePath + "Increase Time Scale", KeyCode.KeypadPlus)]
         private static void IncreaseShortcut() {

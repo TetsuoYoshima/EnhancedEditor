@@ -24,7 +24,9 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         public static FlagDatabase Database => resource.GetResource();
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static FlagDatabaseManager() {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;

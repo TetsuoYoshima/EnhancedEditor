@@ -16,18 +16,15 @@ namespace EnhancedEditor.Editor {
         #region Styles
         private static class Styles {
             public static readonly GUIStyle BigTitleStyle = new GUIStyle("In BigTitle");
-            public static readonly GUIStyle TitleStyle = new GUIStyle(EnhancedEditorStyles.BoldWordWrappedLabel)
-                                                                {
+            public static readonly GUIStyle TitleStyle = new GUIStyle(EnhancedEditorStyles.BoldWordWrappedLabel) {
                 fontSize = TitleSize
             };
 
-            public static readonly GUIStyle HeaderStyle = new GUIStyle(EnhancedEditorStyles.BoldWordWrappedRichText)
-                                                                {
+            public static readonly GUIStyle HeaderStyle = new GUIStyle(EnhancedEditorStyles.BoldWordWrappedRichText) {
                 fontSize = HeaderSize
             };
 
-            public static readonly GUIStyle LabelStyle = new GUIStyle(EnhancedEditorStyles.WordWrappedRichText)
-                                                                {
+            public static readonly GUIStyle LabelStyle = new GUIStyle(EnhancedEditorStyles.WordWrappedRichText) {
                 fontSize = LabelSize
             };
         }
@@ -39,13 +36,13 @@ namespace EnhancedEditor.Editor {
         private const int HeaderSize = 18;
         private const int LabelSize  = 14;
 
-        private static readonly GUIContent editGUI    = new GUIContent("Edit", "Edit this Document.");
         private static readonly GUIContent displayGUI = new GUIContent("Display", "Display this Document.");
+        private static readonly GUIContent editGUI    = new GUIContent("Edit",    "Edit this Document.");
 
         private static bool isEditing = false;
 
         private Document document = null;
-        private Vector2 scroll = new Vector2();
+        private Vector2 scroll    = new Vector2();
 
         // -----------------------
 

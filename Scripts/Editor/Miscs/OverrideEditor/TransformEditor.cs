@@ -16,21 +16,25 @@ namespace EnhancedEditor.Editor {
     /// </summary>
     [CustomEditor(typeof(Transform), true), CanEditMultipleObjects]
     public sealed class TransformEditor : UnityObjectEditor {
-        #region Data
         /// <summary>
         /// Serializable <see cref="Transform"/> data.
         /// </summary>
         [Serializable]
         private sealed class Data : PlayModeObjectData {
+            #region Content
             public Vector3 Position;
             public Vector3 Rotation;
             public Vector3 Scale;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public Data() : base() { }
 
-            // -----------------------
+            // -------------------------------------------
+            // Utility
+            // -------------------------------------------
 
             public override void Save(Object _object) {
 
@@ -57,8 +61,8 @@ namespace EnhancedEditor.Editor {
 
                 return false;
             }
+            #endregion
         }
-        #endregion
 
         #region Editor Content
         private const float Spacing = 5f;
@@ -74,18 +78,18 @@ namespace EnhancedEditor.Editor {
 
         private static readonly GUIContent resetPositionGUI = new GUIContent(string.Empty, "Reset the position of the selected object(s).");
         private static readonly GUIContent resetRotationGUI = new GUIContent(string.Empty, "Reset the rotation of the selected object(s).");
-        private static readonly GUIContent resetScaleGUI = new GUIContent(string.Empty, "Reset the scale of the selected object(s).");
+        private static readonly GUIContent resetScaleGUI    = new GUIContent(string.Empty, "Reset the scale of the selected object(s).");
 
-        private static readonly GUIContent copyPositionGUI = new GUIContent("Copy Position", "Copy the local position of the selected object(s).");
-        private static readonly GUIContent copyRotationGUI = new GUIContent("Copy Rotation", "Copy the local rotation of the selected object(s).");
-        private static readonly GUIContent copyScaleGUI = new GUIContent("Copy Scale", "Copy the local scale of the selected object(s).");
+        private static readonly GUIContent copyPositionGUI  = new GUIContent("Copy Position", "Copy the local position of the selected object(s).");
+        private static readonly GUIContent copyRotationGUI  = new GUIContent("Copy Rotation", "Copy the local rotation of the selected object(s).");
+        private static readonly GUIContent copyScaleGUI     = new GUIContent("Copy Scale", "Copy the local scale of the selected object(s).");
 
         private static readonly GUIContent pastePositionGUI = new GUIContent("Paste Position", "Overwrite the local position of the selected object(s) with the one in buffer.");
         private static readonly GUIContent pasteRotationGUI = new GUIContent("Paste Rotation", "Overwrite the local rotation of the selected object(s) with the one in buffer.");
-        private static readonly GUIContent pasteScaleGUI = new GUIContent("Paste Scale", "Overwrite the local scale of the selected object(s) with the one in buffer.");
+        private static readonly GUIContent pasteScaleGUI    = new GUIContent("Paste Scale", "Overwrite the local scale of the selected object(s) with the one in buffer.");
 
-        private static bool isLocalSpace = true;
-        private static Data data = new Data();
+        private static readonly Data data = new Data();
+        private static bool isLocalSpace  = true;
 
         /// <summary>
         /// Current position value in buffer (used to copy / paste).
@@ -102,11 +106,10 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         public static Vector3 ScaleBuffer = Vector3.one;
 
-
         private UnityEditor.Editor transformEditor = null;
-        private SerializedProperty localPosition = null;
-        private SerializedProperty localRotation = null;
-        private SerializedProperty localScale = null;
+        private SerializedProperty localPosition   = null;
+        private SerializedProperty localRotation   = null;
+        private SerializedProperty localScale      = null;
 
         protected override bool CanSaveData {
             get { return true; }
@@ -121,9 +124,9 @@ namespace EnhancedEditor.Editor {
             isLocalSpace = EditorPrefs.GetBool(IsLocalSpaceKey, isLocalSpace);
 
             transformEditor = CreateEditor(serializedObject.targetObjects, transformInspectorType);
-            localPosition = serializedObject.FindProperty("m_LocalPosition");
-            localRotation = serializedObject.FindProperty("m_LocalRotation");
-            localScale = serializedObject.FindProperty("m_LocalScale");
+            localPosition   = serializedObject.FindProperty("m_LocalPosition");
+            localRotation   = serializedObject.FindProperty("m_LocalRotation");
+            localScale      = serializedObject.FindProperty("m_LocalScale");
 
             localModeGUI.image = EditorGUIUtility.FindTexture("ToolHandleLocal");
             worldModeGUI.image = EditorGUIUtility.FindTexture("ToolHandleGlobal");
@@ -131,16 +134,17 @@ namespace EnhancedEditor.Editor {
             Texture2D _resetIcon = EditorGUIUtility.FindTexture("Refresh");
             resetPositionGUI.image = _resetIcon;
             resetRotationGUI.image = _resetIcon;
-            resetScaleGUI.image = _resetIcon;
+            resetScaleGUI.image    = _resetIcon;
         }
 
         public override void OnInspectorGUI() {
             Rect _position = EditorGUILayout.GetControlRect(false, 0f);
-            float _width = EnhancedEditorGUI.ManageDynamicControlHeight(localPosition, _position.width - ResetButtonWidth - Spacing);
+            float _width   = EnhancedEditorGUI.ManageDynamicControlHeight(localPosition, _position.width - ResetButtonWidth - Spacing);
 
             // Avoid jitters and first layout event draw.
-            if (_width < 0f)
+            if (_width < 0f) {
                 _width = EnhancedEditorGUIUtility.ScreenWidth - 20f - ResetButtonWidth - Spacing;
+            }
 
             // Draw the original inspector.
             using (var _scope = new EditorGUILayout.VerticalScope(GUILayout.Width(_width))) {
@@ -151,20 +155,23 @@ namespace EnhancedEditor.Editor {
             _position = new Rect() {
                 x = _position.x + _width + Spacing,
                 y = _position.y + EditorGUIUtility.standardVerticalSpacing - 1f,
-                width = ResetButtonWidth,
+                width  = ResetButtonWidth,
                 height = EditorGUIUtility.singleLineHeight + 1f
             };
 
-            if (EnhancedEditorGUI.IconButton(_position, resetPositionGUI))
+            if (EnhancedEditorGUI.IconButton(_position, resetPositionGUI)) {
                 ResetPosition();
+            }
 
             _position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing + .2f;
-            if (EnhancedEditorGUI.IconButton(_position, resetRotationGUI))
+            if (EnhancedEditorGUI.IconButton(_position, resetRotationGUI)) {
                 ResetRotation();
+            }
 
             _position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing + .2f;
-            if (EnhancedEditorGUI.IconButton(_position, resetScaleGUI))
+            if (EnhancedEditorGUI.IconButton(_position, resetScaleGUI)) {
                 ResetScale();
+            }
 
             // Local / World space mode.
             GUIContent _modeGUI = isLocalSpace
@@ -191,31 +198,37 @@ namespace EnhancedEditor.Editor {
             GUILayout.Space(5f);
             using (var _scope = new EditorGUILayout.HorizontalScope()) {
                 using (var _enabledScope = EnhancedGUI.GUIEnabled.Scope(!localPosition.hasMultipleDifferentValues)) {
-                    if (GUILayout.Button(copyPositionGUI))
+                    if (GUILayout.Button(copyPositionGUI)) {
                         CopyPosition();
+                    }
                 }
 
                 using (var _enabledScope = EnhancedGUI.GUIEnabled.Scope(!localRotation.hasMultipleDifferentValues)) {
-                    if (GUILayout.Button(copyRotationGUI))
+                    if (GUILayout.Button(copyRotationGUI)) {
                         CopyRotation();
+                    }
                 }
 
                 using (var _enabledScope = EnhancedGUI.GUIEnabled.Scope(!localScale.hasMultipleDifferentValues)) {
-                    if (GUILayout.Button(copyScaleGUI))
+                    if (GUILayout.Button(copyScaleGUI)) {
                         CopyScale();
+                    }
                 }
             }
 
             // Paste buttons.
             using (var _scope = new EditorGUILayout.HorizontalScope()) {
-                if (GUILayout.Button(pastePositionGUI))
+                if (GUILayout.Button(pastePositionGUI)) {
                     PastePosition();
+                }
 
-                if (GUILayout.Button(pasteRotationGUI))
+                if (GUILayout.Button(pasteRotationGUI)) {
                     PasteRotation();
+                }
 
-                if (GUILayout.Button(pasteScaleGUI))
+                if (GUILayout.Button(pasteScaleGUI)) {
                     PasteScale();
+                }
             }
         }
 
@@ -231,7 +244,6 @@ namespace EnhancedEditor.Editor {
         // -------------------------------------------
 
         protected override PlayModeObjectData SaveData(Object _object) {
-
             data.Save(_object);
             return data;
         }
@@ -239,23 +251,29 @@ namespace EnhancedEditor.Editor {
 
         #region Reset
         private void ResetPosition() {
-            Undo.RecordObjects(serializedObject.targetObjects, $"Reset {serializedObject.targetObject.name} Position");
-            foreach (Transform _transform in serializedObject.targetObjects) {
-                _transform.localPosition = Vector3.zero;
+            Object[] _targets = serializedObject.targetObjects;
+            Undo.RecordObjects(_targets, $"Reset {serializedObject.targetObject.name} Position");
+
+            for (int i = _targets.Length; i-- > 0;) {
+                (_targets[i] as Transform).localPosition = Vector3.zero;
             }
         }
 
         private void ResetRotation() {
-            Undo.RecordObjects(serializedObject.targetObjects, $"Reset {serializedObject.targetObject.name} Rotation");
-            foreach (Transform _transform in serializedObject.targetObjects) {
-                _transform.localRotation = Quaternion.identity;
+            Object[] _targets = serializedObject.targetObjects;
+            Undo.RecordObjects(_targets, $"Reset {serializedObject.targetObject.name} Rotation");
+
+            for (int i = _targets.Length; i-- > 0;) {
+                (_targets[i] as Transform).localRotation = Quaternion.identity;
             }
         }
 
         private void ResetScale() {
-            Undo.RecordObjects(serializedObject.targetObjects, $"Reset {serializedObject.targetObject.name} Scale");
-            foreach (Transform _transform in serializedObject.targetObjects) {
-                _transform.localScale = Vector3.one;
+            Object[] _targets = serializedObject.targetObjects;
+            Undo.RecordObjects(_targets, $"Reset {serializedObject.targetObject.name} Scale");
+
+            for (int i = _targets.Length; i-- > 0;) {
+                (_targets[i] as Transform).localScale = Vector3.one;
             }
         }
         #endregion
@@ -285,38 +303,51 @@ namespace EnhancedEditor.Editor {
 
         #region Paste
         private void PastePosition() {
-            Undo.RecordObjects(serializedObject.targetObjects, $"Paste {serializedObject.targetObject.name} Position");
+            Object[] _targets = serializedObject.targetObjects;
+            Undo.RecordObjects(_targets, $"Paste {serializedObject.targetObject.name} Position");
+
             if (isLocalSpace) {
-                foreach (Transform _transform in serializedObject.targetObjects)
-                    _transform.localPosition = PositionBuffer;
+                for (int i = _targets.Length; i-- > 0;) {
+                    (_targets[i] as Transform).localPosition = PositionBuffer;
+                }
             } else {
-                foreach (Transform _transform in serializedObject.targetObjects)
-                    _transform.position = PositionBuffer;
+                for (int i = _targets.Length; i-- > 0;) {
+                    (_targets[i] as Transform).position = PositionBuffer;
+                }
             }
         }
 
         private void PasteRotation() {
-            Undo.RecordObjects(serializedObject.targetObjects, $"Paste {serializedObject.targetObject.name} Rotation");
+            Object[] _targets = serializedObject.targetObjects;
+            Undo.RecordObjects(_targets, $"Paste {serializedObject.targetObject.name} Rotation");
+
             if (isLocalSpace) {
-                foreach (Transform _transform in serializedObject.targetObjects)
-                    _transform.localRotation = RotationBuffer;
+                for (int i = _targets.Length; i-- > 0;) {
+                    (_targets[i] as Transform).localRotation = RotationBuffer;
+                }
             } else {
-                foreach (Transform _transform in serializedObject.targetObjects)
-                    _transform.rotation = RotationBuffer;
+                for (int i = _targets.Length; i-- > 0;) {
+                    (_targets[i] as Transform).rotation = RotationBuffer;
+                }
             }
         }
 
         private void PasteScale() {
-            Undo.RecordObjects(serializedObject.targetObjects, $"Paste {serializedObject.targetObject.name} Scale");
+            Object[] _targets = serializedObject.targetObjects;
+            Undo.RecordObjects(_targets, $"Paste {serializedObject.targetObject.name} Scale");
+
             if (isLocalSpace) {
-                foreach (Transform _transform in serializedObject.targetObjects)
-                    _transform.localScale = ScaleBuffer;
+                for (int i = _targets.Length; i-- > 0;) {
+                    (_targets[i] as Transform).localScale = ScaleBuffer;
+                }
             } else {
-                foreach (Transform _transform in serializedObject.targetObjects) {
+                for (int i = _targets.Length; i-- > 0;) {
+                    Transform _transform = _targets[i] as Transform;
+
                     Vector3 _lossy = _transform.lossyScale;
                     Vector3 _local = _transform.localScale;
 
-                    Vector3 _localZero = new Vector3(_lossy.x / _local.x, _lossy.y / _local.y, _lossy.z / _local.z);
+                    Vector3 _localZero    = new Vector3(_lossy.x / _local.x, _lossy.y / _local.y, _lossy.z / _local.z);
                     _transform.localScale = new Vector3(ScaleBuffer.x / _localZero.x, ScaleBuffer.y / _localZero.y, ScaleBuffer.z / _localZero.z);
                 }
             }

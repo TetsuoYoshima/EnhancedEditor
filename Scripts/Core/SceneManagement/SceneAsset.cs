@@ -270,6 +270,8 @@ namespace EnhancedEditor {
             }
         }
 
+        // -----------------------
+
         /// <summary>
         /// Used to make sure a scene cannot be loaded twice (don't add it if it is already loaded).
         /// </summary>

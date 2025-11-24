@@ -18,8 +18,8 @@ namespace EnhancedEditor.Editor {
     public sealed class SerializedTypePropertyDrawer : EnhancedPropertyEditor {
         #region Drawer Content
         private const int CacheLimit = 100;
-        private static readonly Dictionary<string, GUIContent[]> interfaceInfos = new Dictionary<string, GUIContent[]>();
 
+        private static readonly Dictionary<string, GUIContent[]> interfaceInfos = new Dictionary<string, GUIContent[]>();
         private static readonly GUIContent nullGUI = new GUIContent("<None>", string.Empty);
 
         // -----------------------
@@ -124,7 +124,7 @@ namespace EnhancedEditor.Editor {
 
             // ----- Local Method ----- \\
 
-            void AddType(List<GUIContent> _temp, Type _type, SerializedTypeConstraint _constraints) {
+            static void AddType(List<GUIContent> _temp, Type _type, SerializedTypeConstraint _constraints) {
 
                 if (_type.IsAbstract && !_constraints.HasFlagUnsafe(SerializedTypeConstraint.Abstract)) {
                     return;

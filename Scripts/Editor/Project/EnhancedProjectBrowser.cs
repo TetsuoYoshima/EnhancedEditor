@@ -55,7 +55,9 @@ namespace EnhancedEditor.Editor {
                 get { return Property.icon; }
             }
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public ItemInfos(string _guid) {
                 string _path = AssetDatabase.GUIDToAssetPath(_guid);
@@ -92,7 +94,9 @@ namespace EnhancedEditor.Editor {
 
             protected ItemInfos() { }
 
-            // -----------------------
+            // -------------------------------------------
+            // Behaviour
+            // -------------------------------------------
 
             public void OnDraw() {
                 if (IsFolder) {
@@ -164,14 +168,17 @@ namespace EnhancedEditor.Editor {
 
             private bool isExpanded = false;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public PackageItemInfos() {
                 IsFolder = true;
                 HasSubfolders = true;
             }
-
-            // -----------------------
+            // -------------------------------------------
+            // Behaviour
+            // -------------------------------------------
 
             public override bool IsExpanded(bool _isTreeView) {
                 bool _isExpanded = isExpanded;
@@ -193,12 +200,14 @@ namespace EnhancedEditor.Editor {
         private static int[] expandedProjectWindowItems = null;
         private static string[] selectedObjects         = null;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static EnhancedProjectBrowser() {
             EditorApplication.projectWindowItemOnGUI += OnProjectItemGUI;
-            EditorApplication.projectChanged += OnProjectChanged;
-            EditorApplication.update += RefreshProjectState;
+            EditorApplication.projectChanged         += OnProjectChanged;
+            EditorApplication.update                 += RefreshProjectState;
             
             RefreshProjectState();
         }

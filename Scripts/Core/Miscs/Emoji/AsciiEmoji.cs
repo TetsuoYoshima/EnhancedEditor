@@ -34,8 +34,7 @@ namespace EnhancedEditor {
         public static string Get(this AsciiEmoji _emoji) {
             switch (_emoji) {
                 case AsciiEmoji.FlippingTable:
-                    string _value = @"(╯°□°)╯︵ ┻━┻";
-                    return _value;
+                    return @"(╯°□°)╯︵ ┻━┻";
 
                 case AsciiEmoji.AngryFlippingTable:
                     return @"(ノಠ益ಠ)ノ彡 ┻━┻";

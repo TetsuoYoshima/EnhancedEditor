@@ -23,7 +23,7 @@ namespace EnhancedEditor.Editor {
         /// <param name="_serializedObject">The <see cref="SerializedObject"/> of this member.</param>
         /// <inheritdoc cref="MemberValue{T}.Call(object, Type)"/>
         public static bool Call<T>(this MemberValue<T> _member, SerializedObject _serializedObject) {
-            object _object = _serializedObject.targetObject;
+            object _object   = _serializedObject.targetObject;
             Type _objectType = _object.GetType();
 
             return _member.Call(_object, _objectType);
@@ -32,7 +32,7 @@ namespace EnhancedEditor.Editor {
         /// <param name="_serializedObject">The <see cref="SerializedObject"/> of this member.</param>
         /// <inheritdoc cref="GetValue{T}(MemberValue{T}, SerializedProperty, out T)"/>
         public static bool GetValue<T>(this MemberValue<T> _member, SerializedObject _serializedObject, out T _value) {
-            object _object = _serializedObject.targetObject;
+            object _object   = _serializedObject.targetObject;
             Type _objectType = _object.GetType();
 
             return _member.GetValue(_object, _objectType, out _value);
@@ -45,7 +45,7 @@ namespace EnhancedEditor.Editor {
         /// <param name="_serializedProperty">The <see cref="SerializedProperty"/> of the variable stored in the same object instance as this member.</param>
         /// <inheritdoc cref="MemberValue{T}.GetValue(object, Type, out T)"/>
         public static bool GetValue<T>(this MemberValue<T> _member, SerializedProperty _serializedProperty, out T _value) {
-            object _object = _serializedProperty.serializedObject.targetObject;
+            object _object   = _serializedProperty.serializedObject.targetObject;
             Type _objectType = _object.GetType();
 
             return _member.GetValue(_object, _objectType, out _value) || (GetNestedField(_serializedProperty, ref _objectType, ref _object) && _member.GetValue(_object, _objectType, out _value));
@@ -61,9 +61,12 @@ namespace EnhancedEditor.Editor {
         public static bool SetValue<T>(this MemberValue<T> _member, SerializedProperty _serializedProperty, T _value) {
             bool _success = true;
 
-            foreach (Object _object in _serializedProperty.serializedObject.targetObjects) {
-                Type _type = _object.GetType();
+            Object[] _targetObjects = _serializedProperty.serializedObject.targetObjects;
+            for (int i = _targetObjects.Length; i-- > 0;) {
+
+                Object _object   = _targetObjects[i];
                 object _instance = _object;
+                Type _type       = _object.GetType();
 
                 if (!GetNestedField(_serializedProperty, ref _type, ref _instance) || !_member.SetValue(_instance, _type, _value)) {
                     _success = false;

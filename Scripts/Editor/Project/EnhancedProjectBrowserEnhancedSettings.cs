@@ -107,7 +107,9 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="EnhancedProjectBrowserEnhancedSettings"/>
         public EnhancedProjectBrowserEnhancedSettings(int _guid) : base(_guid) { }
@@ -118,6 +120,7 @@ namespace EnhancedEditor.Editor {
                                                                       "All enhanced project browser related settings.");
 
         private static readonly int settingsGUID = "EnhancedProjectBrowserSettings".GetHashCode();
+
         private static EnhancedProjectBrowserEnhancedSettings settings = null;
         private static SerializedProperty settingsProperty = null;
 

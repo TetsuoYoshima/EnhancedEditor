@@ -46,15 +46,16 @@ namespace EnhancedEditor.Editor {
 
                 _data = new PlayModeObjectData(_data);
 
-                for (int i = 0; i < Data.Count; i++) {
+                List<PlayModeObjectData> _span = Data;
+                for (int i = _span.Count; i-- > 0;) {
 
-                    if (Data[i].objectID == _data.objectID) {
-                        Data[i] = _data;
+                    if (_span[i].objectID == _data.objectID) {
+                        _span[i] = _data;
                         return;
                     }
                 }
 
-                Data.Add(_data);
+                _span.Add(_data);
             }
 
             // -------------------------------------------
@@ -91,11 +92,11 @@ namespace EnhancedEditor.Editor {
             /// Loads all loaded objects data.
             /// </summary>
             public void LoadAllObjects() {
+                List<PlayModeObjectData> _span = Data;
+                for (int i = _span.Count; i-- > 0;) {
 
-                for (int i = Count; i-- > 0;) {
-
-                    if (Data[i].Load()) {
-                        Data.RemoveAt(i);
+                    if (_span[i].Load()) {
+                        _span.RemoveAt(i);
                     }
                 }
 
@@ -134,13 +135,13 @@ namespace EnhancedEditor.Editor {
             /// </summary>
             internal void RefreshData() {
 
-                for (int i = Count; i-- > 0;) {
+                List<PlayModeObjectData> _span = Data;
+                for (int i = _span.Count; i-- > 0;) {
 
-                    PlayModeObjectData _data = Data[i];
+                    PlayModeObjectData _data = _span[i];
                     EditorJsonUtility.FromJsonOverwrite(_data.data, _data);
 
                     Type _type = Type.GetType(_data.type);
-
                     if (_type != _data.GetType()) {
 
                         string _json = _data.data;
@@ -149,7 +150,7 @@ namespace EnhancedEditor.Editor {
                         EditorJsonUtility.FromJsonOverwrite(_json, _data);
 
                         _data.data = _json;
-                        Data[i] = _data;
+                        _span[i] = _data;
                     }
                 }
             }
@@ -162,12 +163,14 @@ namespace EnhancedEditor.Editor {
 
         private static readonly PlayModeData data = new PlayModeData();
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static PlayModeDataSave() {
 
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            EditorSceneManager.sceneOpened += OnSceneLoaded;
+            EditorSceneManager.sceneOpened         += OnSceneLoaded;
 
             if (!EditorApplication.isPlayingOrWillChangePlaymode) {
                 OnPlayModeStateChanged(PlayModeStateChange.EnteredEditMode);
@@ -210,14 +213,12 @@ namespace EnhancedEditor.Editor {
         }
 
         private static void OnSceneLoaded(Scene _scene, OpenSceneMode _mode) {
-
             if (!EditorApplication.isPlayingOrWillChangePlaymode && (_mode != OpenSceneMode.AdditiveWithoutLoading)) {
                 DelayedLoadObjectsData();
             }
         }
 
         private static void DelayedLoadObjectsData() {
-
             EditorApplication.delayCall -= LoadObjectsData;
             EditorApplication.delayCall += LoadObjectsData;
         }

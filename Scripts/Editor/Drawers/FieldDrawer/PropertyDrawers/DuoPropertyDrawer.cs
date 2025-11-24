@@ -15,6 +15,11 @@ namespace EnhancedEditor.Editor {
     public sealed class DuoPropertyDrawer : EnhancedPropertyDrawer {
         #region Drawer Content
         public override bool OnGUI(Rect _position, SerializedProperty _property, GUIContent _label, out float _height) {
+
+            if (EnhancedEditorGUI.IsDrawingDuoProperty) {
+                return base.OnGUI(_position, _property, _label, out _height);
+            }
+
             DuoAttribute _attribute = Attribute as DuoAttribute;
             EnhancedEditorGUI.DuoField(_position, _property, _label, _attribute.FieldName, _attribute.FieldWidth, out float _extraHeight);
 

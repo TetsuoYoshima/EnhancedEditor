@@ -13,7 +13,7 @@ namespace EnhancedEditor {
     /// Utility comparer used to check if two objects are equal.
     /// </summary>
     /// <typeparam name="T">Object type to compare.</typeparam>
-    public class EnhancedEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer {
+    public sealed class EnhancedEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer {
         #region Global Members
         /// <summary>
         /// Static comparer instance of this type.
@@ -46,11 +46,12 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="x">First element to compare (order has no influence whatsoever).</param>
         /// <param name="y">Second element to compare (order has no influence whatsoever).</param>
-        /// <param name="compareReferenceIfAvailable">Whether to use reference comparison if the object type suggest it (like for interfaces).</param>
+        /// <param name="_compareReferenceIfAvailable">Whether to use reference comparison if the object type suggest it (like for interfaces).</param>
         /// <returns>True if those two elements are equal, false otherwise.</returns>
-        public bool EnhancedEquals(T x, T y, bool compareReferenceIfAvailable = true) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool EnhancedEquals(T x, T y, bool _compareReferenceIfAvailable = true) {
 
-            if (compareReferenceIfAvailable && UseReferenceEquality) {
+            if (_compareReferenceIfAvailable && UseReferenceEquality) {
                 return ReferenceEquals(x, y);
             }
 
@@ -61,6 +62,7 @@ namespace EnhancedEditor {
         /// Compares if two objects are equal, using a reference comparison.
         /// </summary>
         /// <inheritdoc cref="EnhancedEquals"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ReferenceEquals(T x, T y) {
             return object.ReferenceEquals(x, y);
         }
@@ -69,11 +71,13 @@ namespace EnhancedEditor {
         /// Compares if two objects are equal.
         /// </summary>
         /// <inheritdoc cref="EnhancedEquals"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(T x, T y) {
             return EqualityComparer<T>.Default.Equals(x, y);
         }
 
         /// <inheritdoc cref="Equals(T, T)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new bool Equals(object x, object y) {
             if ((x is T tX) && (y is T tY)) {
                 return Equals(tX, tY);
@@ -115,8 +119,8 @@ namespace EnhancedEditor {
         /// <typeparam name="U">Object type to compare.</typeparam>
         /// <inheritdoc cref="EnhancedEqualityComparer{T}.EnhancedEquals(T, T, bool)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Equals<U>(U x, U y, bool compareReferenceIfAvailable = true) {
-            return EnhancedEqualityComparer<U>.Default.EnhancedEquals(x, y, compareReferenceIfAvailable);
+        public static bool Equals<U>(U x, U y, bool _compareReferenceIfAvailable = true) {
+            return EnhancedEqualityComparer<U>.Default.EnhancedEquals(x, y, _compareReferenceIfAvailable);
         }
 
         /// <summary>

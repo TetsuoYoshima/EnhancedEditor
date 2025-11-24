@@ -18,8 +18,8 @@ namespace EnhancedEditor.Editor {
         private static readonly GUIContent headerGUI = new GUIContent("Extended Behaviour", "Extended Behaviour component related settings.");
         private static readonly GUIContent labelGUI  = new GUIContent("Automatic Setup", "Toggles the extended behaviour automatic setup.");
 
-        private static readonly int settingsGUID = "ExtendedBehaviour".GetStableHashCode();
         private static BooleanEnhancedSettings settings = null;
+        private static readonly int settingsGUID        = "ExtendedBehaviour".GetStableHashCode();
 
         // -----------------------
 

@@ -29,19 +29,22 @@ namespace EnhancedEditor.Editor {
         private struct FlagWrapper {
             public FlagHolder Holder;
             public Flag Flag;
-            public bool IsVisible;
-            public bool IsSelected;
-            public bool IsSelectable;
 
-            // -----------------------
+            public bool IsSelectable;
+            public bool IsSelected;
+            public bool IsVisible;
+
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public FlagWrapper(Flag _flag, FlagHolder _holder) {
-                Flag = _flag;
                 Holder = _holder;
+                Flag   = _flag;
 
-                IsVisible = true;
-                IsSelected = false;
                 IsSelectable = true;
+                IsSelected   = false;
+                IsVisible    = true;
             }
         }
         #endregion

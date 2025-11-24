@@ -18,8 +18,7 @@ namespace EnhancedEditor.Editor {
     public sealed class InstanceTrackerEditor : UnityObjectEditor {
         #region Styles
         private static class Styles {
-            public static readonly GUIStyle HeaderStyle = new GUIStyle(EditorStyles.label)
-                                                                {
+            public static readonly GUIStyle HeaderStyle = new GUIStyle(EditorStyles.label) {
                 fontSize = 16,
                 fixedHeight = 22f
             };

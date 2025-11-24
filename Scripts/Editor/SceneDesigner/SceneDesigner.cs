@@ -33,15 +33,17 @@ namespace EnhancedEditor.Editor {
 
         [SerializeField] public LayerMask LayerMask     = ~0;
 
-        [SerializeField] private bool randomScale       = false;
-        [SerializeField] private bool randomRotation    = false;
-        [SerializeField] private Vector2 scaleRange     = Vector2.one;
         [SerializeField] private Vector2 rotationRange  = Vector2.zero;
+        [SerializeField] private Vector2 scaleRange     = Vector2.one;
+
+        [SerializeField] private bool randomRotation    = false;
+        [SerializeField] private bool randomScale       = false;
 
         public float Scale {
             get {
-                if (!randomScale)
+                if (!randomScale) {
                     return 1f;
+                }
 
                 return Random.Range(scaleRange.x, scaleRange.y);
             }
@@ -49,14 +51,17 @@ namespace EnhancedEditor.Editor {
 
         public Quaternion Rotation {
             get {
-                if (!randomRotation)
+                if (!randomRotation) {
                     return Quaternion.identity;
+                }
 
                 return Quaternion.AngleAxis(Random.Range(rotationRange.x, rotationRange.y), Vector3.up);
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="SceneDesignerEnhancedSettings"/>
         public SceneDesignerEnhancedSettings(int _guid) : base(_guid) { }
@@ -70,13 +75,15 @@ namespace EnhancedEditor.Editor {
         private static readonly GUIContent scaleGUI    = new GUIContent("Random Scale",    "Toggles prefab scale override - value is used as percent of the prefab original scale");
 
         private static readonly ReorderableList folderList = new ReorderableList(null, typeof(string)) {
-            drawHeaderCallback = DrawHeaderCallback,
             drawElementCallback = DrawElementCallback,
+            drawHeaderCallback  = DrawHeaderCallback,
         };
 
         private static readonly int settingsGUID = "EnhancedEditorScriptableSceneDesignerSetting".GetStableHashCode();
         private static SceneDesignerEnhancedSettings settings = null;
         private static SerializedProperty settingsProperty    = null;
+
+        // -----------------------
 
         /// <inheritdoc cref="SceneDesignerEnhancedSettings"/>
         public static SceneDesignerEnhancedSettings Settings {
@@ -85,6 +92,7 @@ namespace EnhancedEditor.Editor {
 
                 if (((settings == null) || (settingsProperty == null) || (settingsProperty.serializedObject != _userSettings.SerializedObject))
                    && !_userSettings.GetSetting(settingsGUID, out settings, out settingsProperty)) {
+
                     settings = new SceneDesignerEnhancedSettings(settingsGUID);
                     _userSettings.AddSetting(settings);
                 }
@@ -115,14 +123,14 @@ namespace EnhancedEditor.Editor {
         }
 
         internal static void DrawSceneEditorSettings() {
-            SceneDesignerEnhancedSettings _settings = Settings;
+            var _ = Settings;
             settingsProperty.serializedObject.Update();
 
             EditorGUILayout.PropertyField(settingsProperty.FindPropertyRelative("LayerMask"));
             GUILayout.Space(5f);
 
             // Scale.
-            DrawField(scaleGUI, settingsProperty.FindPropertyRelative("randomScale"), settingsProperty.FindPropertyRelative("scaleRange"), 20f);
+            DrawField(scaleGUI,    settingsProperty.FindPropertyRelative("randomScale"),    settingsProperty.FindPropertyRelative("scaleRange"),     20f);
             DrawField(rotationGUI, settingsProperty.FindPropertyRelative("randomRotation"), settingsProperty.FindPropertyRelative("rotationRange"), 360f);
 
             settingsProperty.serializedObject.ApplyModifiedProperties();
@@ -172,7 +180,7 @@ namespace EnhancedEditor.Editor {
         #endregion
 
         #region Folder & Asset
-        private class Folder {
+        private sealed class Folder {
             public string Name = string.Empty;
             public bool Foldout = false;
 
@@ -215,7 +223,7 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        private class Asset {
+        private sealed class Asset {
             public string Name = string.Empty;
             public string Path = string.Empty;
 
@@ -231,7 +239,7 @@ namespace EnhancedEditor.Editor {
         #endregion
 
         #region Mesh Infos
-        private class MeshInfo {
+        private sealed class MeshInfo {
             public Mesh Mesh = null;
             public SpriteRenderer Sprite = null;
             public Material[] Materials = null;
@@ -836,7 +844,7 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// Preview <see cref="SceneDesigner"/> asset window.
         /// </summary>
-        private class PreviewWindow : EditorWindow {
+        private sealed class PreviewWindow : EditorWindow {
             public static PreviewWindow GetWindow(Rect _screenPosition, Texture _preview) {
                 PreviewWindow _window = CreateInstance<PreviewWindow>();
 

@@ -91,13 +91,12 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// Implements the interface on another class to avoid Unity creating a new instance of the console window.
         /// </summary>
-        private class BuildPreprocessor : IPreprocessBuildWithReport {
+        private sealed class BuildPreprocessor : IPreprocessBuildWithReport {
             int IOrderedCallback.callbackOrder {
                 get { return -1; }
             }
 
             void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport _report) {
-
                 if (HasOpenInstances<EnhancedConsoleWindow>()) {
                     GetWindow().OnPreprocessBuild(_report);
                 }
@@ -138,7 +137,7 @@ namespace EnhancedEditor.Editor {
         }
 
         [Serializable]
-        internal class OriginalLogEntry : LogEntry {
+        internal sealed class OriginalLogEntry : LogEntry {
             public override bool IsDuplicate {
                 get { return false; }
             }
@@ -231,7 +230,7 @@ namespace EnhancedEditor.Editor {
         }
 
         [Serializable]
-        internal class DuplicateLogEntry : LogEntry {
+        internal sealed class DuplicateLogEntry : LogEntry {
             public override bool IsDuplicate {
                 get { return true; }
             }
@@ -303,7 +302,7 @@ namespace EnhancedEditor.Editor {
         // -----------------------
 
         [Serializable]
-        internal class LogStack {
+        internal sealed class LogStack {
             public OriginalLogEntry Entry = null;
             public string Header = string.Empty;
             public List<LogStackCall> Calls = new List<LogStackCall>();
@@ -319,7 +318,7 @@ namespace EnhancedEditor.Editor {
         }
 
         [Serializable]
-        internal class LogStackCall {
+        internal sealed class LogStackCall {
             public GUIContent Header = GUIContent.none;
             public string FilePath = string.Empty;
 
@@ -355,7 +354,7 @@ namespace EnhancedEditor.Editor {
         // -----------------------
 
         [Serializable]
-        internal class LogsWrapper {
+        internal sealed class LogsWrapper {
             [SerializeReference] public List<LogEntry> Logs = new List<LogEntry>();
         }
 
@@ -793,7 +792,7 @@ namespace EnhancedEditor.Editor {
 
         #region Log Column
         [Serializable]
-        private class LogColumn {
+        private sealed class LogColumn {
             public LogColumnType Column = 0;
             public ColumnVisibility Visibility = 0;
 
@@ -932,45 +931,45 @@ namespace EnhancedEditor.Editor {
         [Flags]
         public enum Flags {
             // Settings.
-            Collapse = 1 << 0,
-            ErrorPause = 1 << 1,
-            ClearOnPlay = 1 << 2,
-            ClearOnBuild = 1 << 3,
-            ClearOnCompile = 1 << 4,
+            Collapse        = 1 << 0,
+            ErrorPause      = 1 << 1,
+            ClearOnPlay     = 1 << 2,
+            ClearOnBuild    = 1 << 3,
+            ClearOnCompile  = 1 << 4,
 
             // Debug.
-            LogButton = 1 << 30,
-            Disabled = 1 << 31
+            LogButton       = 1 << 30,
+            Disabled        = 1 << 31
         }
 
         [Flags]
         public enum LogColumnType {
-            Icon = 1 << 0,
-            Type = 1 << 1,
+            Icon        = 1 << 0,
+            Type        = 1 << 1,
 
             // Log file.
-            Namespace = 1 << 3,
-            Class = 1 << 4,
-            Method = 1 << 6,
-            Log = 1 << 10,
-            Object = 1 << 15,
-            File = 1 << 18,
+            Namespace   = 1 << 3,
+            Class       = 1 << 4,
+            Method      = 1 << 6,
+            Log         = 1 << 10,
+            Object      = 1 << 15,
+            File        = 1 << 18,
 
             // Additional infos.
-            Frame = 1 << 21,
-            Timestamp = 1 << 22,
+            Frame       = 1 << 21,
+            Timestamp   = 1 << 22,
         }
 
         public enum ColumnVisibility {
-            Hidden = 0,
-            Visible = 1,
-            AlwaysVisible = 2
+            Hidden          = 0,
+            Visible         = 1,
+            AlwaysVisible   = 2
         }
 
         public enum ColumnResizeType {
-            Static,
-            Resizable,
-            DynamicSize,
+            Static      = 0,
+            Resizable   = 1,
+            DynamicSize = 2,
         }
         #endregion
 
@@ -1085,6 +1084,9 @@ namespace EnhancedEditor.Editor {
                 DrawToolbar();
             }
 
+            // Get the control ID before drawing the logs to ensure its value will always remain the same while resizing.
+            int _verticalSplitterControlID = EnhancedEditorGUIUtility.GetResizeControlID();
+
             // Logs.
             DrawLogs();
 
@@ -1108,7 +1110,7 @@ namespace EnhancedEditor.Editor {
 
             // The area position may be wrong on certain layout event, so only set the height when changed.
             using (var _scope = new EditorGUI.ChangeCheckScope()) {
-                float _height = EnhancedEditorGUIUtility.VerticalSplitterHandle(_area, MinControlHeight, position.height - (MinControlHeight + ToolbarHeight));
+                float _height = EnhancedEditorGUIUtility.VerticalSplitterHandle(_area, MinControlHeight, position.height - (MinControlHeight + ToolbarHeight), _verticalSplitterControlID);
 
                 if (_scope.changed) {
                     stackTraceHeight = _height;
@@ -1253,12 +1255,13 @@ namespace EnhancedEditor.Editor {
         private readonly GUIContent clearGUI = new GUIContent("Clear", "Clears all entries in the console.");
         private readonly GUIContent collapseGUI = new GUIContent("Collapse", "Collapses all identical entries.");
         private readonly GUIContent errorPauseGUI = new GUIContent("Error Pause", "Toggles pause in Play Mode on error.");
-
-        private readonly GUIContent clearOnPlayGUI = new GUIContent("Clear on Play", "Automatically clears the console when entering play mode.");
-        private readonly GUIContent clearOnBuildGUI = new GUIContent("Clear on Build", "Automatically clears the console when launching a new build.");
+        
+        private readonly GUIContent clearOnPlayGUI    = new GUIContent("Clear on Play", "Automatically clears the console when entering play mode.");
+        private readonly GUIContent clearOnBuildGUI   = new GUIContent("Clear on Build", "Automatically clears the console when launching a new build.");
         private readonly GUIContent clearOnCompileGUI = new GUIContent("Clear on Compile", "Automatically clears the console when compiling scripts.");
-        private readonly GUIContent openPlayerLogGUI = new GUIContent("Open Player Log", "Opens the player log file.");
-        private readonly GUIContent openEditorLogGUI = new GUIContent("Open Editor Log", "Opens the editor log file.");
+        private readonly GUIContent clearVisibleGUI   = new GUIContent("Clear Visible", "Clears all currently visible logs in the console.");
+        private readonly GUIContent openPlayerLogGUI  = new GUIContent("Open Player Log", "Opens the player log file.");
+        private readonly GUIContent openEditorLogGUI  = new GUIContent("Open Editor Log", "Opens the editor log file.");
 
         private readonly GUIContent logButtonsGUI = new GUIContent("Log Buttons", "Toggles this console debug log buttons activation.");
         private readonly GUIContent enabledGUI = new GUIContent("Enabled", "Toggles this console activation.");
@@ -1272,6 +1275,9 @@ namespace EnhancedEditor.Editor {
 
         private LogStack selectedLogStackTrace = new LogStack();
         private int previousLogWidth = 0;
+
+        private float scrollBottomPosition = 0f;
+        private bool isScrollAtBottom = false;
 
         private bool doFocusSelection = false;
         private int selectedLogIndex = -1;
@@ -1309,9 +1315,10 @@ namespace EnhancedEditor.Editor {
                 Undo.RecordObject(this, UndoRecordTitle);
                 GenericMenu _menu = new GenericMenu();
 
-                _menu.AddItem(clearOnPlayGUI, HasFlag(Flags.ClearOnPlay), () => InvertFlag(Flags.ClearOnPlay));
-                _menu.AddItem(clearOnBuildGUI, HasFlag(Flags.ClearOnBuild), () => InvertFlag(Flags.ClearOnBuild));
+                _menu.AddItem(clearOnPlayGUI,    HasFlag(Flags.ClearOnPlay),    () => InvertFlag(Flags.ClearOnPlay));
+                _menu.AddItem(clearOnBuildGUI,   HasFlag(Flags.ClearOnBuild),   () => InvertFlag(Flags.ClearOnBuild));
                 _menu.AddItem(clearOnCompileGUI, HasFlag(Flags.ClearOnCompile), () => InvertFlag(Flags.ClearOnCompile));
+                _menu.AddItem(clearVisibleGUI,   false, () => ClearVisible());
 
                 _menu.AddSeparator(string.Empty);
 
@@ -1597,6 +1604,27 @@ namespace EnhancedEditor.Editor {
 
                 _height = EnhancedEditorGUI.ManageDynamicControlHeight(9524, _position.yMax - _origin);
                 previousLogWidth = _logWidth;
+
+                // Keep scroll at bottom.
+                float _scrollBottom  = (_position.yMax - _area.size.y) + 7f;
+                float _currentScroll = logScroll.y;
+
+                if (Event.current.type == EventType.Repaint) {
+                    if ((_currentScroll >= _scrollBottom) || (_height < _scope.rect.height)) {
+
+                        scrollBottomPosition = _currentScroll;
+                        isScrollAtBottom = true;
+
+                    } else if (isScrollAtBottom && (_currentScroll == scrollBottomPosition)) {
+
+                        scrollBottomPosition = _scrollBottom;
+                        logScroll.y = _scrollBottom;
+
+                    } else {
+
+                        isScrollAtBottom = false;
+                    }
+                }
 
                 EditorGUILayout.GetControlRect(true, _height + 5f);
 
@@ -2491,6 +2519,19 @@ namespace EnhancedEditor.Editor {
         }
 
         /// <summary>
+        /// Clears all currently visible logs in the console.
+        /// </summary>
+        private void ClearVisible() {
+            for (int i = logs.Count; i-- > 0;) {
+                LogEntry _log = logs[i];
+
+                if (_log.IsVisible && _log.GetEntry(logs).Filter.IsVisible) {
+                    DeleteLog(i);
+                }
+            }
+        }
+
+        /// <summary>
         /// Clears the console content and reset its capacity back to default.
         /// </summary>
         private void Clear() {
@@ -2513,7 +2554,7 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// Utility window displayed when importing a large log file.
         /// </summary>
-        public class ImportLogsWindow : EditorWindow {
+        public sealed class ImportLogsWindow : EditorWindow {
             /// <summary>
             /// Creates and shows a new <see cref="ImportLogsWindow"/> instance,
             /// used to create a new build preset in the project.

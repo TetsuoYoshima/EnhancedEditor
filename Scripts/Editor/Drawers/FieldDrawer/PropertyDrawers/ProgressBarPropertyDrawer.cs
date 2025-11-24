@@ -15,7 +15,7 @@ namespace EnhancedEditor.Editor {
     public sealed class ProgressBarPropertyDrawer : EnhancedPropertyDrawer {
         #region Drawer Content
         public override bool OnGUI(Rect _position, SerializedProperty _property, GUIContent _label, out float _height) {
-            var _attribute = (ProgressBarAttribute)Attribute;
+            var _attribute   = (ProgressBarAttribute)Attribute;
             _position.height = _height
                              = _attribute.Height;
 

@@ -21,16 +21,18 @@ namespace EnhancedEditor.Editor {
         private static readonly int settingsGUID       = "AutoManagedResourceDirectory".GetStableHashCode();
         private static FolderEnhancedSettings settings = null;
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="AutoManagedResourceEnhancedSettings"/>
         public static FolderEnhancedSettings Settings {
             get {
-                EnhancedEditorProjectSettings projectSettings = EnhancedEditorProjectSettings.Instance;
+                EnhancedEditorProjectSettings _projectSettings = EnhancedEditorProjectSettings.Instance;
 
-                if ((settings == null) && !projectSettings.GetSetting(settingsGUID, out settings, out _)) {
+                if ((settings == null) && !_projectSettings.GetSetting(settingsGUID, out settings, out _)) {
                     settings = new FolderEnhancedSettings(settingsGUID, AutoManagedResourceDefaultDirectory, true);
-                    projectSettings.AddSetting(settings);
+                    _projectSettings.AddSetting(settings);
                 }
 
                 return settings;

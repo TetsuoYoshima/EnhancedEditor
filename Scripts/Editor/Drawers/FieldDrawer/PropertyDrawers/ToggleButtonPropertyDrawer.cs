@@ -24,12 +24,12 @@ namespace EnhancedEditor.Editor {
 
             var _attribute = Attribute as ToggleButtonAttribute;
 
-            _position = EditorGUI.PrefixLabel(_position, _label);
+            _position      = EditorGUI.PrefixLabel(_position, _label);
             _position.size = new Vector2(_attribute.Width, _attribute.Height);
 
             using (var _scope = new EditorGUI.PropertyScope(_position, _label, _property)) {
 
-                bool _value = _property.boolValue;
+                bool _value    = _property.boolValue;
                 bool _newValue = GUI.Toggle(_position, _value, EditorGUIUtility.IconContent(_attribute.IconName), EnhancedEditorStyles.ToolbarControl);
 
                 if (_newValue != _value) {

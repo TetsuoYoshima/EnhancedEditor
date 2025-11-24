@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace EnhancedEditor {
@@ -25,7 +26,9 @@ namespace EnhancedEditor {
         [SerializeField] private Component component = null;
         private T interfaceInstance = default;
 
-        [SerializeField] private bool required = false;        
+        [SerializeField] private bool required = false;
+
+        // -----------------------
 
         /// <summary>
         /// The <see cref="UnityEngine.Component"/> the associated interface is attached to.
@@ -149,11 +152,13 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_interface">Interface to compare with this one.</param>
         /// <returns>True if both interfaces are equal, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(SerializedInterface<T> _interface) {
             return (_interface is not null) && Equals(_interface.Interface);
         }
 
         /// <inheritdoc cref="Equals(SerializedInterface{T})"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(T _interface) {
             return EqualityUtility.Equals(_interface, Interface);
         }

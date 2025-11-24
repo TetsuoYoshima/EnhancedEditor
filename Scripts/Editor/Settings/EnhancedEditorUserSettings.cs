@@ -18,6 +18,8 @@ namespace EnhancedEditor.Editor {
         private static string EditorPrefsKey => $"{PlayerSettings.productGUID}-{null}_EnhancedEditorUserSettings";
         private static EnhancedEditorUserSettings instance = null;
 
+        // -----------------------
+
         /// <inheritdoc cref="EnhancedEditorUserSettings"/>
         public static EnhancedEditorUserSettings Instance {
             get {
@@ -47,8 +49,7 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         [MenuItem(MenuPath + "User Settings", false, -50), Button(SuperColor.Green, IsDrawnOnTop = false)]
         public static EditorWindow OpenSettings() {
-            EditorWindow _preferences = SettingsService.OpenUserPreferences(UserSettingsPath);
-            return _preferences;
+            return SettingsService.OpenUserPreferences(UserSettingsPath);
         }
 
         /// <summary>

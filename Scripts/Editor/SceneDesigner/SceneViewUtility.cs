@@ -20,20 +20,21 @@ namespace EnhancedEditor.Editor {
     #pragma warning disable
     public static class SceneViewUtility {
         #region Global Members
-        private static ContextMenuDelegate[] contextMenuDelegates = new ContextMenuDelegate[] { };
+        private static ContextMenuDelegate[] contextMenuDelegates = new ContextMenuDelegate[0];
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static SceneViewUtility() {
             SceneView.duringSceneGui += OnSceneGUI;
-
             GetContextMenuDelegates();
         }
         #endregion
 
         #region Scene GUI
         private const float MaxCastDistance = 1000f;
-        private static bool isContextClick = false;
+        private static bool isContextClick  = false;
 
         // -----------------------
 
@@ -43,8 +44,8 @@ namespace EnhancedEditor.Editor {
             }
 
             Event _event = Event.current;
-
             switch (_event.type) {
+
                 // Prepare menu on mouse down.
                 case EventType.MouseDown:
                     isContextClick = true;
@@ -142,8 +143,8 @@ namespace EnhancedEditor.Editor {
         #region Context Menu
         public const string CreateGUI = "Create/";
 
-        private static readonly GUIContent createEmptyGUI = new GUIContent($"{CreateGUI}Empty", "Creates an empty GameObject at this position");
         private static readonly GUIContent teleportHereGUI = new GUIContent("Teleport Here", "Teleport all selected GameObject(s) to this position");
+        private static readonly GUIContent createEmptyGUI  = new GUIContent($"{CreateGUI}Empty", "Creates an empty GameObject at this position");
 
         // -----------------------
 
@@ -162,8 +163,8 @@ namespace EnhancedEditor.Editor {
             void Teleport() {
                 Vector3 _position = _hit.point;
 
-                foreach (GameObject _gameObject in _selection) {
-                    Transform _transform = _gameObject.transform;
+                for (int i = _selection.Length; i-- > 0;) {
+                    Transform _transform = _selection[i].transform;
 
                     Undo.RecordObject(_transform, "Teleport Object");
                     _transform.position = _position;

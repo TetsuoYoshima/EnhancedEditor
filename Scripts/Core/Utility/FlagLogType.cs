@@ -5,6 +5,7 @@
 // ============================================================================ //
 
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace EnhancedEditor {
@@ -32,6 +33,7 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_type">The value to convert.</param>
         /// <returns>The converted <see cref="FlagLogType"/> value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static FlagLogType ToFlag(this LogType _type) {
             switch (_type) {
                 case LogType.Error:

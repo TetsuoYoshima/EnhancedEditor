@@ -81,8 +81,9 @@ namespace EnhancedEditor {
         /// </summary>
         public bool IsLoaded {
             get {
-                for (int i = 0; i < Scenes.Length; i++) {
-                    if (!Scenes[i].IsLoaded) {
+                ref SceneAsset[] _span = ref Scenes;
+                for (int i = _span.Length; i-- > 0;) {
+                    if (!_span[i].IsLoaded) {
                         return false;
                     }
                 }
@@ -146,22 +147,25 @@ namespace EnhancedEditor {
         /// </summary>
         /// <param name="_parameters">Various parameters used to load these scenes.</param>
         public void Load(LoadSceneParameters _parameters) {
-            if (Scenes.Length == 0)
+            ref SceneAsset[] _span = ref Scenes;
+            int _count = _span.Length;
+
+            if (_count == 0)
                 return;
 
-            LoadScene(0);
+            LoadScene(ref _span, 0);
             _parameters.loadSceneMode = LoadSceneMode.Additive;
 
-            for (int _i = 1; _i < Scenes.Length; _i++) {
-                LoadScene(_i);
+            for (int i = 1; i < _count; i++) {
+                LoadScene(ref _span, i);
             }
 
             Behaviour.Value.OnLoadBundle(this, _parameters);
 
             // ----- Local Method ----- \\
 
-            void LoadScene(int _index) {
-                Scene _scene = Scenes[_index].Load(_parameters);
+            void LoadScene(ref SceneAsset[] _span, int _index) {
+                Scene _scene = _span[_index].Load(_parameters);
 
                 if (activeSceneIndex == _index) {
                     SceneManager.SetActiveScene(_scene);
@@ -187,9 +191,12 @@ namespace EnhancedEditor {
         /// <param name="_asset">The matching <see cref="Scene"/> <see cref="SceneAsset"/>.</param>
         /// <returns>True if this bundle contains the given <see cref="Scene"/>, false otherwise.</returns>
         public bool ContainScene(Scene _scene, out SceneAsset _asset) {
-            foreach (SceneAsset _temp in Scenes) {
-                if (_temp.Equals(_scene)) {
-                    _asset = _temp;
+            ref SceneAsset[] _span = ref Scenes;
+
+            for (int i = _span.Length; i-- > 0;) {
+                _asset = _span[i];
+
+                if (_asset.Equals(_scene)) {
                     return true;
                 }
             }
@@ -204,7 +211,7 @@ namespace EnhancedEditor {
         /// <param name="_scenes">All scenes to check.</param>
         /// <returns>True if all the given scenes are in this bundle, false otherwise.</returns>
         public bool ContainScenes(Scene[] _scenes) {
-            for (int i = 0; i < _scenes.Length; i++) {
+            for (int i = _scenes.Length; i-- > 0;) {
                 if (!ContainScene(_scenes[i])) {
                     return false;
                 }
@@ -229,9 +236,12 @@ namespace EnhancedEditor {
         /// <param name="_asset">The matching <see cref="SceneAsset"/> <see cref="SceneAsset"/>.</param>
         /// <returns>True if this bundle contains the given <see cref="SceneAsset"/>, false otherwise.</returns>
         public bool ContainScene(SceneAsset _scene, out SceneAsset _asset) {
-            foreach (SceneAsset _temp in Scenes) {
-                if (_temp == _scene) {
-                    _asset = _temp;
+            ref SceneAsset[] _span = ref Scenes;
+
+            for (int i = _span.Length; i-- > 0;) {
+                _asset = _span[i];
+
+                if (_asset == _scene) {
                     return true;
                 }
             }
@@ -246,7 +256,7 @@ namespace EnhancedEditor {
         /// <param name="_scenes">All scenes to check.</param>
         /// <returns>True if all the given scenes are in this bundle, false otherwise.</returns>
         public bool ContainScenes(SceneAsset[] _scenes) {
-            for (int i = 0; i < _scenes.Length; i++) {
+            for (int i = _scenes.Length; i-- > 0;) {
                 if (!ContainScene(_scenes[i])) {
                     return false;
                 }

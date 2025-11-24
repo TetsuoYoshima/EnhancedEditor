@@ -10,8 +10,8 @@ namespace EnhancedEditor {
     /// </summary>
     public sealed class ToggleButtonAttribute : EnhancedPropertyAttribute {
         #region Global Members
-        public const float DefaultWidth     = 35f;
-        public const float DefaultHeight    = 20f;
+        public const float DefaultHeight = 20f;
+        public const float DefaultWidth  = 35f;
 
         /// <summary>
         /// Name of the icon to load and display on the button.
@@ -19,14 +19,14 @@ namespace EnhancedEditor {
         public readonly string IconName = string.Empty;
 
         /// <summary>
-        /// Width of this button (in pixels).
-        /// </summary>
-        public readonly float Width = DefaultWidth;
-
-        /// <summary>
         /// Height of this button (in pixels).
         /// </summary>
         public readonly float Height = DefaultHeight;
+
+        /// <summary>
+        /// Width of this button (in pixels).
+        /// </summary>
+        public readonly float Width = DefaultWidth;
 
         // -------------------------------------------
         // Constructor(s)
@@ -37,8 +37,8 @@ namespace EnhancedEditor {
         /// <param name="_height"><inheritdoc cref="Height" path="/summary"/></param>
         public ToggleButtonAttribute(string _iconName, float _width = DefaultWidth, float _height = DefaultHeight) {
             IconName = _iconName;
-            Width    = _width;
             Height   = _height;
+            Width    = _width;
         }
         #endregion
     }

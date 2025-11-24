@@ -338,16 +338,69 @@ namespace EnhancedEditor {
         }
 
         /// <summary>
+        /// Removes a given element from this list by replacing it by its last element.
+        /// <para/> Note that elements order will not be preserved.
+        /// </summary>
+        /// <param name="_list">The list to remove the element from.</param>
+        /// <param name="_element">The element to remove.</param>
+        /// <returns>True if the element could be successfully removed, false otherwise.</returns>
+        public static bool RemoveSwap<T>(this List<T> _list, T _element) {
+            int _count = _list.Count;
+
+            if (_count == 0)
+                return false;
+
+            int _index = _list.IndexOf(_element);
+
+            // Invalid.
+            if (_index == -1) {
+                return false;
+            }
+
+            int _last = _count - 1;
+
+            // Swap.
+            if (_index != _last) {
+                _list[_index] = _list[_last];
+            }
+
+            _list.RemoveAt(_last);
+            return true;
+        }
+
+        /// <summary>
+        /// Removes the element at a given index from this list by replacing it by its last element.
+        /// <para/> Note that elements order will not be preserved.
+        /// </summary>
+        /// <param name="_list">The list to remove the element from.</param>
+        /// <param name="_index">Index of the element to remove.</param>
+        public static void RemoveSwap<T>(this List<T> _list, int _index) {
+            int _last = _list.Count - 1;
+
+            if (_last != _index) {
+                _list[_index] = _list[_last];
+            }
+
+            _list.RemoveAt(_last);
+        }
+
+        /// <summary>
         /// Shifts an element of a list at a specific index to a new index, looping at the list bounds (last become first, and vice-versa).
         /// </summary>
         /// <param name="_list">The list to shift elements from.</param>
         /// <param name="_oldIndex">Current index of the element to shift.</param>
         /// <param name="_newIndex">New destination index of the element to shift.</param>
         public static void ShiftLoopElement<T>(this List<T> _list, int _oldIndex, int _newIndex) {
-            if ((_oldIndex == _newIndex) || (_newIndex < 0) || (_newIndex >= _list.Count) || (_list.Count == 0)) {
+            if ((_oldIndex == _newIndex) || (_newIndex < 0)) {
                 return;
             }
-            
+
+            int _listCount = _list.Count;
+
+            if ((_newIndex >= _listCount) || (_listCount == 0)) {
+                return;
+            }
+
             int _count = _newIndex - _oldIndex;
 
             if (_count > 0) {
@@ -367,16 +420,16 @@ namespace EnhancedEditor {
 
             void ShiftLeft() {
                 var _tmp = _list.First();
-                for (int i = 1; i < _list.Count; i++) {
+                for (int i = 1; i < _listCount; i++) {
                     _list[i - 1] = _list[i];
                 }
 
-                _list[_list.Count - 1] = _tmp;
+                _list[_listCount - 1] = _tmp;
             }
 
             void ShiftRight() {
                 var _tmp = _list.Last();
-                for (int i = _list.Count; i-- > 1;) {
+                for (int i = _listCount; i-- > 1;) {
                     _list[i] = _list[i - 1];
                 }
 
@@ -397,6 +450,86 @@ namespace EnhancedEditor {
 
             _list.Add(_element);
             return true;
+        }
+
+        /// <summary>
+        /// Replaces the content of a list by another collection.
+        /// </summary>
+        /// <param name="_list">List to replace content.</param>
+        /// <param name="_content">New content of this list.</param>
+        public static void ReplaceBy<T>(this List<T> _list, IList<T> _content) {
+
+            if (_content == null) {
+                _list.Clear();
+                return;
+            }
+
+            int _count = _content.Count;
+            int _listLength = Math.Min(_count, _list.Count);
+
+            int i;
+            for (i = 0; i < _listLength; i++) {
+                _list[i] = _content[i];
+            }
+
+            for (i = _listLength; i < _count; i++) {
+                _list.Add(_content[i]);
+            }
+
+            int _difference = _listLength - _count;
+            if (_difference > 0) {
+                _list.RemoveRange(_count, _difference);
+            }
+        }
+
+        /// <summary>
+        /// Replaces the content of a list by a single element.
+        /// </summary>
+        /// <param name="_list">List to replace content.</param>
+        /// <param name="_content">New single element of this list.</param>
+        public static void ReplaceBy<T>(this List<T> _list, T _content) {
+
+            int _count = _list.Count;
+
+            if (_count == 0) {
+                _list.Add(_content);
+                return;
+            }
+
+            _list[0] = _content;
+
+            if (_count != 1) {
+                _list.RemoveRange(1, _count - 1);
+            }
+        }
+
+        /// <summary>
+        /// Moves an element of this list to a new index, and shift all element on the way by one.
+        /// </summary>
+        /// <param name="_list">List to move element from.</param>
+        /// <param name="_currentIndex">Current index of the element to move.</param>
+        /// <param name="_newIndex">New destination index of this element.</param>
+        public static void Move<T>(this List<T> _list, int _currentIndex, int _newIndex) {
+            if (_currentIndex == _newIndex) {
+                return;
+            }
+
+            T _element = _list[_currentIndex];
+
+            if (_newIndex > _currentIndex) {
+
+                for (int i = _currentIndex; i < _newIndex; i++) {
+                    _list[i] = _list[i + 1];
+                }
+
+            } else {
+
+                for (int i = _currentIndex; i-- > _newIndex;) {
+                    _list[i + 1] = _list[i];
+                }
+            }
+
+            _list[_newIndex] = _element;
         }
         #endregion
 
@@ -448,10 +581,13 @@ namespace EnhancedEditor {
         /// <param name="_element">Matching element.</param>
         /// <returns>True if found a matching element, false otherwise.</returns>
         public static bool Find<T>(this T[] _array, Predicate<T> _match, out T _element) {
-            foreach (var _arrayElement in _array) {
-                _element = _arrayElement;
-                if (_match(_element))
+            int _length = _array.Length;
+            for (int i = 0; i < _length; i++) {
+
+                _element = _array[i];
+                if (_match(_element)) {
                     return true;
+                }
             }
 
             _element = default;
@@ -473,6 +609,25 @@ namespace EnhancedEditor {
                     _list.Capacity = _size;
 
                 for (int _i = _count; _i < _size; _i++) {
+                    _list.Add(default);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Increases this list capacity if inferior to a given length size.
+        /// </summary>
+        /// <typeparam name="T">List element type.</typeparam>
+        /// <param name="_list">List to resize.</param>
+        /// <param name="_minLength">New list minimum length size.</param>
+        public static void SoftResize<T>(this List<T> _list, int _minLength) {
+            int _count = _list.Count;
+            if (_minLength > _count) {
+
+                if (_minLength > _list.Capacity)
+                    _list.Capacity = _minLength;
+
+                for (int _i = _count; _i < _minLength; _i++) {
                     _list.Add(default);
                 }
             }

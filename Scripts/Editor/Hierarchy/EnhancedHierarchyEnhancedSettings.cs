@@ -18,9 +18,8 @@ namespace EnhancedEditor.Editor {
         [Serializable]
         public sealed class LayerHierarchyStyle {
             #region Global Members
-            public LayerMask Layer = 1;
-
             public HierarchyStyle Style = new HierarchyStyle();
+            public LayerMask Layer = 1;
             #endregion
         }
 
@@ -47,7 +46,7 @@ namespace EnhancedEditor.Editor {
 
         [SerializeField, Enhanced, DisplayName("Header Backgrounds"), HelpBox("Gradients displayed on hierarchy headers background, for each indent level", MessageType.Info, false)]
         private BlockArray<Gradient> headerGradients = new BlockArray<Gradient>() {
-            new Gradient(){
+            new Gradient() {
                 colorKeys = new GradientColorKey[]{new GradientColorKey(SuperColor.Indigo.Get(), 1f)},
                 alphaKeys = new GradientAlphaKey[]{new GradientAlphaKey(0f, 0f), new GradientAlphaKey(.7f, .5f), new GradientAlphaKey(0f, 1f)},
             }
@@ -94,7 +93,9 @@ namespace EnhancedEditor.Editor {
             get { return headerOutline; }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         /// <inheritdoc cref="EnhancedHierarchyEnhancedSettings"/>
         public EnhancedHierarchyEnhancedSettings(int _guid) : base(_guid) { }
@@ -126,12 +127,13 @@ namespace EnhancedEditor.Editor {
         /// <param name="_gradient">The header gradient for this object.</param>
         /// <returns>True if a matching gradient could be found, false otherwise.</returns>
         public bool GetHeaderGradient(int _indent, out Gradient _gradient) {
-            if (headerGradients.Count == 0) {
+            int _count = headerGradients.Count;
+            if (_count == 0) {
                 _gradient = null;
                 return false;
             }
 
-            _gradient = headerGradients[Mathf.Clamp(_indent, 0, headerGradients.Count - 1)];
+            _gradient = headerGradients[Mathf.Clamp(_indent, 0, _count - 1)];
             return true;
         }
 
@@ -142,8 +144,11 @@ namespace EnhancedEditor.Editor {
         /// <param name="_style">The <see cref="HierarchyStyle"/> associated with the given layer.</param>
         /// <returns>True if any <see cref="HierarchyStyle"/> for this layer could be found, false otherwise.</returns>
         public bool GetLayerStyle(int _layer, out HierarchyStyle _style) {
-            foreach (var _layerStyle in layerStyles) {
 
+            ref LayerHierarchyStyle[] _span = ref layerStyles.Array;
+            for (int i = _span.Length; i-- > 0;) {
+
+                LayerHierarchyStyle _layerStyle = _span[i];
                 if (_layerStyle.Layer.Contains(_layer)) {
                     _style = _layerStyle.Style;
                     return true;
@@ -168,7 +173,7 @@ namespace EnhancedEditor.Editor {
             headerOutline       = _settings.headerOutline;
             headerGradients     = _settings.headerGradients;
 
-            layerStyles              = _settings.layerStyles;
+            layerStyles         = _settings.layerStyles;
         }
         #endregion
 
@@ -207,6 +212,8 @@ namespace EnhancedEditor.Editor {
         private static EnhancedHierarchyEnhancedSettings settings = null;
         private static SerializedProperty settingsProperty = null;
 
+        // -----------------------
+
         /// <inheritdoc cref="EnhancedHierarchyEnhancedSettings"/>
         public static EnhancedHierarchyEnhancedSettings Settings {
             get {
@@ -223,19 +230,20 @@ namespace EnhancedEditor.Editor {
             }
         }
 
-        // -----------------------
+        // -------------------------------------------
+        // Settings
+        // -------------------------------------------
 
         public static EditorWindow OpenUserSettings() {
-            EditorWindow _preferences = SettingsService.OpenUserPreferences(PreferencesPath);
-            return _preferences;
+            return SettingsService.OpenUserPreferences(PreferencesPath);
         }
 
         [SettingsProvider]
         private static SettingsProvider CreateUserSettingsProvider() {
             SettingsProvider _provider = new SettingsProvider(PreferencesPath, SettingsScope.User) {
-                label = PreferencesLabel,
-                keywords = PreferencesKeywords,
-                guiHandler = DrawHierarchySettings,
+                label       = PreferencesLabel,
+                keywords    = PreferencesKeywords,
+                guiHandler  = DrawHierarchySettings,
             };
 
             return _provider;
@@ -288,13 +296,13 @@ namespace EnhancedEditor.Editor {
                 GUILayout.Space(15f);
 
                 using (var _verticalScope = new GUILayout.VerticalScope())
-                using (var _changeCheck = new EditorGUI.ChangeCheckScope()) {
+                using (var _changeCheck   = new EditorGUI.ChangeCheckScope()) {
 
                     // Core scene icon.
                     int _index = EditorGUILayout.Popup(coreIconGUI, _settings.coreSceneIconIndex, coreIconPopupGUI);
 
                     if (_index != _settings.coreSceneIconIndex) {
-                        _settings.coreSceneIconIndex = Mathf.Clamp(_index, 0, 7);
+                        _settings.coreSceneIconIndex = Mathf.Clamp(_index, 0, coreIconPopupGUI.Length - 1);
                         _settings.coreSceneIcon = null;
                     }
 
@@ -308,6 +316,7 @@ namespace EnhancedEditor.Editor {
 
                         // Refresh on change.
                         if (GUILayout.Button(applyGUI, GUILayout.Width(150f)) || _changeCheck.changed) {
+
                             EnhancedEditorUserSettings.Instance.Save();
 
                             EnhancedHierarchy.Reset();
@@ -321,7 +330,7 @@ namespace EnhancedEditor.Editor {
 
         #region Editor Settings
         private static readonly GUIContent headerGUI = new GUIContent("Enhanced Hierarchy", "Enhanced hierarchy related settings.");
-        private static readonly GUIContent editGUI = new GUIContent("Edit Hierarchy", "Opens the enhanced hierarchy specific settings panel.");
+        private static readonly GUIContent editGUI   = new GUIContent("Edit Hierarchy", "Opens the enhanced hierarchy specific settings panel.");
 
         // -----------------------
 

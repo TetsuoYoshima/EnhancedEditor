@@ -31,6 +31,7 @@ namespace EnhancedEditor.Editor {
             // Hide help box.
             if ((_isAbove != _attribute.IsAbove) ||
                 (_attribute.ConditionMember.HasValue && _attribute.ConditionMember.Value.GetValue(_property, out bool _value) && (_value != _attribute.ConditionType.Get()))) {
+
                 return 0f;
             }
 
@@ -43,7 +44,7 @@ namespace EnhancedEditor.Editor {
             UnityEditor.MessageType _messageType = (UnityEditor.MessageType)_attribute.MessageType;
             _position = EditorGUI.IndentedRect(_position);
 
-            float _height = EnhancedEditorGUIUtility.GetHelpBoxHeight(_message, _messageType, _position.width);
+            float _height    = EnhancedEditorGUIUtility.GetHelpBoxHeight(_message, _messageType, _position.width);
             _position.height = _height;
 
             if (!_isAbove) {

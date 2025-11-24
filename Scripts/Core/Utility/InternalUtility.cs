@@ -13,24 +13,24 @@ namespace EnhancedEditor {
 	public static class InternalUtility {
         #region Content
         /// <summary>
-        /// Name of this plugin.
+        /// Menu item path used for <see cref="EnhancedFramework"/> utilities.
         /// </summary>
-        public const string Name            = "Enhanced Editor";
+        public const string MenuItemPath = "Tools/" + MenuPath;
 
         /// <summary>
         /// Menu path prefix used for creating new <see cref="ScriptableObject"/>, or any other special menu.
         /// </summary>
-        public const string MenuPath        = Name + "/";
+        public const string MenuPath     = Name + "/";
 
         /// <summary>
-        /// Menu item path used for <see cref="EnhancedFramework"/> utilities.
+        /// Name of this plugin.
         /// </summary>
-        public const string MenuItemPath    = "Tools/" + MenuPath;
+        public const string Name         = "Enhanced Editor";
 
         /// <summary>
         /// Menu order used for creating new <see cref="ScriptableObject"/> from the asset menu.
         /// </summary>
-        public const int MenuOrder          = 200;
+        public const int MenuOrder       = 200;
         #endregion
     }
 }

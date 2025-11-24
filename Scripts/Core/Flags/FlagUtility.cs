@@ -28,15 +28,17 @@ namespace EnhancedEditor {
     /// </summary>
     public static class FlagUtility {
         #region Content
-        private static readonly List<IFlagCallback> callbacks = new List<IFlagCallback>();
+        private static List<IFlagCallback> callbacks = new List<IFlagCallback>();
+
+        // -----------------------
 
         /// <inheritdoc cref="IFlagCallback.OnFlagChanged(Flag, bool)"/>
         internal static void OnFlagChanged(Flag _flag, bool _value) {
 
-            List<IFlagCallback> callbackSpan = callbacks;
+            ref List<IFlagCallback> _span = ref callbacks;
 
-            for (int i = callbackSpan.Count; i-- > 0;) {
-                callbackSpan[i].OnFlagChanged(_flag, _value);
+            for (int i = _span.Count; i-- > 0;) {
+                _span[i].OnFlagChanged(_flag, _value);
             }
         }
 

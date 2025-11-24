@@ -99,8 +99,8 @@ namespace EnhancedEditor {
         /// <returns>True if the derived type is a subclass of the base, false otherwise.</returns>
         public static bool IsSubclassOfGeneric(this Type _derived, Type _base) {
             while ((_derived != null) && (_derived != typeof(object))) {
-                var cur = _derived.IsGenericType ? _derived.GetGenericTypeDefinition() : _derived;
-                if (_base == cur) {
+                Type _def = _derived.IsGenericType ? _derived.GetGenericTypeDefinition() : _derived;
+                if (_base == _def) {
                     return true;
                 }
 

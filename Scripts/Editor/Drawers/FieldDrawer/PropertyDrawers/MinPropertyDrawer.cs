@@ -20,8 +20,9 @@ namespace EnhancedEditor.Editor {
             // Get minimum allowed value and floor property value.
             if (_attribute.MinMember == null) {
                 _minValue = _attribute.MinValue;
-            } else if (!_attribute.MinMember.Value.GetValue(_property, out _minValue))
+            } else if (!_attribute.MinMember.Value.GetValue(_property, out _minValue)) {
                 return;
+            }
 
             EnhancedEditorUtility.FloorSerializedPropertyValue(_property, _minValue);
         }

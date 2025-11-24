@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace EnhancedEditor {
+    // ===== Base ===== \\
+
     /// <summary>
     /// Base collection class to display its content as a block in the inspector.
     /// </summary>
@@ -60,7 +62,8 @@ namespace EnhancedEditor {
 
         #region IEnumerable
         public IEnumerator<T> GetEnumerator() {
-            for (int i = 0; i < Count; i++) {
+            int _count = Count;
+            for (int i = 0; i < _count; i++) {
                 yield return this[i];
             }
         }
@@ -83,6 +86,8 @@ namespace EnhancedEditor {
         public abstract void Clear();
         #endregion
     }
+
+    // ===== Derived ===== \\
 
     /// <summary>
     /// Displays an array as a block in the inspector.

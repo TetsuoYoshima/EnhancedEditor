@@ -14,8 +14,8 @@ namespace EnhancedEditor.Editor {
     [CustomPropertyDrawer(typeof(AnimationCurve), true)]
     public sealed class AnimationCurvePropertyDrawer : EnhancedPropertyEditor {
         #region Drawer Content
-        private static readonly GUIContent copyGUI = new GUIContent("Copy", "Copy this animation curve value.");
         private static readonly GUIContent pasteGUI = new GUIContent("Paste", "Overwrite this animation curve value with the one in buffer.");
+        private static readonly GUIContent copyGUI  = new GUIContent("Copy", "Copy this animation curve value.");
 
         /// <summary>
         /// Current in-buffer curve value (used for copy / paste operations).
@@ -51,8 +51,9 @@ namespace EnhancedEditor.Editor {
                 _menu.AddItem(copyGUI, false, () => {
                     CurveBuffer = _property.animationCurveValue;
                 });
-            } else
+            } else {
                 _menu.AddDisabledItem(copyGUI);
+            }
 
             // Paste value.
             if (CurveBuffer != null) {
@@ -62,8 +63,9 @@ namespace EnhancedEditor.Editor {
                         _property.serializedObject.ApplyModifiedProperties();
                     }
                 });
-            } else
+            } else {
                 _menu.AddDisabledItem(pasteGUI);
+            }
         }
         #endregion
     }

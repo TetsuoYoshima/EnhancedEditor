@@ -67,16 +67,16 @@ namespace EnhancedEditor.Editor {
         private static Action repaintDelegate = null;
         #endif
 
-        private static readonly Action[] toolbarLeftExtensions = new Action[] { };
-        private static readonly Action[] toolbarRightExtensions = new Action[] { };
+        private static readonly Action[] toolbarRightExtensions = new Action[0];
+        private static readonly Action[] toolbarLeftExtensions  = new Action[0];
 
         // -----------------------
 
         static EnhancedEditorToolbar() {
             #if UNITY_2020_1_OR_NEWER
             // Get all toolbar extensions.
-            toolbarLeftExtensions = GetExtensions<EditorToolbarLeftExtension>(false);
             toolbarRightExtensions = GetExtensions<EditorToolbarRightExtension>(true);
+            toolbarLeftExtensions  = GetExtensions<EditorToolbarLeftExtension>(false);
 
             #if SCENEVIEW_TOOLBAR
             // From the version 2021.1 or Unity, the editor toolbar uses GUIElements instead of classic GUI controls.
@@ -90,22 +90,22 @@ namespace EnhancedEditor.Editor {
             EditorApplication.update -= Update;
             EditorApplication.update += Update;
 
-            if (toolCountInfo != null)
-            {
+            if (toolCountInfo != null) {
                 toolCount = (int)toolCountInfo.GetValue(null);
             }
             #endif
 
             // ----- Local Method ----- \\
 
-            Action[] GetExtensions<T>(bool _sortAscending) where T : EditorToolbarExtension {
+            static Action[] GetExtensions<T>(bool _sortAscending) where T : EditorToolbarExtension {
                 // Get matching extension methods.
                 var _methods = TypeCache.GetMethodsWithAttribute<T>();
                 List<MethodInfo> _extensions = new List<MethodInfo>();
 
                 foreach (var _method in _methods) {
-                    if (_method.IsStatic && (_method.GetParameters().Length == 0))
+                    if (_method.IsStatic && (_method.GetParameters().Length == 0)) {
                         _extensions.Add(_method);
+                    }
                 }
 
                 // Sort all extensions by their order.
@@ -136,8 +136,7 @@ namespace EnhancedEditor.Editor {
             #elif EDITOR_TOOLBAR
             // Subscribe the toolbar GUI callback every time its reference gets lost.
             // Cannot be done on initialization as some editor elements may not be initialized yet.
-            if (!toolbar)
-            {
+            if (!toolbar) {
                 var _toolbars = Resources.FindObjectsOfTypeAll(toolbarType);
                 if (_toolbars.Length == 0)
                     return;
@@ -234,25 +233,25 @@ namespace EnhancedEditor.Editor {
 
         #region Scene View GUI
         #if SCENEVIEW_TOOLBAR
-        private const float ToolbarHeight = 25f;
-        private const float ToolbarFoldoutWidth = 25f;
-        private const float ToolbarHeaderWidth = 97f;
-        private const float ToolbarRightSpace = 60f;
         private const float ToolbarFoldoutSpeed = 2000000f;
+        private const float ToolbarHeight       = 25f;
+        private const float ToolbarFoldoutWidth = 25f;
+        private const float ToolbarHeaderWidth  = 97f;
+        private const float ToolbarRightSpace   = 60f;
 
-        private static readonly GUIContent foldGUI = new GUIContent(string.Empty, "Hides the Enhanced Editor toolbar.");
         private static readonly GUIContent unfolddGUI = new GUIContent(string.Empty, "Shows the Enhanced Editor toolbar.");
-        private static readonly GUIContent headerGUI = new GUIContent("Enhanced Toolbar");
+        private static readonly GUIContent headerGUI  = new GUIContent("Enhanced Toolbar");
+        private static readonly GUIContent foldGUI    = new GUIContent(string.Empty, "Hides the Enhanced Editor toolbar.");
 
-        private static float toolbarWidth = ToolbarFoldoutWidth;
-        private static double lastUpdateTime = 0f;
+        private static double lastUpdateTime = 0d;
+        private static float toolbarWidth    = ToolbarFoldoutWidth;
 
         // -----------------------
 
         private static void OnSceneGUI(SceneView _view) {
             // Icons loading.
             if (foldGUI.image == null) {
-                foldGUI.image = EditorGUIUtility.IconContent("Animation.FirstKey@2x").image;
+                foldGUI.image    = EditorGUIUtility.IconContent("Animation.FirstKey@2x").image;
                 unfolddGUI.image = EditorGUIUtility.IconContent("Animation.LastKey@2x").image;
             }
 
@@ -266,7 +265,7 @@ namespace EnhancedEditor.Editor {
                 float _difference = (float)(_time - lastUpdateTime);
 
                 lastUpdateTime = _time;
-                toolbarWidth = Mathf.MoveTowards(toolbarWidth, _targetWidth, _difference * ToolbarFoldoutSpeed * ChronosUtility.RealDeltaTime);
+                toolbarWidth   = Mathf.MoveTowards(toolbarWidth, _targetWidth, _difference * ToolbarFoldoutSpeed * ChronosUtility.RealDeltaTime);
 
                 _view.Repaint();
             }
@@ -274,7 +273,7 @@ namespace EnhancedEditor.Editor {
             // Draw controls inside a 2D GUI group.
             Handles.BeginGUI();
 
-            using (var _area = new GUILayout.AreaScope(new Rect(-1f, 0f, toolbarWidth, ToolbarHeight)))
+            using (var _area  = new GUILayout.AreaScope(new Rect(-1f, 0f, toolbarWidth, ToolbarHeight)))
             using (var _scope = new GUILayout.HorizontalScope(EditorStyles.toolbar)) {
                 // Foldout button.
                 GUIContent _buttonGUI = foldout
@@ -288,21 +287,26 @@ namespace EnhancedEditor.Editor {
                 GUILayout.Label(headerGUI, EditorStyles.miniLabel, GUILayout.Width(ToolbarHeaderWidth));
 
                 // Left side extensions.
-                foreach (var _extension in toolbarLeftExtensions) {
-                    _extension();
-                }
+                DrawExtensions(toolbarLeftExtensions);
 
                 GUILayout.FlexibleSpace();
 
                 // Right side extensions.
-                foreach (var _extension in toolbarRightExtensions) {
-                    _extension();
-                }
+                DrawExtensions(toolbarRightExtensions);
 
                 GUILayout.Space(ToolbarRightSpace);
             }
 
             Handles.EndGUI();
+
+            // ----- Local Method ----- \\
+
+            static void DrawExtensions(Action[] _extensions) {
+                int _count = _extensions.Length;
+                for (int i = 0; i < _count; i++) {
+                    _extensions[i]();
+                }
+            }
         }
 
         private static void SetFoldout(bool _foldout, bool _instant = false) {
@@ -338,7 +342,7 @@ namespace EnhancedEditor.Editor {
             #else
             // First, draw the button background as the toolbar appropriate style cannot display any label.
             Rect _position = EditorGUILayout.GetControlRect(_options);
-            bool _result = GUI.Button(_position, GUIContent.none, EnhancedEditorStyles.ToolbarControl);
+            bool _result   = GUI.Button(_position, GUIContent.none, EnhancedEditorStyles.ToolbarControl);
 
             // Then, draw the label over it.
             GUIStyle _labelStyle = EnhancedEditorStyles.ToolbarLabel;
@@ -361,11 +365,11 @@ namespace EnhancedEditor.Editor {
 
             #if SCENEVIEW_TOOLBAR
             using (var _scope = EnhancedGUI.GUIStyleAlignment.Scope(EditorStyles.toolbarButton, TextAnchor.MiddleCenter)) {
-                for (int _i = 0; _i < _labels.Length; _i++) {
+                for (int i = 0; i < _labels.Length; i++) {
                     // Select the appropriate background style depending on the button position.
-                    GUIContent _label = _labels[_i];
+                    GUIContent _label = _labels[i];
                     if (GUILayout.Button(_label, EditorStyles.toolbarButton))
-                        _result = _i;
+                        _result = i;
                 }
             }
             #else
@@ -374,20 +378,21 @@ namespace EnhancedEditor.Editor {
 
             using (var _scope = EnhancedGUI.GUIStyleAlignment.Scope(_labelStyle, TextAnchor.MiddleCenter))
             {
-                for (int _i = 0; _i < _labels.Length; _i++)
+                for (int i = 0; i < _labels.Length; i++)
                 {
                     // Select the appropriate background style depending on the button position.
-                    GUIContent _content = _labels[_i];
-                    GUIStyle _style = (_i == 0)
+                    GUIContent _content = _labels[i];
+                    GUIStyle _style = (i == 0)
                                     ? EnhancedEditorStyles.ToolbarCommandLeft
-                                    : ((_i == (_labels.Length - 1)) ? EnhancedEditorStyles.ToolbarCommandRight
+                                    : ((i == (_labels.Length - 1)) ? EnhancedEditorStyles.ToolbarCommandRight
                                                                     : EnhancedEditorStyles.ToolbarCommandMid);
 
                     _position.width = _labelStyle.CalcSize(_content).x + 7f;
                     EditorGUILayout.GetControlRect(GUILayout.Width(_position.width - 3f));
 
-                    if (GUI.Button(_position, GUIContent.none, _style))
-                        _result = _i;
+                    if (GUI.Button(_position, GUIContent.none, _style)) {
+                        _result = i;
+                    }
 
                     // Draw the label over the background.
                     GUI.Label(_position, _content, _labelStyle);
@@ -409,15 +414,17 @@ namespace EnhancedEditor.Editor {
         public static int DropdownToggle(bool toggle, GUIContent _label, params GUILayoutOption[] _options) {
             int _result = -1;
 
-            if (dropdownGUI.image == null)
+            if (dropdownGUI.image == null) {
                 dropdownGUI.image = EditorGUIUtility.IconContent("dropdown").image;
+            }
 
             #if SCENEVIEW_TOOLBAR
             using (var _changeCheck = new EditorGUI.ChangeCheckScope()) {
                 GUILayout.Toggle(toggle, _label, EditorStyles.toolbarButton, _options);
 
-                if (_changeCheck.changed)
+                if (_changeCheck.changed) {
                     _result = 0;
+                }
             }
 
             if (EditorGUILayout.DropdownButton(GUIContent.none, FocusType.Passive, EditorStyles.toolbarDropDown, GUILayout.Width(16f))) {
@@ -426,17 +433,16 @@ namespace EnhancedEditor.Editor {
             #else
             // Toggle button.
             Rect _position = EditorGUILayout.GetControlRect(_options);
-            using (var _changeCheck = new EditorGUI.ChangeCheckScope())
-            {
+            using (var _changeCheck = new EditorGUI.ChangeCheckScope()) {
                 GUI.Toggle(_position, toggle, GUIContent.none, EnhancedEditorStyles.ToolbarCommandLeft);
 
-                if (_changeCheck.changed)
+                if (_changeCheck.changed) {
                     _result = 0;
+                }
             }
 
             GUIStyle _labelStyle = EnhancedEditorStyles.ToolbarLabel;
-            using (var _scope = EnhancedGUI.GUIStyleAlignment.Scope(_labelStyle, TextAnchor.MiddleCenter))
-            {
+            using (var _scope = EnhancedGUI.GUIStyleAlignment.Scope(_labelStyle, TextAnchor.MiddleCenter)) {
                 GUI.Label(_position, _label, _labelStyle);
             }
 
@@ -444,11 +450,11 @@ namespace EnhancedEditor.Editor {
             _position = EditorGUILayout.GetControlRect(GUILayout.Width(12f));
             _position.xMin -= 3f;
 
-            if (EditorGUI.DropdownButton(_position, GUIContent.none, FocusType.Passive, EnhancedEditorStyles.ToolbarCommandRight))
+            if (EditorGUI.DropdownButton(_position, GUIContent.none, FocusType.Passive, EnhancedEditorStyles.ToolbarCommandRight)) {
                 _result = 1;
+            }
 
-            using (var _scope = EnhancedGUI.GUIStyleAlignment.Scope(_labelStyle, TextAnchor.MiddleCenter))
-            {
+            using (var _scope = EnhancedGUI.GUIStyleAlignment.Scope(_labelStyle, TextAnchor.MiddleCenter)) {
                 GUI.Label(_position, dropdownGUI, _labelStyle);
             }
             #endif

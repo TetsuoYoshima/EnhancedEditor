@@ -19,9 +19,11 @@ namespace EnhancedEditor.Editor {
         #region Global Members
         private const string ModifiedObjectKey = "ModifiedObjects";
 
-        [SerializeField] private static List<int> modifiedObjects = new List<int>();
+        [SerializeField] private static readonly List<int> modifiedObjects = new List<int>();
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static AssetModificationProcessor() {
             Undo.postprocessModifications -= UndoPostProcess;
@@ -95,15 +97,16 @@ namespace EnhancedEditor.Editor {
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange _state) {
+            List<int> _span = modifiedObjects;
 
             if (_state == PlayModeStateChange.ExitingEditMode) {
 
                 // Save dirty objects when exiting edit mode.
-                modifiedObjects = new List<int>(GetModifiedObjects());
+                _span.ReplaceBy(GetModifiedObjects());
 
-                for (int i = modifiedObjects.Count; i-- > 0;) {
-                    if (!EditorUtility.IsDirty(modifiedObjects[i])) {
-                        modifiedObjects.RemoveAt(i);
+                for (int i = _span.Count; i-- > 0;) {
+                    if (!EditorUtility.IsDirty(_span[i])) {
+                        _span.RemoveAt(i);
                     }
                 }
 
@@ -113,11 +116,10 @@ namespace EnhancedEditor.Editor {
 
                 // When re-entering edit mode, set registered objects as dirty
                 // as they are no longer in this state after play mode.
-                modifiedObjects = new List<int>(GetModifiedObjects());
+                _span.ReplaceBy(GetModifiedObjects());
 
-                foreach (var _id in modifiedObjects) {
-
-                    Object _object = EditorUtility.InstanceIDToObject(_id);
+                for (int i = _span.Count; i-- > 0;) {
+                    Object _object = EditorUtility.InstanceIDToObject(_span[i]);
 
                     if ((_object is not null)) {
                         EditorUtility.SetDirty(_object);

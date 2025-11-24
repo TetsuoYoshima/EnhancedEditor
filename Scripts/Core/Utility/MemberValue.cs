@@ -226,10 +226,11 @@ namespace EnhancedEditor {
         /// <inheritdoc cref="CastValue(T, Type, Type, out object)"/>
         /// <param name="_type">The type to which you want to cast the object.</param>
         private readonly bool CastValue(object _object, Type _type, out T _value) {
-            if (_object is T) {
-                _value = (T)_object;
+            if (_object is T _castValue) {
+                _value = _castValue;
                 return true;
             }
+
             try {
                 _value = (T)Convert.ChangeType(_object, _type);
                 return true;

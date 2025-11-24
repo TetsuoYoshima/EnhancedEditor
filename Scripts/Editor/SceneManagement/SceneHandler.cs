@@ -147,8 +147,8 @@ namespace EnhancedEditor.Editor {
         #endregion
 
         #region Global Members
-        [SerializeField] internal SceneGroup[]  sceneGroups  = new SceneGroup [] { new SceneGroup ("Default Group") };
         [SerializeField] internal BundleGroup[] bundleGroups = new BundleGroup[] { new BundleGroup("Default Group") };
+        [SerializeField] internal SceneGroup[]  sceneGroups  = new SceneGroup [] { new SceneGroup ("Default Group") };
         #endregion
 
         #region Management
@@ -276,14 +276,12 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         internal void Sort() {
             if (sceneGroups.Length > 1) {
-
                 foreach (var _group in sceneGroups) {
                     Array.Sort(_group.Scenes);
                 }
             }
 
             if (bundleGroups.Length > 1) {
-
                 foreach (var _group in bundleGroups) {
                     Array.Sort(_group.Bundles);
                 }
@@ -307,8 +305,8 @@ namespace EnhancedEditor.Editor {
         /// Clears all groups in this handler.
         /// </summary>
         public void ResetGroups() {
-            sceneGroups  = new SceneGroup[] { new SceneGroup("Default Group") };
             bundleGroups = new BundleGroup[] { new BundleGroup("Default Group") };
+            sceneGroups  = new SceneGroup[]  { new SceneGroup("Default Group") };
 
             SaveChanges();
         }

@@ -854,17 +854,29 @@ namespace EnhancedEditor.Editor {
             }
         }
 
+        /// <inheritdoc cref="HorizontalSplitterHandle(Rect, float, float, int)"/>
+        public static float HorizontalSplitterHandle(Rect _area, float _minWidth, float _maxWidth) {
+            int _controlID = GetControlID(resizeControlID, FocusType.Passive);
+            return HorizontalSplitterHandle(_area, _minWidth, _maxWidth, _controlID);
+        }
+
+        /// <inheritdoc cref="VerticalSplitterHandle(Rect, float, float, int)"/>
+        public static float VerticalSplitterHandle(Rect _area, float _minHeight, float _maxHeight) {
+            int _controlID = GetControlID(resizeControlID, FocusType.Passive);
+            return VerticalSplitterHandle(_area, _minHeight, _maxHeight, _controlID);
+        }
+
         /// <summary>
         /// Makes an horizontally resizable area from its left border.
         /// </summary>
         /// <param name="_area">The total resizable area position on screen.</param>
         /// <param name="_minWidth">Minimum allowed width of the area.</param>
         /// <param name="_maxWidth">Maximum allowed width of the area.</param>
+        /// <param name="_controlID"><see cref="GUIUtility.hotControl"/>-related unique control id.</param>
         /// <returns>The new width of the area. Make sure to only modify it when <see cref="GUI.changed"/> is set to true.</returns>
-        public static float HorizontalSplitterHandle(Rect _area, float _minWidth, float _maxWidth) {
-            int _controlID = GetControlID(resizeControlID, FocusType.Passive);
+        public static float HorizontalSplitterHandle(Rect _area, float _minWidth, float _maxWidth, int _controlID) {
             Rect _splitter = new Rect(_area) {
-                x = _area.x - ResizeHandlerExtent,
+                x     = _area.x - ResizeHandlerExtent,
                 width = ResizeHandlerExtent * 2f
             };
 
@@ -878,17 +890,23 @@ namespace EnhancedEditor.Editor {
         /// <param name="_area">The total resizable area position on screen.</param>
         /// <param name="_minHeight">Minimum allowed height of the area.</param>
         /// <param name="_maxHeight">Maximum allowed height of the area.</param>
+        /// <param name="_controlID"><see cref="GUIUtility.hotControl"/>-related unique control id.</param>
         /// <returns>The new height of the area. Make sure to only modify it when <see cref="GUI.changed"/> is set to true.</returns>
-        public static float VerticalSplitterHandle(Rect _area, float _minHeight, float _maxHeight) {
-            // Event and state control.
-            int _controlID = GetControlID(resizeControlID, FocusType.Passive);
+        public static float VerticalSplitterHandle(Rect _area, float _minHeight, float _maxHeight, int _controlID) {
             Rect _splitter = new Rect(_area) {
-                yMin = _area.y - ResizeHandlerExtent,
+                yMin   = _area.y - ResizeHandlerExtent,
                 height = ResizeHandlerExtent * 2f
             };
 
             EditorGUIUtility.AddCursorRect(_splitter, MouseCursor.ResizeVertical, _controlID);
             return Mathf.Clamp(SplitterHandle(_controlID, _area, _splitter).height, _minHeight, _maxHeight);
+        }
+
+        /// <summary>
+        /// Get a control ID to be used for a resize control (like a splitter).
+        /// </summary>
+        public static int GetResizeControlID() {
+            return GetControlID(resizeControlID, FocusType.Passive);
         }
 
         // -----------------------
@@ -907,7 +925,7 @@ namespace EnhancedEditor.Editor {
                     }
                     break;
 
-                // ReduceSize.
+                // Reduce size.
                 case EventType.MouseDrag:
                     if (GUIUtility.hotControl == _controlID) {
                         _area.size = _area.max - _event.mousePosition;

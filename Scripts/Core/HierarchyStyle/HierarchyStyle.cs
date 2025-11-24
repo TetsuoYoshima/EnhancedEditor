@@ -25,12 +25,12 @@ namespace EnhancedEditor {
         [Tooltip("Color of the object displayed icon")]
         [Enhanced, DisplayName("Color"), Duo(nameof(UseIconColor), 20f)]
         
-        public Color IconColor                  = Color.white;
+        public Color IconColor = Color.white;
 
         [Tooltip("If true, overrides the object icon color")]
         [HideInInspector, Enhanced, DisplayName("Enabled")]
         
-        public bool UseIconColor                = false;
+        public bool UseIconColor = false;
 
         [Title("Label"), Space(10f)]
 
@@ -39,22 +39,22 @@ namespace EnhancedEditor {
         [Tooltip("Color of the object displayed label")]
         [Enhanced, DisplayName("Color"), Duo(nameof(UseLabelColor), 20f)]
         
-        public Color LabelColor                 = Color.white;
+        public Color LabelColor = Color.white;
 
         [Tooltip("If true, overrides the object label color")]
         [HideInInspector, Enhanced, DisplayName("Enabled")]
         
-        public bool UseLabelColor               = false;
+        public bool UseLabelColor = false;
 
         [Tooltip("Background gradient displayed behind the object label")]
         [Enhanced, DisplayName("Background"), Duo(nameof(UseBackground), 20f)]
         
-        public Gradient Background              = new Gradient();
+        public Gradient Background = new Gradient();
 
         [Tooltip("If true, overrides the object background color")]
         [HideInInspector, Enhanced, DisplayName("Enabled")]
         
-        public bool UseBackground               = false;
+        public bool UseBackground = false;
 
         [Title("Header"), Space(10f)]
 
@@ -63,22 +63,22 @@ namespace EnhancedEditor {
         [Tooltip("Color of the object displayed label, if it's a header")]
         [Enhanced, DisplayName("Color"), Duo(nameof(UseHeaderColor), 20f)]
 
-        public Color HeaderColor                = Color.white;
+        public Color HeaderColor = Color.white;
 
         [Tooltip("If true, overrides the object label color, if it's a header")]
         [HideInInspector, Enhanced, DisplayName("Enabled")]
 
-        public bool UseHeaderColor              = false;
+        public bool UseHeaderColor = false;
 
         [Tooltip("Background gradient displayed behind the object label, if it's a header")]
         [Enhanced, DisplayName("Background"), Duo(nameof(OverrideHeaderBackground), 20f)]
         
-        public Gradient HeaderBackground        = new Gradient();
+        public Gradient HeaderBackground = new Gradient();
 
         [Tooltip("If true, overrides the object background color, if it's header")]
         [HideInInspector, Enhanced, DisplayName("Enabled")]
         
-        public bool OverrideHeaderBackground    = false;
+        public bool OverrideHeaderBackground = false;
         #endregion
 
         #region Utility
@@ -99,7 +99,7 @@ namespace EnhancedEditor {
 
             if (_style.UseIconColor) {
                 UseIconColor = true;
-                IconColor = _style.IconColor;
+                IconColor    = _style.IconColor;
             } else if (_reset) {
                 UseIconColor = false;
             }
@@ -107,14 +107,14 @@ namespace EnhancedEditor {
             // Label.
             if (_style.UseLabelColor) {
                 UseLabelColor = true;
-                LabelColor = _style.LabelColor;
+                LabelColor    = _style.LabelColor;
             } else if (_reset) {
                 UseLabelColor = false;
             }
 
             if (_style.UseBackground) {
                 UseBackground = true;
-                Background = _style.Background;
+                Background    = _style.Background;
             } else if (_reset) {
                 UseBackground = false;
             }
@@ -122,14 +122,14 @@ namespace EnhancedEditor {
             // Header.
             if (_style.UseHeaderColor) {
                 UseHeaderColor = true;
-                HeaderColor = _style.HeaderColor;
+                HeaderColor    = _style.HeaderColor;
             } else if (_reset) {
                 UseHeaderColor = false;
             }
 
             if (_style.OverrideHeaderBackground) {
                 OverrideHeaderBackground = true;
-                HeaderBackground = _style.HeaderBackground;
+                HeaderBackground         = _style.HeaderBackground;
             } else if (_reset) {
                 OverrideHeaderBackground = false;
             }

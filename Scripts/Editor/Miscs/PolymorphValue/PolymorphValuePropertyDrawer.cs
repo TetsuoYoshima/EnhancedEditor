@@ -32,7 +32,7 @@ namespace EnhancedEditor.Editor {
                 _position.y += _height;
 
                 if (_valueProperty.isExpanded) {
-                    _height += EditorGUIUtility.standardVerticalSpacing;
+                    _height     += EditorGUIUtility.standardVerticalSpacing;
                     _position.y += EditorGUIUtility.standardVerticalSpacing;
 
                     // Single block field.

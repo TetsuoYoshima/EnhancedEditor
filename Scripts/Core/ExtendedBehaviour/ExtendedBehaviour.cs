@@ -34,8 +34,8 @@ namespace EnhancedEditor {
         #if UNITY_EDITOR
         [Space(10f)]
 
-        [SerializeField, Enhanced, ReadOnly] private string lastModifiedBy   = string.Empty;
         [SerializeField, Enhanced, ReadOnly] private string lastModifiedDate = string.Empty;
+        [SerializeField, Enhanced, ReadOnly] private string lastModifiedBy   = string.Empty;
 
         [Space(10f)]
 
@@ -93,8 +93,8 @@ namespace EnhancedEditor {
         /// </summary>
         internal void UpdateLastModifiedState() {
             #if UNITY_EDITOR
-            lastModifiedBy   = Environment.UserName;
             lastModifiedDate = DateTime.Now.ToString(CultureInfo.CurrentCulture);
+            lastModifiedBy   = Environment.UserName;
             #endif
         }
         #endregion

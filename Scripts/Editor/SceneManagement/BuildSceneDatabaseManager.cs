@@ -27,7 +27,9 @@ namespace EnhancedEditor.Editor {
         /// </summary>
         public static BuildSceneDatabase Database => resource.GetResource();
 
-        // -----------------------
+        // -------------------------------------------
+        // Constructor(s)
+        // -------------------------------------------
 
         static BuildSceneDatabaseManager() {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
@@ -106,7 +108,7 @@ namespace EnhancedEditor.Editor {
 
             // ----- Local Method ----- \\
 
-            bool IsIncludedInBuild(SceneBundle _sceneBundle) {
+            static bool IsIncludedInBuild(SceneBundle _sceneBundle) {
                 foreach (SceneAsset _scene in _sceneBundle.Scenes) {
                     if (_scene.BuildIndex == -1) {
                         return false;

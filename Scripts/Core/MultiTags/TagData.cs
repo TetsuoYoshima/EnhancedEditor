@@ -82,7 +82,7 @@ namespace EnhancedEditor {
         /// <param name="_tag">Tag to compare to this one.</param>
         /// <returns>Comparison value between the two names.</returns>
         public int CompareNameTo(TagData _tag) {
-            return name.CompareTo(_tag.name);
+            return string.Compare(name, _tag.name, StringComparison.Ordinal);
         }
         #endregion
     }

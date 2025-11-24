@@ -24,7 +24,9 @@ namespace EnhancedEditor.Editor {
             public float YMax;
             public bool IsDrawn;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public IndentLevel(int _indent) {
                 Indent = _indent;
@@ -51,7 +53,9 @@ namespace EnhancedEditor.Editor {
 
             public List<SortFolder> Folders;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public SortLevel(int _index, int _indent) {
                 Index = _index;
@@ -65,7 +69,9 @@ namespace EnhancedEditor.Editor {
             public PinObject Object;
             public int ChildCount;
 
-            // -----------------------
+            // -------------------------------------------
+            // Constructor(s)
+            // -------------------------------------------
 
             public SortFolder(PinObject _object) {
                 Object = _object;

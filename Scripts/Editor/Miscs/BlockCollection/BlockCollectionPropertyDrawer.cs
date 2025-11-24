@@ -23,8 +23,10 @@ namespace EnhancedEditor.Editor {
         private const float EmptyListHeight     = 50f;
         private const float FoldedListHeight    = 30f;
 
-        private const string LabelFormat = "{0} - [{1}]";
+        private const string HeaderLabelFormat  = "{0} - [{1}]";
+
         private static readonly Dictionary<string, ReorderableList> lists = new Dictionary<string, ReorderableList>();
+        private static readonly GUIContent labelGUI = new GUIContent();
 
         // -----------------------
 
@@ -47,9 +49,9 @@ namespace EnhancedEditor.Editor {
                     if (_array.isExpanded) {
 
                         // Functional list.
-                        bool _isEditable = _property.FindPropertyRelative("IsEditable").boolValue;
+                        bool _isEditable    = _property.FindPropertyRelative("IsEditable").boolValue;
                         bool _isReorderable = _property.FindPropertyRelative("IsReorderable").boolValue;
-                        bool _isReadonly = _property.FindPropertyRelative("IsReadonly").boolValue;
+                        bool _isReadonly    = _property.FindPropertyRelative("IsReadonly").boolValue;
 
                         _list = new ReorderableList(_array.serializedObject, _array, _isReorderable, true, _isEditable, _isEditable) {
                             drawHeaderCallback = DrawHeader,
@@ -66,8 +68,13 @@ namespace EnhancedEditor.Editor {
 
                             drawElementCallback = (Rect _position, int _index, bool _isActive, bool _isFocused) => {
                                 _position.y += ContentOffset;
+
                                 using (var _scope = new EditorGUI.DisabledGroupScope(_isReadonly)) {
-                                    EnhancedEditorGUI.EnhancedPropertyField(_position, _array.GetArrayElementAtIndex(_index), GUIContent.none, true);
+
+                                    SerializedProperty _elementProperty = _array.GetArrayElementAtIndex(_index);
+                                    labelGUI.text = _elementProperty.displayName;
+
+                                    EnhancedEditorGUI.EnhancedPropertyField(_position, _elementProperty, labelGUI, true);
                                 }
 
                                 if (_index != (_array.arraySize - 1)) {
@@ -90,7 +97,7 @@ namespace EnhancedEditor.Editor {
                     // ----- Local Method ----- \\
 
                     void DrawHeader(Rect _position) {
-                        GUIContent _label = EnhancedEditorGUIUtility.GetLabelGUI(string.Format(LabelFormat, _cacheLabel.text, _array.arraySize), _cacheLabel.tooltip);
+                        GUIContent _label = EnhancedEditorGUIUtility.GetLabelGUI(string.Format(HeaderLabelFormat, _cacheLabel.text, _array.arraySize), _cacheLabel.tooltip);
 
                         // Temporarily disable hierarchy to avoid foldout padding.
                         using (var _scope = EnhancedEditorGUI.HierarchyMode.Scope(false))

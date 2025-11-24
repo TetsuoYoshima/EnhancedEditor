@@ -18,8 +18,9 @@ namespace EnhancedEditor.Editor {
     public sealed class SerializedInterfacePropertyDrawer : EnhancedPropertyEditor {
         #region Drawer Content
         private const int CacheLimit = 100;
+
         private static readonly Dictionary<string, Type> interfaceInfos = new Dictionary<string, Type>();
-        private static readonly string SerializedInterfaceTypeName = typeof(SerializedInterface<>).Name;
+        private static readonly string serializedInterfaceTypeName      = typeof(SerializedInterface<>).Name;
 
         // -----------------------
 
@@ -27,10 +28,9 @@ namespace EnhancedEditor.Editor {
             SerializedProperty _componentProperty = _property.FindPropertyRelative("component");
 
             Rect _position = EnhancedEditorGUIUtility.GetViewControlRect();
-            float _height = _position.height;
+            float _height  = _position.height;
 
             if (_property.FindPropertyRelative("required").boolValue) {
-
                 _height += EnhancedEditorGUI.GetRequiredExtraHeight(_position, _label, _componentProperty.objectReferenceValue);
             }
 
@@ -71,9 +71,7 @@ namespace EnhancedEditor.Editor {
 
             // Interface picker.
             EnhancedEditorGUI.PickerField(_position, _componentProperty, _label, _interfaceType);
-
-            float _height = _position.height + _extraHeight;
-            return _height;
+            return _position.height + _extraHeight;
         }
 
         // -----------------------
@@ -81,7 +79,7 @@ namespace EnhancedEditor.Editor {
         [SerializedPropertyMenu]
         private static void OnContextMenu(GenericMenu _menu, SerializedProperty _property) {
 
-            if (!_property.serializedObject.isEditingMultipleObjects && _property.type.StartsWith(SerializedInterfaceTypeName)
+            if (!_property.serializedObject.isEditingMultipleObjects && _property.type.StartsWith(serializedInterfaceTypeName)
                 && (_property.serializedObject.targetObject is Component _component)) {
 
                 _menu.AddItem(EnhancedEditorGUI.requiredGetReferenceGUI, false, () => {

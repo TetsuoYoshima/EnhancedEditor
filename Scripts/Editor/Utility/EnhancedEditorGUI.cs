@@ -931,7 +931,7 @@ namespace EnhancedEditor.Editor {
         /// <summary>
         /// Indicates if a duo property is currently being drawn or not.
         /// </summary>
-        public static bool IsDrawingDuoProperty { get; private set; }
+        public static bool IsDrawingDuoProperty { get; private set; } = false;
 
         // -----------------------
 
@@ -1007,13 +1007,13 @@ namespace EnhancedEditor.Editor {
         /// <param name="_extraHeight"><inheritdoc cref="DocumentationMethodExtra(Rect, ref bool, out float, GUIStyle)" path="/param[@name='_extraHeight']"/></param>
         public static void DuoField(Rect _position, SerializedProperty _property, GUIContent _label, SerializedProperty _secondProperty, GUIContent _secondLabel,
                                     float _secondPropertyWidth, out float _extraHeight) {
-            // Prefix label.
-            _label = EnhancedEditorGUIUtility.GetLabelGUI(string.Format(DuoGUIFormat, _label.text, _secondLabel.text),
-                                                          string.Format(DuoGUITooltipFormat, _label.tooltip, _secondLabel.tooltip));
-
             Rect _temp = _position;
 
+            // Prefix label.
             if (_temp.width > EditorGUIUtility.labelWidth) {
+                _label = EnhancedEditorGUIUtility.GetLabelGUI(string.Format(DuoGUIFormat, _label.text, _secondLabel.text),
+                                                              string.Format(DuoGUITooltipFormat, _label.tooltip, _secondLabel.tooltip));
+
                 _temp = EditorGUI.PrefixLabel(_position, _label);
             }
 
@@ -1035,9 +1035,9 @@ namespace EnhancedEditor.Editor {
                     throw;
                 } catch (Exception e) {
                     Debug.LogException(e);
+                } finally {
+                    IsDrawingDuoProperty = false;
                 }
-
-                IsDrawingDuoProperty = false;
             }
 
             _extraHeight = _temp.height - _position.height;

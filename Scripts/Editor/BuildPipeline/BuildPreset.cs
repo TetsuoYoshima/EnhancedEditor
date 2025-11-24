@@ -36,7 +36,7 @@ namespace EnhancedEditor.Editor {
         /// All active scripting define symbols when building with this preset.
         /// </summary>
         public string ScriptingDefineSymbols {
-            get => scriptingDefineSymbols;
+            get { return scriptingDefineSymbols; }
             set {
                 string[] _symbols = value.Split(BuildPipelineWindow.ScriptingDefineSymbolSeparator);
                 Array.Sort(_symbols);
@@ -64,7 +64,7 @@ namespace EnhancedEditor.Editor {
             if ((_other == null) || (_other is not BuildPreset _preset))
                 return 1;
 
-            return name.CompareTo(_preset.name);
+            return string.Compare(name, _preset.name, StringComparison.Ordinal);
         }
         #endregion
     }
